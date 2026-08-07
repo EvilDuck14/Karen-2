@@ -6,3 +6,5 @@
     - overheads
     - punch/kick
     - autoswing (nostick)
+
+investigate startup timing / duration of symbiote damage over time

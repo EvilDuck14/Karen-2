@@ -1,0 +1,8 @@
+- wait action
+    - time (frames/seconds)
+    - until bomb timer hits desired value
+
+- eating actions
+    - overheads
+    - punch/kick
+    - autoswing (nostick)

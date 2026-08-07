@@ -21,16 +21,12 @@ ACTIONS = {
         name = "Tracer"
     ),
 
-    "s" : Action (
-        name = "Swing"
-    ),
-
     "a" : Action (
         name = "Auto Swing"
     ),
 
     "w" : Action (
-        name = "Whiff"
+        name = "Swing Whiff"
     ),
 
     "g" : Action (
@@ -43,28 +39,10 @@ ACTIONS = {
 
     "u" : Action (
         name = "Uppercut"
-    ),
-
-    "S" : Action (
-        name = "Symbiote"
-    ),
-
-    "b" : Action (
-        name = "Burn Tracer"
-    ),
-
-    "c" : Action (
-        name = "Clap"
-    ),
-
-    "e" : Action (
-        name = "Explosive Tracer"
-    ),
-
-    "E" : Action (
-        name = "Explosion"
     )
 }
 
-# movestacks
 # TO DO
+MOVESTACKS = {
+
+}

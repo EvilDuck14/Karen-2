@@ -7,4 +7,8 @@
     - punch/kick
     - autoswing (nostick)
 
-investigate startup timing / duration of symbiote damage over time
+check whether melee sequence timer measures from start or end of action
+
+handle canceling out of symbiote into other actions
+
+handle the fact that clap > swing doesn't allow a faster punch, but clap > goh > swing does

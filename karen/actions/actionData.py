@@ -59,6 +59,9 @@ WEB_BOMB_TAG_DURATION = 0 # minum time that the bomb can explode in after landin
 SYMBIOTE_MAX_DURATION = 1 * 60
 SYMBIOTE_TEATHER_HIT_INTERVAL = 6
 
+SAPOREN_PRE_HIT_TIME = 5 # TO DO: measure
+RT_PRE_HIT_TIME = 5 # TO DO: measure
+
 MAX_CHARGES = {
     "t" : 5,
     "s" : 3,

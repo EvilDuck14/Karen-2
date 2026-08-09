@@ -5,27 +5,29 @@ from karen.state import State
 #                                                  Punch                                                  #
 #=========================================================================================================#
 
-def applyPunch(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["p"]) 
+def awaitPunchReady(state: State, frameOffset: int = 0):
 
     # await kick expiration
-    if state.meleeSequenceStep == "kick":
+    if (state.meleeSequenceStep == "kick") and (state.meleeSequenceTimer > frameOffset):
         state.pushLog("awaiting kick expiration", ["waiting"])
-        if state.meleeSequenceTimer >= (ACTION_DAMAGE_TIME["k"] - ACTION_DAMAGE_TIME["p"]):
+        if state.meleeSequenceTimer - frameOffset >= (ACTION_DAMAGE_TIME["k"] - ACTION_DAMAGE_TIME["p"]):
             state.pushLog("waiting for punch when kick would likely be faster", ["sequence warning"])
-        state.advanceTime(state.meleeSequenceTimer)
+        state.advanceTime(state.meleeSequenceTimer - frameOffset)
 
-    # ANIMATION STARTS HERE
+def usePunch(state: State):
     state.pushLog("started punch", ["action started"])
+
+    # major warning if punch started while kick was available
+    if state.meleeSequenceStep == "kick":
+        state.pushLog("used punch when kick was available", ["major warning"])
 
     # minor warning if swing overhead is available
     if state.hasSwingOverhead:
         state.pushLog("used punch when swing overhead was available", ["minor warning", "overhead warning"])
 
-    # deal damage (function handles tag proc)
-    state.dealDamage("p", ACTION_DAMAGE_TIME["p"])
+    # deal damage
+    state.dealDamage("p", frameOffset=ACTION_DAMAGE_TIME["p"])
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["p"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -42,6 +44,11 @@ def applyPunch(state: State):
 
     # cancel symbiote teather
     state.endActive("S")
+
+def applyPunch(state: State):
+    state.advanceTime(state.animationCancelTimes["p"]) 
+    awaitPunchReady(state)
+    usePunch(state)
       
 State.ApplyAction["p"] = applyPunch
 
@@ -50,12 +57,7 @@ State.ApplyAction["p"] = applyPunch
 #                                                  Kick                                                   #
 #=========================================================================================================#
 
-def applyKick(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["p"]) 
-
-    # ANIMATION STARTS HERE
+def useKick(state: State):
     state.pushLog("started kick", ["action started"])
 
     # major warning if kick is not available
@@ -66,8 +68,9 @@ def applyKick(state: State):
     if state.hasSwingOverhead:
         state.pushLog("used kick when swing overhead was available", ["minor warning", "overhead warning"])
 
-    # deal damage (function handles tag proc)
-    state.dealDamage("k", ACTION_DAMAGE_TIME["k"])
+    # deal damage
+    state.dealDamage("k", frameOffset=ACTION_DAMAGE_TIME["k"])
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["k"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -79,6 +82,10 @@ def applyKick(state: State):
 
     # cancel symbiote teather
     state.endActive("S")
+
+def applyKick(state: State):
+    state.advanceTime(state.animationCancelTimes["p"]) 
+    useKick(state)
       
 State.ApplyAction["k"] = applyKick
 
@@ -87,28 +94,26 @@ State.ApplyAction["k"] = applyKick
 #                                              Overhead Slam                                              #
 #=========================================================================================================#
 
-def applyOverhead(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["p"]) 
+def awaitOverheadReady(state: State, frameOffset: int = 0):
 
     # await swing whiff end
-    if (state.fireRateTimers["s"] > 0) and (state.hasSwingOverhead != True):
+    if (state.fireRateTimers["s"] > frameOffset) and (state.hasSwingOverhead != True):
         state.pushLog("used overhead slam after swing whiff - was U3H intended?", ["sequence warning"])
 
         # if an immediate overhead available, using it gives a faster overhead, otherwise await swing whiff end
         if not (state.hasDoubleJump or state.hasSwingOverhead == "unknown"):
-            state.advanceTime(state.fireRateTimers["s"])
+            state.advanceTime(state.fireRateTimers["s"] - frameOffset)
 
-    # ANIMATION STARTS HERE
+def useOverhead(state: State):
     state.pushLog("started overhead slam", ["action started"])
-
+    
     # minor warning if no overhead is available
     if (state.hasSwingOverhead == False) and (state.hasDoubleJump == False):
         state.pushLog("used potentially illegal overhead", ["minor warning", "overhead warning"])
 
-    # deal damage (function handles tag proc)
-    state.dealDamage("o", ACTION_DAMAGE_TIME["o"])
+    # deal damage
+    state.dealDamage("o", frameOffset=ACTION_DAMAGE_TIME["o"])
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["o"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -122,6 +127,11 @@ def applyOverhead(state: State):
 
     # cancel symbiote teather
     state.endActive("S")
+
+def applyOverhead(state: State):
+    state.advanceTime(state.animationCancelTimes["p"])
+    awaitOverheadReady(state)
+    useOverhead(state)
       
 State.ApplyAction["o"] = applyOverhead
 
@@ -130,19 +140,15 @@ State.ApplyAction["o"] = applyOverhead
 #                                                 Tracer                                                  #
 #=========================================================================================================#
 
-def applyTracer(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["t"]) 
-
-    # await action charge availability
-    state.awaitCharge("t")
-
-    # ANIMATION STARTS HERE
+def useTracer(state: State):
     state.pushLog("started tracer", ["action started"])
 
+    # major warning if cooldown is not ready
+    state.warnIfNotReady("t")
+    
     # deal damage (function handles tag application)
-    state.dealDamage("t", ACTION_DAMAGE_TIME["t"])
+    state.dealDamage("t", frameOffset=ACTION_DAMAGE_TIME["t"])
+    state.appplyTag(frameOffset=ACTION_DAMAGE_TIME["t"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -157,6 +163,11 @@ def applyTracer(state: State):
     # cancel active abilities
     state.endActive("s")
     state.endActive("S")
+
+def applyTracer(state: State):
+    state.advanceTime(state.animationCancelTimes["t"]) 
+    state.awaitCharge("t")
+    useTracer(state)
       
 State.ApplyAction["t"] = applyTracer
 
@@ -165,17 +176,12 @@ State.ApplyAction["t"] = applyTracer
 #                                               Swing Whiff                                               #
 #=========================================================================================================#
 
-def applyWhiff(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["s"]) 
-
-    # await action charge availability
-    state.awaitCharge("s")
-
-    # ANIMATION STARTS HERE
+def useWhiff(state: State):
     state.pushLog("started swing whiff", ["action started"])
 
+    # major warning if cooldown is not ready
+    state.warnIfNotReady("s")
+    
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
         state.animationCancelTimes[action] = ANIMATION_CANCEL_TIMES["w"][action]
@@ -187,6 +193,11 @@ def applyWhiff(state: State):
     state.endActive("u")
     state.endActive("g")
     state.endActive("S")
+
+def applyWhiff(state: State):
+    state.advanceTime(state.animationCancelTimes["s"]) 
+    state.awaitCharge("s")
+    useWhiff(state)
       
 State.ApplyAction["w"] = applyWhiff
 
@@ -195,16 +206,11 @@ State.ApplyAction["w"] = applyWhiff
 #                                               Auto Swing                                                #
 #=========================================================================================================#
 
-def applyAutoswing(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["s"]) 
-
-    # await action charge availability
-    state.awaitCharge("s")
-
-    # ANIMATION STARTS HERE
+def useAutoswing(state: State):
     state.pushLog("started auto swing", ["action started"])
+
+    # major warning if cooldown is not ready
+    state.warnIfNotReady("s")
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -217,6 +223,11 @@ def applyAutoswing(state: State):
     state.endActive("u")
     state.endActive("g")
     state.endActive("S")
+
+def applyAutoswing(state: State):
+    state.advanceTime(state.animationCancelTimes["s"]) 
+    state.awaitCharge("s")
+    useAutoswing(state)
       
 State.ApplyAction["a"] = applyAutoswing
 
@@ -225,19 +236,14 @@ State.ApplyAction["a"] = applyAutoswing
 #                                              Get Over Here                                              #
 #=========================================================================================================#
 
-def applyGOH(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["g"]) 
-
-    # await action charge availability
-    state.awaitCharge("g")
-
-    # ANIMATION STARTS HERE
+def useGOH(state: State):
     state.pushLog("started get over here", ["action started"])
 
+    # major warning if cooldown is not ready
+    state.warnIfNotReady("g")
+
     # deal damage
-    state.dealDamage("g", ACTION_DAMAGE_TIME["g"])
+    state.dealDamage("g", frameOffset=ACTION_DAMAGE_TIME["g"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -250,6 +256,11 @@ def applyGOH(state: State):
     state.endActive("s")
     state.endActive("S")
 
+def applyGOH(state: State):
+    state.advanceTime(state.animationCancelTimes["g"]) 
+    state.awaitCharge("g")
+    useGOH(state)
+
 State.ApplyAction["g"] = applyGOH
 
 
@@ -257,33 +268,31 @@ State.ApplyAction["g"] = applyGOH
 #                                        Get Over Here (Targeting)                                        #
 #=========================================================================================================#
 
-def applyGOHT(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["g"]) 
-
-    # await action charge availability
+def awaitGOHTReady(state: State, frameOffset: int = 0):
     state.awaitCharge("g")
 
-    # await tag registring
-    if (state.GOHTAvaiableTimer == 0) and (state.tagTimer > 0):
+    # tag applied but not yet registered
+    if state.tagTimer > frameOffset + (TAG_DURATION - TAG_GOHT_DELAY):
         state.pushLog("get over here (targetting) awaiting tracer registering", ["waiting"])
-        state.advanceTime(state.tagTimer - (TAG_DURATION - TAG_GOHT_DELAY))
+        state.advanceTime(state.tagTimer - frameOffset - (TAG_DURATION - TAG_GOHT_DELAY))
 
-    # await web bomb explosion
-    if (state.GOHTAvaiableTimer == 0) and state.isTaggedBomb:
+    # awaiting bomb explosion
+    if (state.GOHTAvaiableTimer <= frameOffset) and state.isTaggedBomb:
         state.pushLog("get over here (targetting) awaiting web bomb explosion", ["waiting"])
-        state.advanceTime(state.bombTimer + TAG_GOHT_DELAY)
+        state.advanceTime(state.bombTimer + TAG_GOHT_DELAY - frameOffset)
 
-    # ANIMATION STARTS HERE
+def useGOHT(state: State):
     state.pushLog("started get over here (targeting)", ["action started"])
+
+    # major warning if cooldown is not ready
+    state.warnIfNotReady("g")
 
     # major warning if no tag is applied
     if state.tagTimer == 0:
         state.pushLog("used illegal get over here (targeting)", ["major warning"])
 
     # deal damage
-    state.dealDamage("G", ACTION_DAMAGE_TIME["G"])
+    state.dealDamage("G", frameOffset=ACTION_DAMAGE_TIME["G"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -295,6 +304,11 @@ def applyGOHT(state: State):
     # cancel active abilities
     state.endActive("s")
     state.endActive("S")
+
+def applyGOHT(state: State):
+    state.advanceTime(state.animationCancelTimes["g"]) 
+    awaitGOHTReady(state)
+    useGOHT(state)
       
 State.ApplyAction["G"] = applyGOHT
 
@@ -303,19 +317,15 @@ State.ApplyAction["G"] = applyGOHT
 #                                                Uppercut                                                 #
 #=========================================================================================================#
 
-def applyUppercut(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["u"]) 
-
-    # await action charge availability
-    state.awaitCharge("u")
-
-    # ANIMATION STARTS HERE
+def useUppercut(state: State):
     state.pushLog("started uppercut", ["action started"])
 
+    # major warning if cooldown is not ready
+    state.warnIfNotReady("u")
+
     # deal damage
-    state.dealDamage("u", ACTION_DAMAGE_TIME["u"])
+    state.dealDamage("u", frameOffset=ACTION_DAMAGE_TIME["u"])
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["u"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -327,6 +337,11 @@ def applyUppercut(state: State):
     # cancel active abilities
     state.endActive("s")
     state.endActive("S")
+
+def applyUppercut(state: State):
+    state.advanceTime(state.animationCancelTimes["u"]) 
+    state.awaitCharge("u")
+    useUppercut("u")
       
 State.ApplyAction["u"] = applyUppercut
 
@@ -335,19 +350,14 @@ State.ApplyAction["u"] = applyUppercut
 #                                                Symbiote                                                 #
 #=========================================================================================================#
 
-def applySymbiote(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["S"]) 
-
-    # await action charge availability
-    state.awaitCharge("S")
-
-    # ANIMATION STARTS HERE
+def useSymbiote(state: State):
     state.pushLog("started symbiote", ["action started"])
+    
+    # major warning if cooldown is not ready
+    state.warnIfNotReady("S")
 
     # deal damage
-    state.dealDamage("S", ACTION_DAMAGE_TIME["S"])
+    state.dealDamage("S", frameOffset=ACTION_DAMAGE_TIME["S"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -360,6 +370,10 @@ def applySymbiote(state: State):
     state.endActive("s")
     state.endActive("g")
     state.endActive("u")
+
+def applySymbiote(state: State):
+    state.advanceTime(state.animationCancelTimes["S"]) 
+    state.awaitCharge("S")
       
 State.ApplyAction["S"] = applySymbiote
 
@@ -367,6 +381,10 @@ State.ApplyAction["S"] = applySymbiote
 #=========================================================================================================#
 #                                            Symbiote Teather                                             #
 #=========================================================================================================#
+
+def useTeather(state: State):
+    useSymbiote(state)
+    state.teatherTimer = SYMBIOTE_MAX_DURATION
 
 def applyTeather(state: State):
     applySymbiote(state)
@@ -379,16 +397,11 @@ State.ApplyAction["V"] = applyTeather
 #                                                  Clap                                                   #
 #=========================================================================================================#
 
-def applyClap(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["C"]) 
-
-    # await action charge availability
-    state.awaitCharge("B")
-
-    # ANIMATION STARTS HERE
+def useClap(state: State):
     state.pushLog("started clap", ["action started"])
+
+    # major warning if cooldown is not ready
+    state.warnIfNotReady("B")
 
     # start bomb timer
     state.bombTimer = WEB_BOMB_DURATION
@@ -403,6 +416,11 @@ def applyClap(state: State):
 
     # cancel active abilities
     state.endActive("g")
+
+def applyClap(state: State):
+    state.advanceTime(state.animationCancelTimes["C"]) 
+    state.awaitCharge("B")
+    useClap(state)
       
 State.ApplyAction["C"] = applyClap
 
@@ -411,12 +429,7 @@ State.ApplyAction["C"] = applyClap
 #                                                Web Bomb                                                 #
 #=========================================================================================================#
 
-def applyBomb(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["B"]) 
-
-    # ANIMATION STARTS HERE
+def useBomb(state: State):
     state.pushLog("started clap", ["action started"])
 
     # major warning if bomb is not available
@@ -424,7 +437,7 @@ def applyBomb(state: State):
         state.pushLog("used illegal web bomb", ["major warning"])
 
     # deal damage
-    state.dealDamage("B", ACTION_DAMAGE_TIME["B"])
+    state.dealDamage("B", frameOffset=ACTION_DAMAGE_TIME["B"])
 
     # set bomb timer to minimum allowed time after connecting
     state.isTaggedBomb = True
@@ -436,6 +449,10 @@ def applyBomb(state: State):
 
     # cancel active abilities
     state.endActive("s")
+
+def applyBomb(state: State):
+    state.advanceTime(state.animationCancelTimes["B"]) 
+    useBomb(state)
       
 State.ApplyAction["B"] = applyBomb
 
@@ -445,6 +462,9 @@ State.ApplyAction["B"] = applyBomb
 #=========================================================================================================#
 
 def applyExplosion(state: State):
+
+    # wait for queued attacks to hit
+    state.advanceTime(state.lastDamageTime - state.timeElapsed)
 
     # major warning if bomb is not active
     if state.bombTimer == 0:

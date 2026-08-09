@@ -92,6 +92,7 @@ class State:
         if frames >= self.bombTimer > 0:
             if self.isTaggedBomb:
                 self.dealDamage("E", frameOffset=self.bombTimer)
+                self.appplyTag(frameOffset=self.bombTimer)
                 self.isTaggedBomb = False
             else:
                 self.pushLog("web bomb expired without firing", ["timer expired"], frameOffset=self.bombTimer)
@@ -194,16 +195,26 @@ class State:
         # tracking last damage time
         self.lastDamageTime = max(self.lastDamageTime, self.timeElapsed + frameOffset)
 
-        # tracer tag proc
-        if source in PROCS_TAG and self.tagTimer > 0 and frameOffset < self.tagTimer:
+    # deals damage for procing tag if applicable
+    def procTag(self, frameOffset: int = 0) -> None:
+
+        # handles web bomb exploding during frame offset
+        if (frameOffset >= self.bombTimer > 0) and self.isTaggedBomb:
+            self.dealDamage("E", frameOffset=self.bombTimer)
+            self.appplyTag(frameOffset=self.bombTimer)
+            self.isTaggedBomb = False
+
+        # regular tracer proc
+        if frameOffset < self.tagTimer:
             self.damageDealt += TAG_PROC_DAMAGE
             self.tagTimer = 0
-            self.pushLog(f"{ACTION_NAMES[source]} proced tag dealing {TAG_PROC_DAMAGE} damage", ["damage"], frameOffset)
+            self.GOHTAvaiableTimer = 0
+            self.pushLog(f"proced tag, dealing {TAG_PROC_DAMAGE} damage", ["damage"], frameOffset)
 
-        # tracer tag application
-        if source in APPLIES_TAG:
-            self.tagTimer = TAG_DURATION + frameOffset
-            self.pushLog(f"{ACTION_NAMES[source]} applied tracer tag", ["cooldown"], frameOffset)
+    # tracer tag application
+    def appplyTag(self, frameOffset: int = 0) -> None:
+        self.tagTimer = TAG_DURATION + frameOffset
+        self.pushLog("applied tracer tag", ["cooldown"], frameOffset)
 
     # reduces charge and sets relevant timers
     def endActive(self, charge: str):
@@ -228,6 +239,15 @@ class State:
         if charge == "S":
             self.teatherTimer = 0
 
+    # major warning if ability charge is used currently but isn't available
+    def warnIfNotReady(self, charge: str):
+        if (charge in self.activeTimers.keys()) and (self.activeTimers[charge] > 0):
+            self.pushLog(f"used {ACTION_NAMES[charge]} while charge still in use", ["major warning"])
+        if (charge in self.charges.keys()) and (self.charges[charge] == 0):
+            self.pushLog(f"used {ACTION_NAMES[charge]} without required charge", ["major warning"])
+        if (charge in self.fireRateTimers.keys()) and (self.fireRateTimers[charge] == 0):
+            self.pushLog(f"used {ACTION_NAMES[charge]} faster than fire rate limit allows", ["major warning"])
+
     # creates a log entry at the current time
     def pushLog(self, details: str, flags: list[str] = [], frameOffset: int = 0):
         self.log.append(LogEntry(self.timeElapsed + frameOffset, details, flags))
@@ -236,7 +256,7 @@ class State:
     def printConsole(self):
 
         # print logs
-        # self.log.sort()
+        self.log.sort()
         for entry in self.log:
             entry.printConsole()
 

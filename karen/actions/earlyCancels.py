@@ -1,23 +1,17 @@
 from karen.actions.actionData import *
 from karen.state import State
+from karen.actions.basicActions import *
 
 #=========================================================================================================#
 #                                              Punch Cancel                                               #
 #=========================================================================================================#
 
-def applyPunchCancel(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["p"]) 
-
-    # await kick expiration
-    if state.meleeSequenceStep == "kick":
-        state.pushLog("awaiting kick expiration", ["waiting"])
-        state.pushLog("waiting for punch when kick cancel would be faster", ["sequence warning"])
-        state.advanceTime(state.meleeSequenceTimer)
-
-    # ANIMATION STARTS HERE
+def usePunchCancel(state: State):
     state.pushLog("started punch cancel", ["action started"])
+
+    # major warning if punch started while kick was available
+    if state.meleeSequenceStep == "kick":
+        state.pushLog("used punch when kick was available", ["major warning"])
 
     # minor warning if swing overhead is available
     if state.hasSwingOverhead:
@@ -38,6 +32,11 @@ def applyPunchCancel(state: State):
 
     # cancel symbiote teather
     state.endActive("S")
+
+def applyPunchCancel(state: State):
+    state.advanceTime(state.animationCancelTimes["p"]) 
+    awaitPunchReady(state)
+    usePunchCancel(state)
     
 State.ApplyAction["p-"] = applyPunchCancel
 
@@ -46,12 +45,7 @@ State.ApplyAction["p-"] = applyPunchCancel
 #                                               Kick Cancel                                               #
 #=========================================================================================================#
 
-def applyKickCancel(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["p"]) 
-
-    # ANIMATION STARTS HERE
+def useKickCancel(state: State):
     state.pushLog("started kick cancel", ["action started"])
 
     # major warning if kick is not available
@@ -73,6 +67,10 @@ def applyKickCancel(state: State):
     # cancel symbiote teather
     state.endActive("S")
 
+def applyKickCancel(state: State):
+    state.advanceTime(state.animationCancelTimes["p"]) 
+    useKickCancel(state)
+
 State.ApplyAction["k-"] = applyKickCancel
 
 
@@ -80,22 +78,9 @@ State.ApplyAction["k-"] = applyKickCancel
 #                                             Overhead Cancel                                             #
 #=========================================================================================================#
 
-def applyOverheadCancel(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["p"]) 
-
-    # await swing whiff end
-    if (state.fireRateTimers["s"] > 0) and (state.hasSwingOverhead != True):
-        state.pushLog("used overhead slam after swing whiff - was U3H intended?", ["sequence warning"])
-
-        # if an immediate overhead available, using it gives a faster overhead, otherwise await swing whiff end
-        if not (state.hasDoubleJump or state.hasSwingOverhead == "unknown"):
-            state.advanceTime(state.fireRateTimers["s"])
-
-    # ANIMATION STARTS HERE
+def useOverheadCancel(state: State):
     state.pushLog("started overhead slam cancel", ["action started"])
-
+    
     # minor warning if no overhead is available
     if (state.hasSwingOverhead == False) and (state.hasDoubleJump == False):
         state.pushLog("used potentially illegal overhead", ["minor warning", "overhead warning"])
@@ -113,6 +98,11 @@ def applyOverheadCancel(state: State):
     # cancel symbiote teather
     state.endActive("S")
 
+def applyOverheadCancel(state: State):
+    state.advanceTime(state.animationCancelTimes["p"])
+    awaitOverheadReady(state)
+    useOverheadCancel(state)
+
 State.ApplyAction["o-"] = applyOverheadCancel
 
 
@@ -120,16 +110,11 @@ State.ApplyAction["o-"] = applyOverheadCancel
 #                                                 Nostick                                                 #
 #=========================================================================================================#
 
-def applyNostick(state: State):
-
-    # await previous animation
-    state.advanceTime(state.animationCancelTimes["s"]) 
-
-    # await action charge availability
-    state.awaitCharge("s")
-
-    # ANIMATION STARTS HERE
+def useNostick(state: State):
     state.pushLog("started no stick", ["action started"])
+
+    # major warning if cooldown is not ready
+    state.warnIfNotReady("s")
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -142,5 +127,10 @@ def applyNostick(state: State):
     state.endActive("u")
     state.endActive("g")
     state.endActive("S")
+
+def applyNostick(state: State):
+    state.advanceTime(state.animationCancelTimes["s"]) 
+    state.awaitCharge("s")
+    useNostick(state)
     
 State.ApplyAction["a-"] = applyNostick

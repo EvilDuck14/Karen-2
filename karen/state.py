@@ -205,3 +205,18 @@ class State:
     # creates a log entry at the current time
     def pushLog(self, details: str, flags: list[str] = [], frameOffset: int = 0):
         self.log.append(LogEntry(self.timeElapsed + frameOffset, details, flags))
+
+    # prints all info to console
+    def printConsole(self):
+
+        # print logs
+        self.log.sort()
+        for entry in self.log:
+            entry.printConsole()
+
+        # print state information
+        print("\n" + 
+              f"Damage: {self.damageDealt}" +
+              f"Time: {self.lastDamageTime}" +
+              f"Time From First Hit: {0 if self.firstDamageTime == "unknown" else self.lastDamageTime - self.firstDamageTime}"
+        )

@@ -1,3 +1,30 @@
+from colorama import Fore, Style
+
+EVENT_TYPES = [
+    "action started"
+    "damage",
+    "timer expired",
+    "cooldown",
+    "waiting",
+
+    "minor warning",
+    "major warning",
+    "overhead warning",
+    "sequence warning"
+]
+
+EVENT_COLOURS = {
+    "major warning" : Fore.RED,
+    "minor warning" : Fore.LIGHTRED_EX,
+    "sequence warning" : Fore.LIGHTRED_EX,
+    "overhead warning" : Fore.YELLOW,
+    "waiting" : Fore.LIGHTYELLOW_EX,
+    "timer expired" : Fore.MAGENTA,
+    "cooldown" : Fore.LIGHTMAGENTA_EX,
+    "action started" : Fore.CYAN,
+    "damage" : Fore.LIGHTCYAN_EX
+}
+
 class LogEntry:
     frame: int = 0
     details: str = ""
@@ -12,15 +39,20 @@ class LogEntry:
             if not flag in EVENT_TYPES:
                 raise(f"event type {flag} not recognised")
 
-EVENT_TYPES = {
-    "action started"
-    "damage",
-    "timer expired",
-    "cooldown",
-    "waiting",
+    def printConsole(self) -> None:
+        colour: str = Fore.WHITE
+        for flag in EVENT_COLOURS.keys():
+            if flag in self.flags:
+                colour = EVENT_COLOURS[flag]
+                break
+        print(f"{colour}[{self.frame}f] {self.details}{Style.RESET_ALL}")
 
-    "minor warning",
-    "major warning",
-    "overhead warning",
-    "sequence warning"
-}
+    # comparison operators for sorting list by time
+    def __lt__(self, other: LogEntry) -> bool:
+            return self.frame < other.frame
+    def __le__(self, other: LogEntry) -> bool:
+            return self.frame <= other.frame
+    def __gt__(self, other: LogEntry) -> bool:
+            return self.frame > other.frame
+    def __ge__(self, other: LogEntry) -> bool:
+        return self.frame >= other.frame

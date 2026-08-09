@@ -39,6 +39,9 @@ def applyPunch(state: State):
         state.meleeSequenceStep == "kick"
     elif state.meleeSequenceStep == "unknown":
         state.meleeSequenceStep = "not punch 1"
+
+    # cancel symbiote teather
+    state.endActive("S")
       
 State.ApplyAction["p"] = applyPunch
 
@@ -73,6 +76,9 @@ def applyKick(state: State):
     # tracking melee sequence
     state.meleeSequenceTimer = 0
     state.meleeSequenceStep = "punch 1"
+
+    # cancel symbiote teather
+    state.endActive("S")
       
 State.ApplyAction["k"] = applyKick
 
@@ -113,6 +119,9 @@ def applyOverhead(state: State):
         state.hasSwingOverhead = False
     else:
         state.hasDoubleJump = False
+
+    # cancel symbiote teather
+    state.endActive("S")
       
 State.ApplyAction["o"] = applyOverhead
 
@@ -154,6 +163,7 @@ def applyTracer(state: State):
 
     # cancel active abilities
     state.endActive("s")
+    state.endActive("S")
       
 State.ApplyAction["t"] = applyTracer
 
@@ -195,6 +205,7 @@ def applyWhiff(state: State):
     # cancel active abilities
     state.endActive("u")
     state.endActive("g")
+    state.endActive("S")
       
 State.ApplyAction["w"] = applyWhiff
 
@@ -236,6 +247,7 @@ def applyAutoswing(state: State):
     # cancel active abilities
     state.endActive("u")
     state.endActive("g")
+    state.endActive("S")
       
 State.ApplyAction["a"] = applyAutoswing
 
@@ -274,6 +286,7 @@ def applyGOH(state: State):
 
     # cancel active abilities
     state.endActive("s")
+    state.endActive("S")
 
 def applyGOHAwaitDisplacement(state: State):
     applyGOH(state)
@@ -330,6 +343,7 @@ def applyGOHT(state: State):
 
     # cancel active abilities
     state.endActive("s")
+    state.endActive("S")
       
 State.ApplyAction["G"] = applyGOHT
 
@@ -373,6 +387,7 @@ def applyUppercut(state: State):
 
     # cancel active abilities
     state.endActive("s")
+    state.endActive("S")
       
 State.ApplyAction["u"] = applyUppercut
 

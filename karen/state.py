@@ -206,6 +206,10 @@ class State:
             self.hasSwingOverhead = True
             self.log("awarded swing overhead", ["cooldown"])
 
+        # canceling symbiote teather
+        if charge == "S":
+            self.teatherTimer = 0
+
     # creates a log entry at the current time
     def pushLog(self, details: str, flags: list[str] = [], frameOffset: int = 0):
         self.log.append(LogEntry(self.timeElapsed + frameOffset, details, flags))

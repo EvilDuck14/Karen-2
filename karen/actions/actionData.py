@@ -77,7 +77,7 @@ ACTIVE_TIMES = { # TO DO: check
     "g" : 102,
     "G" : 61,
     "u" : 70,
-    "S" : 0
+    "S" : 60
 }
 
 RECHARGE_TIMES = {

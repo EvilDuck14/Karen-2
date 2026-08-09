@@ -7,7 +7,14 @@ from karen.actions.basicActions import *
 #=========================================================================================================#
 
 def applyFFAmestack(state: State):
-    pass
+    state.advanceTime(state.animationCancelTimes["g"]) 
+    awaitGOHTReady(state)
+    state.awaitCharge("u", frameOffset=1)
+    useGOHT(state)
+    state.advanceTime(1)
+    useUppercut(state)
+    state.animationCancelTimes["s"] = ANIMATION_CANCEL_TIMES["G"]["s"] - 1
+    state.animationCancelTimes["S"] = ANIMATION_CANCEL_TIMES["G"]["S"] - 1
 State.ApplyAction["G+u"] = applyFFAmestack
 
 
@@ -16,7 +23,13 @@ State.ApplyAction["G+u"] = applyFFAmestack
 #=========================================================================================================#
 
 def applyPunchSaporen(state: State):
-    pass
+    state.advanceTime(state.animationCancelTimes["p"])
+    awaitPunchReady(state)
+    awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME))
+    usePunch(state, keepGOHTAvailable=True)
+    state.advanceTime(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME)
+    useGOHT(state)
+    state.GOHTAvaiableTimer = 0
 State.ApplyAction["p+G"] = applyPunchSaporen
 
 
@@ -25,7 +38,12 @@ State.ApplyAction["p+G"] = applyPunchSaporen
 #=========================================================================================================#
 
 def applyKickSaporen(state: State):
-    pass
+    state.advanceTime(state.animationCancelTimes["p"])
+    awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME))
+    useKick(state, keepGOHTAvailable=True)
+    state.advanceTime(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME)
+    useGOHT(state)
+    state.GOHTAvaiableTimer = 0
 State.ApplyAction["k+G"] = applyKickSaporen
 
 
@@ -34,7 +52,13 @@ State.ApplyAction["k+G"] = applyKickSaporen
 #=========================================================================================================#
 
 def applyOverheadSaporen(state: State):
-    pass
+    state.advanceTime(state.animationCancelTimes["o"])
+    awaitOverheadReady(state)
+    awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME))
+    useOverhead(state, keepGOHTAvailable=True)
+    state.advanceTime(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME)
+    useGOHT(state)
+    state.GOHTAvaiableTimer = 0
 State.ApplyAction["o+G"] = applyOverheadSaporen
 
 
@@ -43,7 +67,18 @@ State.ApplyAction["o+G"] = applyOverheadSaporen
 #=========================================================================================================#
 
 def applyPunchSaporenFFAmestack(state: State):
-    pass
+    state.advanceTime(state.animationCancelTimes["p"])
+    awaitPunchReady(state)
+    awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME))
+    state.awaitCharge("u", frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1))
+    usePunch(state, keepGOHTAvailable=True)
+    state.advanceTime(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME)
+    useGOHT(state)
+    state.GOHTAvaiableTimer = 0
+    state.advanceTime(1)
+    useUppercut(state)
+    state.animationCancelTimes["s"] = ANIMATION_CANCEL_TIMES["G"]["s"] - 1
+    state.animationCancelTimes["S"] = ANIMATION_CANCEL_TIMES["G"]["S"] - 1
 State.ApplyAction["p+G+u"] = applyPunchSaporenFFAmestack
 
 
@@ -52,8 +87,18 @@ State.ApplyAction["p+G+u"] = applyPunchSaporenFFAmestack
 #=========================================================================================================#
 
 def applyKickSaporenFFAmestack(state: State):
-    pass
-State.ApplyAction["p+G+u"] = applyKickSaporenFFAmestack
+    state.advanceTime(state.animationCancelTimes["p"])
+    awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME))
+    state.awaitCharge("u", frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1))
+    useKick(state, keepGOHTAvailable=True)
+    state.advanceTime(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME)
+    useGOHT(state)
+    state.GOHTAvaiableTimer = 0
+    state.advanceTime(1)
+    useUppercut(state)
+    state.animationCancelTimes["s"] = ANIMATION_CANCEL_TIMES["G"]["s"] - 1
+    state.animationCancelTimes["S"] = ANIMATION_CANCEL_TIMES["G"]["S"] - 1
+State.ApplyAction["k+G+u"] = applyKickSaporenFFAmestack
 
 
 #=========================================================================================================#
@@ -61,8 +106,19 @@ State.ApplyAction["p+G+u"] = applyKickSaporenFFAmestack
 #=========================================================================================================#
 
 def applyOverheadSaporenFFAmestack(state: State):
-    pass
-State.ApplyAction["p+G+u"] = applyOverheadSaporenFFAmestack
+    state.advanceTime(state.animationCancelTimes["o"])
+    awaitOverheadReady(state)
+    awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME))
+    state.awaitCharge("u", frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1))
+    useOverhead(state, keepGOHTAvailable=True)
+    state.advanceTime(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME)
+    useGOHT(state)
+    state.GOHTAvaiableTimer = 0
+    state.advanceTime(1)
+    useUppercut(state)
+    state.animationCancelTimes["s"] = ANIMATION_CANCEL_TIMES["G"]["s"] - 1
+    state.animationCancelTimes["S"] = ANIMATION_CANCEL_TIMES["G"]["S"] - 1
+State.ApplyAction["o+G+u"] = applyOverheadSaporenFFAmestack
 
 
 #=========================================================================================================#

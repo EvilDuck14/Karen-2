@@ -14,7 +14,7 @@ def awaitPunchReady(state: State, frameOffset: int = 0):
             state.pushLog("waiting for punch when kick would likely be faster", ["sequence warning"])
         state.advanceTime(state.meleeSequenceTimer - frameOffset)
 
-def usePunch(state: State):
+def usePunch(state: State, keepGOHTAvailable: bool = False):
     state.pushLog("started punch", ["action started"])
 
     # major warning if punch started while kick was available
@@ -27,7 +27,7 @@ def usePunch(state: State):
 
     # deal damage
     state.dealDamage("p", frameOffset=ACTION_DAMAGE_TIME["p"])
-    state.procTag(frameOffset=ACTION_DAMAGE_TIME["p"])
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["p"], keepGOHTAvailable=keepGOHTAvailable)
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -57,7 +57,7 @@ State.ApplyAction["p"] = applyPunch
 #                                                  Kick                                                   #
 #=========================================================================================================#
 
-def useKick(state: State):
+def useKick(state: State, keepGOHTAvailable: bool = False):
     state.pushLog("started kick", ["action started"])
 
     # major warning if kick is not available
@@ -70,7 +70,7 @@ def useKick(state: State):
 
     # deal damage
     state.dealDamage("k", frameOffset=ACTION_DAMAGE_TIME["k"])
-    state.procTag(frameOffset=ACTION_DAMAGE_TIME["k"])
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["k"], keepGOHTAvailable=keepGOHTAvailable)
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -104,7 +104,7 @@ def awaitOverheadReady(state: State, frameOffset: int = 0):
         if not (state.hasDoubleJump or state.hasSwingOverhead == "unknown"):
             state.advanceTime(state.fireRateTimers["s"] - frameOffset)
 
-def useOverhead(state: State):
+def useOverhead(state: State, keepGOHTAvailable: bool = False):
     state.pushLog("started overhead slam", ["action started"])
     
     # minor warning if no overhead is available
@@ -113,7 +113,7 @@ def useOverhead(state: State):
 
     # deal damage
     state.dealDamage("o", frameOffset=ACTION_DAMAGE_TIME["o"])
-    state.procTag(frameOffset=ACTION_DAMAGE_TIME["o"])
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["o"], keepGOHTAvailable=keepGOHTAvailable)
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -129,7 +129,7 @@ def useOverhead(state: State):
     state.endActive("S")
 
 def applyOverhead(state: State):
-    state.advanceTime(state.animationCancelTimes["p"])
+    state.advanceTime(state.animationCancelTimes["o"])
     awaitOverheadReady(state)
     useOverhead(state)
       
@@ -317,7 +317,7 @@ State.ApplyAction["G"] = applyGOHT
 #                                                Uppercut                                                 #
 #=========================================================================================================#
 
-def useUppercut(state: State):
+def useUppercut(state: State, keepGOHTAvailable: bool = False):
     state.pushLog("started uppercut", ["action started"])
 
     # major warning if cooldown is not ready
@@ -325,7 +325,7 @@ def useUppercut(state: State):
 
     # deal damage
     state.dealDamage("u", frameOffset=ACTION_DAMAGE_TIME["u"])
-    state.procTag(frameOffset=ACTION_DAMAGE_TIME["u"])
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["u"], keepGOHTAvailable=keepGOHTAvailable)
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():

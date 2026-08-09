@@ -196,7 +196,7 @@ class State:
         self.lastDamageTime = max(self.lastDamageTime, self.timeElapsed + frameOffset)
 
     # deals damage for procing tag if applicable
-    def procTag(self, frameOffset: int = 0) -> None:
+    def procTag(self, frameOffset: int = 0, keepGOHTAvailable: bool = False) -> None:
 
         # handles web bomb exploding during frame offset
         if (frameOffset >= self.bombTimer > 0) and self.isTaggedBomb:
@@ -208,7 +208,8 @@ class State:
         if frameOffset < self.tagTimer:
             self.damageDealt += TAG_PROC_DAMAGE
             self.tagTimer = 0
-            self.GOHTAvaiableTimer = 0
+            if not keepGOHTAvailable: # flag used for saporen movestacks
+                self.GOHTAvaiableTimer = 0
             self.pushLog(f"proced tag, dealing {TAG_PROC_DAMAGE} damage", ["damage"], frameOffset)
 
     # tracer tag application

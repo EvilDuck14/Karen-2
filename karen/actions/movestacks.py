@@ -93,3 +93,33 @@ State.ApplyAction["a+p+o"] = applyPunchU2H
 def applyKickU2H(state: State):
     pass
 State.ApplyAction["a+p+o"] = applyKickU2H
+
+
+#=========================================================================================================#
+#                                             GOH / Web Bomb                                              #
+#=========================================================================================================#
+
+def applyGOHBomb(state: State):
+    pass
+State.ApplyAction["g+B"] = applyGOHBomb
+
+def applyGOHTBomb(state: State):
+    pass
+State.ApplyAction["g+B"] = applyGOHTBomb
+
+
+#=========================================================================================================#
+#                                              Clap / Swing                                               #
+#=========================================================================================================#
+
+def applyWhiffClap(state: State):
+    pass
+State.ApplyAction["w+C"] = applyWhiffClap
+
+def applyAutoswingClap(state: State):
+    pass
+State.ApplyAction["a+C"] = applyAutoswingClap
+
+def applyClapAutoswing(state: State):
+    pass
+State.ApplyAction["C+a"]

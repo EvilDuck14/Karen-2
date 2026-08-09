@@ -52,8 +52,6 @@ TAG_GOHT_DELAY = 3
 PROCS_TAG = [ "p", "k", "o", "u" ]
 APPLIES_TAG = [ "t", "E" ]
 
-GOH_DISPLACEMENT_TIME = 1 # TO DO: measure
-
 WEB_BOMB_DURATION = 2 * 60 # TO DO: check
 WEB_BOMB_TAG_DURATION = 0 # minum time that the bomb can explode in after landing 
 # TO DO: check ^

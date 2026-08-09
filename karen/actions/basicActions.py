@@ -288,11 +288,7 @@ def applyGOH(state: State):
     state.endActive("s")
     state.endActive("S")
 
-def applyGOHAwaitDisplacement(state: State):
-    applyGOH(state)
-    state.advanceTime(GOH_DISPLACEMENT_TIME)
-
-State.ApplyAction["g"] = applyGOHAwaitDisplacement
+State.ApplyAction["g"] = applyGOH
 
 
 #=========================================================================================================#

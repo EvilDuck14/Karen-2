@@ -35,11 +35,3 @@ State.ApplyAction["o-"] = applyOverheadCancel
 def applyNostick(state: State):
     pass
 State.ApplyAction["a-"] = applyNostick
-
-
-#=========================================================================================================#
-#                             GOH Cancel (deals damage, but no displacement)                              #
-#=========================================================================================================#
-
-from karen.actions.basicActions import applyGOH
-State.ApplyAction["g-"] = applyGOH

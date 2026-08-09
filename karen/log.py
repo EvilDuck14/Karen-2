@@ -1,7 +1,7 @@
 from colorama import Fore, Style
 
 EVENT_TYPES = [
-    "action started"
+    "action started",
     "damage",
     "timer expired",
     "cooldown",

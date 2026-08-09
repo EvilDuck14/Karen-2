@@ -107,9 +107,10 @@ class State:
         # GOHT availability timer
         if frames >= self.GOHTAvaiableTimer > 0:
             self.pushLog("GOHT availability expired", ["timer expired"], frameOffset=self.GOHTAvaiableTimer)
+        self.GOHTAvaiableTimer = max(self.GOHTAvaiableTimer - frames, 0)
         if self.tagTimer > self.GOHTAvaiableTimer and self.tagTimer <= TAG_DURATION - TAG_GOHT_DELAY:
-            self.GOHTAvaiableTimer - self.tagTimer
-            self.pushLog("GOHT registered available target", ["cooldown"], frameOffset=(self.tagTimer - (TAG_DURATION - TAG_GOHT_DELAY)))
+            self.GOHTAvaiableTimer = self.tagTimer
+            self.pushLog("GOHT registered available target", ["cooldown"], frameOffset=(frames + self.tagTimer - (TAG_DURATION - TAG_GOHT_DELAY)))
 
         # symbiote teather damage over time
         if self.teatherTimer > 0:
@@ -144,8 +145,8 @@ class State:
 
         # recharging charges (handles long wait times that last multiple charges)
         for charge in self.rechargeTimers.keys():
-            while frames >= self.rechargeTimers[charge] > 0:
-                self.charges = min(self.charges + 1, MAX_CHARGES[charge])
+            while (frames >= self.rechargeTimers[charge] > 0) and (self.charges[charge] < MAX_CHARGES[charge]):
+                self.charges[charge] += 1
                 self.pushLog(f"regained {ACTION_NAMES[charge]} charge", ["cooldown"], frameOffset=self.rechargeTimers[charge])
                 if self.charges[charge] < MAX_CHARGES[charge]:
                     self.rechargeTimers[charge] += RECHARGE_TIMES[charge]
@@ -153,8 +154,9 @@ class State:
 
         # cooldowns / fire rate timers
         for charge in self.fireRateTimers.keys():
+            if frames > self.fireRateTimers[charge] > 0:
+                self.pushLog(f"{ACTION_NAMES[charge]} came off cooldown (fire rate limit)", ["cooldown"], frameOffset=self.fireRateTimers[charge])
             self.fireRateTimers[charge] = max(self.fireRateTimers[charge], 0)
-            self.pushLog(f"{ACTION_NAMES[charge]} came off cooldown (fire rate limit)", ["cooldown"], frameOffset=self.fireRateTimers[charge])
         
         self.timeElapsed += frames
         
@@ -183,11 +185,13 @@ class State:
         # tracer tag application
         if source in APPLIES_TAG:
             self.tagTimer = TAG_DURATION + frameOffset
+            self.pushLog(f"{ACTION_NAMES[source]} applied tracer tag", ["cooldown"], frameOffset)
 
     # reduces charge and sets relevant timers
     def endActive(self, charge: str):
         if self.activeTimers[charge] == 0:
             return
+        
         self.charges[charge] -= 1
         if self.rechargeTimers[charge] == 0:
             self.rechargeTimers[charge] = RECHARGE_TIMES[charge]
@@ -210,13 +214,13 @@ class State:
     def printConsole(self):
 
         # print logs
-        self.log.sort()
+        # self.log.sort()
         for entry in self.log:
             entry.printConsole()
 
         # print state information
-        print("\n" + 
-              f"Damage: {self.damageDealt}" +
-              f"Time: {self.lastDamageTime}" +
-              f"Time From First Hit: {0 if self.firstDamageTime == "unknown" else self.lastDamageTime - self.firstDamageTime}"
+        print(
+              f"\nDamage: {self.damageDealt}" +
+              f"\nTime: {round(self.lastDamageTime / 60, 2)}s" +
+              f"\nTime From First Hit: {round((0 if self.firstDamageTime == "unknown" else self.lastDamageTime - self.firstDamageTime) / 60, 2)}s"
         )

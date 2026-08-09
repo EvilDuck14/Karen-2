@@ -300,7 +300,7 @@ def applyGOHT(state: State):
     # await tag registring
     if (state.GOHTAvaiableTimer == 0) and (state.tagTimer > 0):
         state.pushLog("get over here (targetting) awaiting tracer registering", ["waiting"])
-        state.advanceTime(state.tagTimer - TAG_GOHT_DELAY)
+        state.advanceTime(state.tagTimer - (TAG_DURATION - TAG_GOHT_DELAY))
 
     # await web bomb explosion
     if (state.GOHTAvaiableTimer == 0) and state.isTaggedBomb:

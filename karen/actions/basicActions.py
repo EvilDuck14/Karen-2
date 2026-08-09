@@ -1,4 +1,4 @@
-from karen.actionData import *
+from karen.actions.actionData import *
 from karen.state import State
 
 #=========================================================================================================#

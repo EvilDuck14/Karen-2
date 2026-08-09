@@ -1,4 +1,4 @@
-from karen.actionData import *
+from karen.actions.actionData import *
 from typing import Literal, Callable
 from karen.log import LogEntry
 

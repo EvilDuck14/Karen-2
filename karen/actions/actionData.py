@@ -238,3 +238,11 @@ ANIMATION_CANCEL_TIMES = {
         "B" : 0
     }
 }
+
+# tracking which early cancels are and are not possible
+ILLEGAL_CANCELS = {
+    "p" : [ "p", "o" ],
+    "k" : [ "p", "o" ],
+    "o" : [ "p", "o" ],
+    "a" : [ ],
+}

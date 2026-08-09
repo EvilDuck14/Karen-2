@@ -125,20 +125,8 @@ def applyNostick(state: State):
     # await previous animation
     state.advanceTime(state.animationCancelTimes["s"]) 
 
-    # await active swing
-    if state.activeTimers["s"] > 0:
-        state.pushLog("waiting for current swing to end", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.activeTimers["s"])
-
-    # await charge
-    if state.charges["s"] == 0:
-        state.pushLog("awaiting swing recharge", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.rechargeTimers["s"])
-
-    # await fire rate
-    if state.fireRateTimers["s"] > 0:
-        state.pushLog("awaiting swing fire rate", ["waiting", "cooldown"])
-        state.advanceTime(state.fireRateTimers["s"])
+    # await action charge availability
+    state.awaitCharge("s")
 
     # ANIMATION STARTS HERE
     state.pushLog("started no stick", ["action started"])

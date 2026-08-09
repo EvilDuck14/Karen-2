@@ -164,6 +164,24 @@ class State:
     def applyAction(self, action: str) -> None:
         State.ApplyAction[action](self)
 
+    # handles waiting for ability availability
+    def awaitCharge(self, charge: str, frameOffset: int = 0) -> None:
+
+        # await active usage
+        if (charge in self.activeTimers.keys()) and (self.activeTimers[charge] > frameOffset):
+            self.pushLog(f"waiting for current {ACTION_NAMES[charge]} to end", ["waiting", "cooldown", "sequence warning"])
+            self.advanceTime(self.activeTimers["s"] - frameOffset if (MAX_CHARGES[charge] > 0) else 0)
+    
+        # await charge
+        if self.charges[charge] == 0:
+            self.pushLog(f"awaiting {ACTION_NAMES[charge]} recharge", ["waiting", "cooldown", "sequence warning"])
+            self.advanceTime(self.rechargeTimers[charge - frameOffset])
+    
+        # await fire rate
+        if (charge in self.fireRateTimers.keys()) and (self.fireRateTimers[charge] > 0):
+            self.pushLog(f"awaiting {ACTION_NAMES[charge]} fire rate", ["waiting", "cooldown"])
+            self.advanceTime(self.fireRateTimers[charge - frameOffset])
+
     # handles adding damage in a specified amount of time, properly tracking timers
     def dealDamage(self, source: str, frameOffset: int = 0) -> None:
         self.damageDealt += ACTION_DAMAGE[source]

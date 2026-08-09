@@ -135,15 +135,8 @@ def applyTracer(state: State):
     # await previous animation
     state.advanceTime(state.animationCancelTimes["t"]) 
 
-    # await charge
-    if state.charges["t"] == 0:
-        state.pushLog("awaiting tracer recharge", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.rechargeTimers["t"])
-
-    # await fire rate
-    if state.fireRateTimers["t"] > 0:
-        state.pushLog("awaiting tracer fire rate", ["waiting", "cooldown"])
-        state.advanceTime(state.fireRateTimers["t"])
+    # await action charge availability
+    state.awaitCharge("t")
 
     # ANIMATION STARTS HERE
     state.pushLog("started tracer", ["action started"])
@@ -177,20 +170,8 @@ def applyWhiff(state: State):
     # await previous animation
     state.advanceTime(state.animationCancelTimes["s"]) 
 
-    # await active swing
-    if state.activeTimers["s"] > 0:
-        state.pushLog("waiting for current swing to end", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.activeTimers["s"])
-
-    # await charge
-    if state.charges["s"] == 0:
-        state.pushLog("awaiting swing recharge", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.rechargeTimers["s"])
-
-    # await fire rate
-    if state.fireRateTimers["s"] > 0:
-        state.pushLog("awaiting swing fire rate", ["waiting", "cooldown"])
-        state.advanceTime(state.fireRateTimers["s"])
+    # await action charge availability
+    state.awaitCharge("s")
 
     # ANIMATION STARTS HERE
     state.pushLog("started swing whiff", ["action started"])
@@ -219,20 +200,8 @@ def applyAutoswing(state: State):
     # await previous animation
     state.advanceTime(state.animationCancelTimes["s"]) 
 
-    # await active swing
-    if state.activeTimers["s"] > 0:
-        state.pushLog("waiting for current swing to end", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.activeTimers["s"])
-
-    # await charge
-    if state.charges["s"] == 0:
-        state.pushLog("awaiting swing recharge", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.rechargeTimers["s"])
-
-    # await fire rate
-    if state.fireRateTimers["s"] > 0:
-        state.pushLog("awaiting swing fire rate", ["waiting", "cooldown"])
-        state.advanceTime(state.fireRateTimers["s"])
+    # await action charge availability
+    state.awaitCharge("s")
 
     # ANIMATION STARTS HERE
     state.pushLog("started auto swing", ["action started"])
@@ -261,15 +230,8 @@ def applyGOH(state: State):
     # await previous animation
     state.advanceTime(state.animationCancelTimes["g"]) 
 
-    # await active GOH
-    if state.activeTimers["g"] > 0:
-        state.pushLog("waiting for current get over here to end", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.activeTimers["g"])
-
-    # await charge
-    if state.charges["g"] == 0:
-        state.pushLog("awaiting get over here recharge", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.rechargeTimers["g"])
+    # await action charge availability
+    state.awaitCharge("g")
 
     # ANIMATION STARTS HERE
     state.pushLog("started get over here", ["action started"])
@@ -300,15 +262,8 @@ def applyGOHT(state: State):
     # await previous animation
     state.advanceTime(state.animationCancelTimes["g"]) 
 
-    # await active GOH
-    if state.activeTimers["g"] > 0:
-        state.pushLog("waiting for current get over here to end", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.activeTimers["g"])
-
-    # await charge
-    if state.charges["g"] == 0:
-        state.pushLog("awaiting get over here recharge", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.rechargeTimers["g"])
+    # await action charge availability
+    state.awaitCharge("g")
 
     # await tag registring
     if (state.GOHTAvaiableTimer == 0) and (state.tagTimer > 0):
@@ -353,20 +308,8 @@ def applyUppercut(state: State):
     # await previous animation
     state.advanceTime(state.animationCancelTimes["u"]) 
 
-    # await active uppercut
-    if state.activeTimers["u"] > 0:
-        state.pushLog("waiting for current uppercut to end", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.activeTimers["u"])
-
-    # await charge
-    if state.charges["g"] == 0:
-        state.pushLog("awaiting get over here recharge", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.rechargeTimers["g"])
-
-    # await cooldown
-    if state.fireRateTimers["u"] > 0:
-        state.pushLog("awaiting uppercut cooldown (fire rate)", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.fireRateTimers["u"])
+    # await action charge availability
+    state.awaitCharge("u")
 
     # ANIMATION STARTS HERE
     state.pushLog("started uppercut", ["action started"])
@@ -397,15 +340,8 @@ def applySymbiote(state: State):
     # await previous animation
     state.advanceTime(state.animationCancelTimes["S"]) 
 
-    # await active symbiote
-    if state.activeTimers["S"] > 0:
-        state.pushLog("waiting for current symbiote to end", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.activeTimers["S"])
-
-    # await charge
-    if state.charges["S"] == 0:
-        state.pushLog("awaiting symbiote recharge", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.rechargeTimers["S"])
+    # await action charge availability
+    state.awaitCharge("S")
 
     # ANIMATION STARTS HERE
     state.pushLog("started symbiote", ["action started"])
@@ -448,16 +384,8 @@ def applyClap(state: State):
     # await previous animation
     state.advanceTime(state.animationCancelTimes["C"]) 
 
-    # await active web bomb
-    if (state.activeTimers["B"] > 0) or (state.bombTimer > 0):
-        state.pushLog("waiting for web bomb to end", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.bombTimer)
-        state.advanceTime(state.activeTimers["B"])
-
-    # await charge
-    if state.charges["B"] == 0:
-        state.pushLog("awaiting web bomb recharge", ["waiting", "cooldown", "sequence warning"])
-        state.advanceTime(state.rechargeTimers["B"])
+    # await action charge availability
+    state.awaitCharge("B")
 
     # ANIMATION STARTS HERE
     state.pushLog("started clap", ["action started"])

@@ -274,8 +274,12 @@ def applyGOH(state: State):
 
     # cancel active abilities
     state.endActive("s")
-      
-State.ApplyAction["g"] = applyGOH
+
+def applyGOHAwaitDisplacement(state: State):
+    applyGOH(state)
+    state.advanceTime(GOH_DISPLACEMENT_TIME)
+
+State.ApplyAction["g"] = applyGOHAwaitDisplacement
 
 
 #=========================================================================================================#

@@ -14,7 +14,7 @@ ACTION_NAMES = {
     "T" : "Symbiote Teather", # only used for logging damage source
     "C" : "Clap",
     "B" : "Web Bomb",
-    "E" : "Web Bomb Explosion",
+    "E" : "Web Bomb Explosion"
 }
 
 ACTION_DAMAGE = {
@@ -31,14 +31,14 @@ ACTION_DAMAGE = {
     "E" : 50
 }
 
-ACTION_DAMAGE_TIME = { # TO DO: measure
-    "p" : 0,
-    "k" : 0,
-    "o" : 0,
-    "t" : 0,
-    "g" : 0,
-    "G" : 0,
-    "u" : 0,
+ACTION_DAMAGE_TIME = { # TO DO: check
+    "p" : 14,
+    "k" : 24,
+    "o" : 38,
+    "t" : 12,
+    "g" : 17,
+    "G" : 37,
+    "u" : 23,
     "S" : 0,
     "B" : 0,
     "E" : 0
@@ -69,15 +69,13 @@ MAX_CHARGES = {
 }
 
 # when an action is in use, the associated recharge/cooldown doesn't start its timer until the action ends
-ACTIVE_TIMES = { # TO DO: measure
-    "w" : 0,
-    "a" : 0,
-    "g" : 0,
-    "G" : 0,
-    "u" : 0,
-    "S" : 0,
-    "C" : 0,
-    "B" : 0
+ACTIVE_TIMES = { # TO DO: check
+    "w" : 30,
+    "a" : 1,
+    "g" : 102,
+    "G" : 61,
+    "u" : 70,
+    "S" : 0
 }
 
 RECHARGE_TIMES = {
@@ -91,68 +89,122 @@ RECHARGE_TIMES = {
 
 COOLDOWN_TIMES = {
     "t" : 30,
-    "s" : 0, # TO DO: measure
+    "s" : 19, # TO DO: check
     "u" : 2 * 60
 }
 
-ANIMATION_CANCEL_TIMES = { # TO DO: measure
-    "p" : {
-        "p" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
+ANIMATION_CANCEL_TIMES = {
+    "p" : { # TO DO: check
+        "p" : 23,
+        "o" : 11,
+        "t" : 11,
+        "s" : 11,
+        "g" : 11,
+        "u" : 11,
+        "S" : 11,
+        "C" : 11,
+        "B" : 11
     },
 
-    "k" : {
-        "p" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
+    "k" : { # TO DO: check
+        "p" : 49,
+        "o" : 22,
+        "t" : 22,
+        "s" : 22,
+        "g" : 22,
+        "u" : 22,
+        "S" : 22,
+        "C" : 22,
+        "B" : 22
     },
 
-    "o" : {
-        "p" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
+    "o" : { # TO DO: check
+        "p" : 53,
+        "o" : 53,
+        "t" : 33,
+        "s" : 33,
+        "g" : 33,
+        "u" : 33,
+        "S" : 33,
+        "C" : 33,
+        "B" : 33
     },
 
-    "t" : {
-        "p" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
+    "t" : { # TO DO: check
+        "p" : 30,
+        "o" : 30,
+        "t" : 6,
+        "s" : 6,
+        "g" : 6,
+        "u" : 6,
+        "S" : 6,
+        "C" : 6,
+        "B" : 6
     },
 
-    "w" : {
-        "p" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
+    "w" : { # TO DO: check
+        "p" : 27,
+        "o" : 27,
+        "t" : 10, 
+        "s" : 1,
+        "g" : 1,
+        "u" : 1,
+        "S" : 1,
+        "C" : 1,
+        "B" : 1
     },
 
     "a" : {
+        "p" : 1,
+        "o" : 1,
+        "t" : 1,
+        "s" : 1,
+        "g" : 1,
+        "u" : 1,
+        "S" : 1,
+        "C" : 1,
+        "B" : 1
+    },
+
+    "g" : { # TO DO: CHECK
+        "p" : 50,
+        "o" : 50,
+        "t" : 46,
+        "s" : 14,
+        "g" : 14,
+        "u" : 47,
+        "S" : 14,
+        "C" : 14,
+        "B" : 1
+    },
+
+    "G" : { # TO DO: check
+        "p" : 61,
+        "o" : 61,
+        "t" : 61,
+        "s" : 28,
+        "g" : 28,
+        "u" : 32,
+        "S" : 28,
+        "C" : 28,
+        "B" : 1
+    },
+
+    "u" : { # TO DO: check
+        "p" : 48,
+        "o" : 48,
+        "t" : 56,
+        "s" : 19,
+        "g" : 48,
+        "u" : 19,
+        "S" : 19,
+        "C" : 0,
+        "B" : 0
+    },
+
+    "S" : { # TO DO: check
         "p" : 0,
+        "o" : 0,
         "t" : 0,
         "s" : 0,
         "g" : 0,
@@ -162,8 +214,9 @@ ANIMATION_CANCEL_TIMES = { # TO DO: measure
         "B" : 0
     },
 
-    "g" : {
+    "C" : { # TO DO: check
         "p" : 0,
+        "o" : 0,
         "t" : 0,
         "s" : 0,
         "g" : 0,
@@ -173,8 +226,9 @@ ANIMATION_CANCEL_TIMES = { # TO DO: measure
         "B" : 0
     },
 
-    "G" : {
+    "B" : { # TO DO: check
         "p" : 0,
+        "o" : 0,
         "t" : 0,
         "s" : 0,
         "g" : 0,
@@ -182,61 +236,5 @@ ANIMATION_CANCEL_TIMES = { # TO DO: measure
         "S" : 0,
         "C" : 0,
         "B" : 0
-    },
-
-    "u" : {
-        "p" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
-    },
-
-    "S" : {
-        "p" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
-    },
-
-    "C" : {
-        "p" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
-    },
-
-    "B" : {
-        "p" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
-    },
-
-    "E" : {
-        "p" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
-    },
-
+    }
 }

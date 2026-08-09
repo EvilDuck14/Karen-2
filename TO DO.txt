@@ -12,3 +12,9 @@ check whether melee sequence timer measures from start or end of action
 handle canceling out of symbiote into other actions
 
 handle the fact that clap > swing doesn't allow a faster punch, but clap > goh > swing does
+
+handle bomb/goh movestacks
+
+check whether clap > tracer > autoswing allows a faster punch
+
+should the default behaviour of GOH be to long enough to start pulling, and use "g-" to denote canceling before the displacement?

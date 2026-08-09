@@ -485,7 +485,7 @@ def applyBomb(state: State):
 
     # set bomb timer to minimum allowed time after connecting
     state.isTaggedBomb = True
-    state.bombTimer = ACTION_DAMAGE_TIME["B"] + WEB_BOMB_TAG_DURATION
+    state.bombTimer = max(state.bombTimer, ACTION_DAMAGE_TIME["B"] + WEB_BOMB_TAG_DURATION)
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():

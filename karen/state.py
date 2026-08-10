@@ -205,7 +205,39 @@ class State:
 
         # wait logic
         if action[0] == "[":
-            pass # TO DO
+
+            # wait a number of frames
+            if action[-2] == "f":
+                waitTime: int = int(action[1:-2])
+                self.pushLog(f"waiting {waitTime} frames", ["waiting"])
+                self.pushActionLog(f"[{waitTime}f]")
+                self.advanceTime(waitTime)
+
+            # wait a number of seconds
+            if action[-2] == "s":
+                waitTime: int = round(60 * float(action[1:-2]))
+                self.pushLog(f"waiting {round(waitTime / 60, 2)} seconds", ["waiting"])
+                self.pushActionLog(f"[{waitTime}f]")
+                self.advanceTime(waitTime)
+
+            # wait for a number of teather hits
+            if action[-2] == "T":
+                waitTime: int = 0
+                if int(action[1:-2]) > 0:
+                    waitTime = max(waitTime, self.teatherTimer - SYMBIOTE_TEATHER_DURATION)
+                    waitTime = max(waitTime, (SYMBIOTE_TEATHER_HIT_INTERVAL if (self.teatherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL == 0) else self.teatherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL))
+                    waitTime += (int(action[1:-2]) - 1) * SYMBIOTE_TEATHER_HIT_INTERVAL
+                    waitTime = min(waitTime, self.teatherTimer - SYMBIOTE_TEATHER_HIT_INTERVAL)
+                self.pushLog(f"awaiting {max(0, min(10, int(action[1:-2])))} teather ticks", ["waiting"])
+                self.pushActionLog(f"[{waitTime}f]")
+                self.advanceTime(waitTime)
+
+            # wait for the bomb to reach a certain remaining number of frames
+            if action[-2] == "B":
+                waitTime: int = self.bombTimer - int(action[1:-2])
+                self.pushLog(f"waiting for bomb timer to reach {int(action[1:-2])} frames", ["waiting"])
+                self.pushActionLog(f"[{waitTime}f]")
+                self.advanceTime(waitTime)
 
         else:
             State.ApplyAction[action](self)

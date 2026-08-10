@@ -4,3 +4,9 @@
     - number of symbiote damage ticks
 
 weaving explosion into movestacks with multiple hits
+
+add all action names
+
+add combo names
+
+implement combo namer

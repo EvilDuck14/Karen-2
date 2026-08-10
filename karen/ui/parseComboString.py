@@ -22,6 +22,13 @@ def removeParentheses(string: str) -> str:
     string = string.replace("(", "").replace(")", "")
     return string
 
+def is_float(string: str) -> bool:
+    try:
+        float(string)
+        return True
+    except ValueError:
+        return False
+
 def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
     actionSequence: list[str] = []
     comboString = removeParentheses(comboString)
@@ -39,10 +46,13 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
             logUnrecognised(unrecognised, warningList)
             unrecognised = ""
             if "]" in comboString:
-                bracketContents: str = comboString[1:comboString.find("]")] # TO DO: implement
+                bracketContents: str = comboString[1:comboString.find("]")]
+                print(bracketContents)
                 if bracketContents.isnumeric():
                     actionSequence.append(f"[{bracketContents}f]")
-                elif bracketContents[:-1].isnumeric() and (len(bracketContents) > 0) and (bracketContents[-1] in ["f", "s", "T", "B"]):
+                elif bracketContents[:-1].isnumeric() and (len(bracketContents) > 0) and (bracketContents[-1] in ["f", "T", "B"]):
+                    actionSequence.append(f"[{bracketContents}]")
+                elif is_float(bracketContents[:-1]) and (len(bracketContents) > 0) and (bracketContents[-1] == "s"):
                     actionSequence.append(f"[{bracketContents}]")
                 else:
                     warningList.append(f"invalid wait duration \"{bracketContents}\"")

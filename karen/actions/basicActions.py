@@ -14,7 +14,12 @@ def awaitPunchReady(state: State, frameOffset: int = 0):
             state.pushLog(f"waiting for {ACTION_NAMES["p"]} when {ACTION_NAMES["k"]} would likely be faster", ["sequence warning"])
         state.advanceTime(state.meleeSequenceTimer - frameOffset)
 
-def usePunch(state: State, keepGOHTAvailable: bool = False):
+    # await clap animation
+    if state.fireRateTimers["C"] > frameOffset:
+        state.pushLog(f"awaiting {ACTION_NAMES["c"]} animation", ["waiting"])
+        state.advanceTime(state.fireRateTimers["C"] - frameOffset)
+
+def usePunch(state: State):
     state.pushLog(f"started {ACTION_NAMES["p"]}", ["action started"])
 
     # major warning if punch started while kick was available
@@ -56,7 +61,14 @@ State.ApplyAction["p"] = applyPunch
 #                                                  Kick                                                   #
 #=========================================================================================================#
 
-def useKick(state: State, keepGOHTAvailable: bool = False):
+def awaitKickReady(state: State, frameOffset: int = 0):
+
+    # await clap animation
+    if state.fireRateTimers["C"] > frameOffset:
+        state.pushLog(f"awaiting {ACTION_NAMES["c"]} animation", ["waiting"])
+        state.advanceTime(state.fireRateTimers["C"] - frameOffset)
+
+def useKick(state: State):
     state.pushLog(f"started {ACTION_NAMES["k"]}", ["action started"])
 
     # major warning if kick is not available
@@ -83,6 +95,7 @@ def useKick(state: State, keepGOHTAvailable: bool = False):
 
 def applyKick(state: State):
     state.advanceTime(state.animationCancelTimes["p"]) 
+    awaitKickReady(state)
     useKick(state)
       
 State.ApplyAction["k"] = applyKick
@@ -102,7 +115,12 @@ def awaitOverheadReady(state: State, frameOffset: int = 0):
         if not (state.hasDoubleJump or state.hasSwingOverhead == "unknown"):
             state.advanceTime(state.activeTimers["s"] - frameOffset)
 
-def useOverhead(state: State, keepGOHTAvailable: bool = False):
+    # await clap animation
+    if state.fireRateTimers["C"] > frameOffset:
+        state.pushLog(f"awaiting {ACTION_NAMES["c"]} animation", ["waiting"])
+        state.advanceTime(state.fireRateTimers["C"] - frameOffset)
+
+def useOverhead(state: State):
     state.pushLog(f"started {ACTION_NAMES["o"]}", ["action started"])
     
     # minor warning if no overhead is available
@@ -159,6 +177,7 @@ def useTracer(state: State):
     # cancel active abilities
     state.endActive("s")
     state.endActive("S")
+    state.fireRateTimers["C"] = 0
 
 def applyTracer(state: State):
     state.advanceTime(state.animationCancelTimes["t"]) 
@@ -257,6 +276,7 @@ def useGOH(state: State):
     # cancel active abilities
     state.endActive("s")
     state.endActive("S")
+    state.fireRateTimers["C"] = 0
 
 def applyGOH(state: State):
     state.advanceTime(state.animationCancelTimes["g"]) 
@@ -319,7 +339,7 @@ State.ApplyAction["G"] = applyGOHT
 #                                                Uppercut                                                 #
 #=========================================================================================================#
 
-def useUppercut(state: State, keepGOHTAvailable: bool = False):
+def useUppercut(state: State):
     state.pushLog(f"started {ACTION_NAMES["u"]}", ["action started"])
 
     # major warning if cooldown is not ready

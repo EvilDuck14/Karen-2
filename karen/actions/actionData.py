@@ -37,10 +37,7 @@ ACTION_NAMES = {
     "p+o" : "Unique Punch Overhead Stack",
     "k+o" : "Unique Kick Overhaed Stack",
     "g+B" : "GOH Bomb Stack",
-    "G+B" : "GOHT Bomb Stack",
-    "w+C" : "Swing Whiff Clap Stack",
-    "a+C" : "Auto Swing Clap Stack",
-    "C+a" : "Clap Auto Swing Stack"
+    "G+B" : "GOHT Bomb Stack"
 }
 
 ACTION_DAMAGE = {
@@ -119,7 +116,8 @@ RECHARGE_TIMES = {
 COOLDOWN_TIMES = {
     "t" : 30,
     "s" : 19, # TO DO: check
-    "u" : 2 * 60
+    "u" : 2 * 60,
+    "C" : 30 # for stopping melee from being used while clap is active TO DO: check
 }
 
 ANIMATION_CANCEL_TIMES = {

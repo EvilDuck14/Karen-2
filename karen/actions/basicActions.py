@@ -95,12 +95,12 @@ State.ApplyAction["k"] = applyKick
 def awaitOverheadReady(state: State, frameOffset: int = 0):
 
     # await swing whiff end
-    if (state.fireRateTimers["s"] > frameOffset) and (state.hasSwingOverhead != True):
-        state.pushLog(f"used {ACTION_NAMES["o"]} after swing whiff - was U3H intended?", ["sequence warning"])
+    if (state.activeTimers["s"] > frameOffset) and (state.hasSwingOverhead != True):
+        state.pushLog(f"used {ACTION_NAMES["o"]} after {ACTION_NAMES["w"]} - was U3H intended?", ["sequence warning"])
 
         # if an immediate overhead available, using it gives a faster overhead, otherwise await swing whiff end
         if not (state.hasDoubleJump or state.hasSwingOverhead == "unknown"):
-            state.advanceTime(state.fireRateTimers["s"] - frameOffset)
+            state.advanceTime(state.activeTimers["s"] - frameOffset)
 
 def useOverhead(state: State, keepGOHTAvailable: bool = False):
     state.pushLog(f"started {ACTION_NAMES["o"]}", ["action started"])

@@ -249,21 +249,43 @@ State.ApplyAction["k+t"] = applyOverheadRT
 
 
 #=========================================================================================================#
-#                                           Unique 3 Hit Punch                                            #
+#                                           Unique X Hit Punch                                            #
 #=========================================================================================================#
 
 def applyPunchU3H(state: State):
-    pass
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["p"])
+
+    # awaiting actions availability
+    awaitPunchReady(state)
+
+    # action sequence
+    usePunch(state)
+    state.advanceTime(state.activeTimers["s"])
+    useOverhead(state)
+
 State.ApplyAction["p+o"] = applyPunchU3H
 
 
 #=========================================================================================================#
-#                                            Unique 3 Hit Kick                                            #
+#                                            Unique X Hit Kick                                            #
 #=========================================================================================================#
 
 def applyKickU3H(state: State):
-    pass
-State.ApplyAction["p+o"] = applyKickU3H
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["p"])
+
+    # awaiting actions availability
+    awaitPunchReady(state)
+
+    # action sequence
+    useKick(state)
+    state.advanceTime(state.activeTimers["s"])
+    useOverhead(state)
+
+State.ApplyAction["k+o"] = applyKickU3H
 
 
 #=========================================================================================================#
@@ -271,7 +293,14 @@ State.ApplyAction["p+o"] = applyKickU3H
 #=========================================================================================================#
 
 def applyGOHBomb(state: State):
-    pass
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["g"])
+
+    # awaiting actions availability
+
+    # action sequence
+
 State.ApplyAction["g+B"] = applyGOHBomb
 
 
@@ -280,32 +309,60 @@ State.ApplyAction["g+B"] = applyGOHBomb
 #=========================================================================================================#
 
 def applyGOHTBomb(state: State):
-    pass
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["g"])
+
+    # awaiting actions availability
+
+    # action sequence
+
 State.ApplyAction["g+B"] = applyGOHTBomb
-
-
-#=========================================================================================================#
-#                                           Clap + Swing Whiff                                            #
-#=========================================================================================================#
-
-def applyWhiffClap(state: State):
-    pass
-State.ApplyAction["w+C"] = applyWhiffClap
-
-
-#=========================================================================================================#
-#                                            Clap + Auto Swing                                            #
-#=========================================================================================================#
-
-def applyAutoswingClap(state: State):
-    pass
-State.ApplyAction["a+C"] = applyAutoswingClap
 
 
 #=========================================================================================================#
 #                                           Swing Whiff + Clap                                            #
 #=========================================================================================================#
 
+def applyWhiffClap(state: State):
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["s"])
+
+    # awaiting actions availability
+
+    # action sequence
+
+State.ApplyAction["w+C"] = applyWhiffClap
+
+
+#=========================================================================================================#
+#                                            Auto Swing + Clap                                            #
+#=========================================================================================================#
+
+def applyAutoswingClap(state: State):
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["s"])
+
+    # awaiting actions availability
+
+    # action sequence
+
+State.ApplyAction["a+C"] = applyAutoswingClap
+
+
+#=========================================================================================================#
+#                                            Clap + Auto Swing                                            #
+#=========================================================================================================#
+
 def applyClapAutoswing(state: State):
-    pass
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["C"])
+
+    # awaiting actions availability
+
+    # action sequence
+
 State.ApplyAction["C+a"] = applyClapAutoswing

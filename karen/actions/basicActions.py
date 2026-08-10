@@ -52,6 +52,7 @@ def usePunch(state: State):
 def applyPunch(state: State):
     state.advanceTime(state.animationCancelTimes["p"]) 
     awaitPunchReady(state)
+    state.pushActionLog("p", frameOffset=ACTION_DAMAGE_TIME["p"])
     usePunch(state)
       
 State.ApplyAction["p"] = applyPunch
@@ -96,6 +97,7 @@ def useKick(state: State):
 def applyKick(state: State):
     state.advanceTime(state.animationCancelTimes["p"]) 
     awaitKickReady(state)
+    state.pushActionLog("k", frameOffset=ACTION_DAMAGE_TIME["k"])
     useKick(state)
       
 State.ApplyAction["k"] = applyKick
@@ -146,6 +148,7 @@ def useOverhead(state: State):
 def applyOverhead(state: State):
     state.advanceTime(state.animationCancelTimes["o"])
     awaitOverheadReady(state)
+    state.pushActionLog("o", frameOffset=ACTION_DAMAGE_TIME["o"])
     useOverhead(state)
       
 State.ApplyAction["o"] = applyOverhead
@@ -182,6 +185,7 @@ def useTracer(state: State):
 def applyTracer(state: State):
     state.advanceTime(state.animationCancelTimes["t"]) 
     state.awaitCharge("t")
+    state.pushActionLog("t")
     useTracer(state)
       
 State.ApplyAction["t"] = applyTracer
@@ -215,6 +219,7 @@ def useWhiff(state: State):
 def applyWhiff(state: State):
     state.advanceTime(state.animationCancelTimes["s"]) 
     state.awaitCharge("s")
+    state.pushActionLog("w")
     useWhiff(state)
       
 State.ApplyAction["w"] = applyWhiff
@@ -248,6 +253,7 @@ def useAutoswing(state: State):
 def applyAutoswing(state: State):
     state.advanceTime(state.animationCancelTimes["s"]) 
     state.awaitCharge("s")
+    state.pushActionLog("a")
     useAutoswing(state)
       
 State.ApplyAction["a"] = applyAutoswing
@@ -281,6 +287,7 @@ def useGOH(state: State):
 def applyGOH(state: State):
     state.advanceTime(state.animationCancelTimes["g"]) 
     state.awaitCharge("g")
+    state.pushActionLog("g")
     useGOH(state)
 
 State.ApplyAction["g"] = applyGOH
@@ -330,6 +337,7 @@ def useGOHT(state: State):
 def applyGOHT(state: State):
     state.advanceTime(state.animationCancelTimes["g"]) 
     awaitGOHTReady(state)
+    state.pushActionLog("G")
     useGOHT(state)
       
 State.ApplyAction["G"] = applyGOHT
@@ -367,6 +375,7 @@ def useUppercut(state: State):
 def applyUppercut(state: State):
     state.advanceTime(state.animationCancelTimes["u"]) 
     state.awaitCharge("u")
+    state.pushActionLog("u", frameOffset=ACTION_DAMAGE_TIME["u"])
     useUppercut(state)
       
 State.ApplyAction["u"] = applyUppercut
@@ -400,6 +409,7 @@ def useSymbiote(state: State):
 def applySymbiote(state: State):
     state.advanceTime(state.animationCancelTimes["S"]) 
     state.awaitCharge("S")
+    state.pushActionLog("S")
     useSymbiote(state)
       
 State.ApplyAction["S"] = applySymbiote
@@ -436,6 +446,7 @@ def useTeather(state: State):
 def applyTeather(state: State):
     state.advanceTime(state.animationCancelTimes["S"]) 
     state.awaitCharge("S")
+    state.pushActionLog("V")
     useTeather(state)
 
 State.ApplyAction["V"] = applyTeather
@@ -468,6 +479,7 @@ def useClap(state: State):
 def applyClap(state: State):
     state.advanceTime(state.animationCancelTimes["C"]) 
     state.awaitCharge("B")
+    state.pushActionLog("C")
     useClap(state)
       
 State.ApplyAction["C"] = applyClap
@@ -500,6 +512,7 @@ def useBomb(state: State):
 
 def applyBomb(state: State):
     state.advanceTime(state.animationCancelTimes["B"]) 
+    state.pushActionLog("B")
     useBomb(state)
       
 State.ApplyAction["B"] = applyBomb

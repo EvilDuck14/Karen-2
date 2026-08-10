@@ -85,6 +85,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
         else:
             unrecognised += comboString[0]
             comboString = comboString[1:]
+    logUnrecognised(unrecognised, warningList)
 
     # join movestacks / early cancels
     tempActionSequence = actionSequence
@@ -99,13 +100,13 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
                 break
 
             # movestack valid
-            if (actionSequence[-1] + "+" + actionSequence[1]) in State.ApplyAction.keys():
-                actionSequence[-1] += "+" + actionSequence[1]
+            if (actionSequence[-1] + "+" + tempActionSequence[1]) in State.ApplyAction.keys():
+                actionSequence[-1] += "+" + tempActionSequence[1]
                 tempActionSequence = tempActionSequence[2:]
 
             # movestack invalid
             else:
-                warningList.append(f"unrecognised movestack \"{actionSequence[-1]}+{actionSequence[1]}\"")
+                warningList.append(f"unrecognised movestack \"{actionSequence[-1]}+{tempActionSequence[1]}\"")
                 tempActionSequence = tempActionSequence[1:]
 
         # early cancels
@@ -122,7 +123,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
 
             # early cancel invalid
             else:
-                warningList.append(f"unrecognised early cancel \"{actionSequence[-1]}-{actionSequence[1]}\"")
+                warningList.append(f"unrecognised early cancel \"{actionSequence[-1]}-{tempActionSequence[1]}\"")
                 tempActionSequence = tempActionSequence[1:]
 
         else:

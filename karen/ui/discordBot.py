@@ -1,6 +1,17 @@
 import discord
 from discord.ext import commands
 
+from karen.ui.parseComboString import parseComboString
+from karen.state import State
+from karen.actions.basicActions import *
+from karen.actions.earlyCancels import *
+from karen.actions.movestacks import *
+
+EVAL_COLOUR = 0x8C7FFF
+DEV_LOG_COLOUR = 0x4480AA
+WARNING_COLOUR = 0xB73A00
+INFO_COLOUR = 0x77C6FF
+
 # getting environment variables
 import os
 from dotenv import load_dotenv
@@ -9,10 +20,10 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # bot runs in the dev channel iff the bot is in development mode
 DEV_MODE = True
-DEV_SERVER_ID = os.getenv("DEV_SERVER_ID")
-DEV_CHANNEL_ID = os.getenv("DEV_CHANNEL_ID")
+DEV_SERVER_ID = int(os.getenv("DEV_SERVER_ID"))
+DEV_CHANNEL_ID = int(os.getenv("DEV_CHANNEL_ID"))
 def devModeMismatch(ctx: commands.Context):
-    return ((ctx.guild.id == DEV_SERVER_ID) and (ctx.channel.id == DEV_CHANNEL_ID)) ^ (not DEV_MODE)
+    return bool((ctx.guild.id == DEV_SERVER_ID) and (ctx.channel.id == DEV_CHANNEL_ID)) ^ bool(DEV_MODE)
 
 # basic discord setup
 intents = discord.Intents.default()
@@ -36,12 +47,6 @@ async def on_ready():
 #                                                  Eval                                                   #
 #=========================================================================================================#
 
-from karen.ui.parseComboString import parseComboString
-from karen.state import State
-from karen.actions.basicActions import *
-from karen.actions.earlyCancels import *
-from karen.actions.movestacks import *
-
 @bot.command()
 async def eval(ctx: commands.Context, *arr: str):
     if devModeMismatch(ctx):
@@ -56,39 +61,54 @@ async def eval(ctx: commands.Context, *arr: str):
     warningList += evalState.getWarnings()
 
     # formatting
-    message: str = ""
-    # TO DO: sequence string
-    message += f"\n**Time:** {evalState.lastDamageTime}f"
-    message += f"\n**Time From Damage:** {0 if evalState.firstDamageTime == "unknown" else evalState.lastDamageTime - evalState.firstDamageTime}f"
-    message += f"\n**Damage:** {evalState.damageDealt}"
+    details: dict[str, str | int] = evalState.getComboDetails()
+    message: str = f"*{details["sequence string"]}*" if details["sequence string"] != "" else ""
+    message += f"\n\n**Time:** {details["time seconds"]}s ({details["time frames"]}f)"
+    message += f"\n**Time From Damage:** {details["time from damage seconds"]}s ({details["time from damage frames"]}f)"
+    message += f"\n**Damage:** {details["damage"]}"
 
     try:
         await ctx.send(embed=discord.Embed(
             title="Unknown Combo",
-            description=message
+            description=message,
+            color=EVAL_COLOUR
         )
     )
     except Exception as e:
         print(e)
+
+    # output warnings
+    if len(warningList) > 0:
+        message = ""
+        for warning in warningList:
+            message += f"**WARNING:** {warning}\n"
+        message = message[:-1]
+
+        try:
+            await ctx.send(embed=discord.Embed(
+                description=message,
+                color=WARNING_COLOUR
+            )
+        )
+        except Exception as e:
+            print(e)
 
     # development mode only: send action log
+    if len(evalState.log) > 0:
+        message = "```"
+        for entry in evalState.log:
+            message += f"\n[{entry.frame}] {entry.details}"
+        message += "\n```"
 
-    if not DEV_MODE:
-        return
-
-    message = "```"
-    for entry in evalState.log:
-        message += f"\n[{entry.frame}] {entry.details}"
-    message += "\n```"
-
-    try:
-        await ctx.send(embed=discord.Embed(
-            title="Debug log",
-            description=message
+        try:
+            await ctx.send(embed=discord.Embed(
+                title="Debug log",
+                description=message,
+                color=DEV_LOG_COLOUR
+            )
         )
-    )
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
 
 #=========================================================================================================#
 

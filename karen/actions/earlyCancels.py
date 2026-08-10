@@ -36,6 +36,7 @@ def usePunchCancel(state: State):
 def applyPunchCancel(state: State):
     state.advanceTime(state.animationCancelTimes["p"]) 
     awaitPunchReady(state)
+    state.pushActionLog("p-")
     usePunchCancel(state)
     
 State.ApplyAction["p-"] = applyPunchCancel
@@ -70,6 +71,7 @@ def useKickCancel(state: State):
 def applyKickCancel(state: State):
     state.advanceTime(state.animationCancelTimes["p"]) 
     awaitKickReady(state)
+    state.pushActionLog("k-")
     useKickCancel(state)
 
 State.ApplyAction["k-"] = applyKickCancel
@@ -102,6 +104,7 @@ def useOverheadCancel(state: State):
 def applyOverheadCancel(state: State):
     state.advanceTime(state.animationCancelTimes["p"])
     awaitOverheadReady(state)
+    state.pushActionLog("o-")
     useOverheadCancel(state)
 
 State.ApplyAction["o-"] = applyOverheadCancel
@@ -132,6 +135,7 @@ def useNostick(state: State):
 def applyNostick(state: State):
     state.advanceTime(state.animationCancelTimes["s"]) 
     state.awaitCharge("s")
+    state.pushActionLog("a-")
     useNostick(state)
     
 State.ApplyAction["a-"] = applyNostick

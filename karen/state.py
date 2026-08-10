@@ -4,6 +4,7 @@ from karen.log import LogEntry
 
 class State:
     log: list[LogEntry] # stores more information for debugging / advanced users
+    actionLog: list[LogEntry] # stores actions and the times at which they occured, used to insert explosion timing into sequence readout
 
     timeElapsed: int # time from start of combo until current point in calculation
     lastDamageTime: int # time from start of combo until final queued hit
@@ -34,6 +35,7 @@ class State:
     # creates state and applies actions in the sequence
     def __init__(self, sequence: list[str]):
         self.log = []
+        self.actionLog = []
         self.timeElapsed = 0 
         self.lastDamageTime = 0 
         self.firstDamageTime = "unknown"
@@ -193,17 +195,17 @@ class State:
 
         # await active usage
         if (charge in self.activeTimers.keys()) and (self.activeTimers[charge] > frameOffset):
-            self.pushLog(f"waiting for current {ACTION_NAMES[charge]} to end", ["waiting", "cooldown", "sequence warning"])
+            self.pushLog(f"has to wait {self.activeTimers[charge] - (frameOffset if (MAX_CHARGES[charge] > 1) else 0)} frames for overlapping {ACTION_NAMES[charge]} to end", ["waiting", "cooldown", "sequence warning"])
             self.advanceTime(self.activeTimers[charge] - (frameOffset if (MAX_CHARGES[charge] > 1) else 0))
     
         # await charge
         if self.charges[charge] == 0:
-            self.pushLog(f"awaiting {ACTION_NAMES[charge]} recharge", ["waiting", "cooldown", "sequence warning"])
+            self.pushLog(f"has to wait {self.rechargeTimers[charge] - frameOffset} frames for {ACTION_NAMES[charge]} recharge", ["waiting", "cooldown", "sequence warning"])
             self.advanceTime(self.rechargeTimers[charge] - frameOffset)
     
         # await fire rate
         if (charge in self.fireRateTimers.keys()) and (self.fireRateTimers[charge] > 0):
-            self.pushLog(f"awaiting {ACTION_NAMES[charge]} fire rate", ["waiting", "cooldown"])
+            self.pushLog(f"has to wait {self.fireRateTimers[charge] - frameOffset} frames for {ACTION_NAMES[charge]} fire rate", ["waiting", "cooldown", "sequence warning"])
             self.advanceTime(self.fireRateTimers[charge] - frameOffset)
 
     # handles adding damage in a specified amount of time, properly tracking timers
@@ -226,6 +228,10 @@ class State:
         if source in APPLIES_TAG:
             self.tagTimer = TAG_DURATION + frameOffset
             self.pushLog("applied tag", ["cooldown"], frameOffset)
+
+        # tracking explosion time
+        if source == "E":
+            self.pushActionLog("E", frameOffset=frameOffset)
 
     # tracer tag proc
     def procTag(self, frameOffset: int = 0):
@@ -280,9 +286,11 @@ class State:
         if (charge in self.fireRateTimers.keys()) and (self.fireRateTimers[charge] > 0):
             self.pushLog(f"used {ACTION_NAMES[charge]} faster than fire rate limit allows", ["dev warning"])
 
-    # creates a log entry at the current time
     def pushLog(self, details: str, flags: list[str] = [], frameOffset: int = 0):
         self.log.append(LogEntry(self.timeElapsed + frameOffset, details, flags))
+
+    def pushActionLog(self, action: str, frameOffset: int = 0):
+        self.actionLog.append(LogEntry(self.timeElapsed + frameOffset, action))
 
     # prints all info to console
     def printConsole(self):
@@ -299,12 +307,52 @@ class State:
               f"\nTime From First Hit: {round((0 if self.firstDamageTime == "unknown" else self.lastDamageTime - self.firstDamageTime) / 60, 2)}s"
         )
 
+    def getSequence(self) -> list[str]:
+
+        # move web bomb explosions to the correct point in the sequence
+        explosionEntries: list[LogEntry] = []
+        otherEntries: list[LogEntry] = []
+
+        # separate explosions from other actions
+        for entry in self.actionLog:
+            if entry.details == "E":
+                explosionEntries.append(entry)
+            else:
+                otherEntries.append(entry)
+
+        # insert explosions in the correct positions
+        for explosionEntry in explosionEntries:
+            position: int = 0
+            for index, entry in enumerate(otherEntries):
+                if entry.frame >= explosionEntry.frame:
+                    position = index
+                    break
+            otherEntries = otherEntries[:position] + [explosionEntry] + otherEntries[position:]
+
+        # return list of actions
+        return [entry.details for entry in otherEntries]
+
+    def getComboDetails(self) -> dict[str, str | int]:
+        details: dict[str, str | int] = {}
+        sequence: list[str] = self.getSequence()
+
+        details["damage"] = self.damageDealt
+        details["time frames"] = self.lastDamageTime
+        details["time seconds"] = round(details["time frames"] / 60, 2)
+        details["time from damage frames"] = 0 if self.firstDamageTime == "unknown" else self.lastDamageTime - self.firstDamageTime
+        details["time from damage seconds"] = round(details["time from damage frames"] / 60, 2)
+
+        details["sequence shorthand"] = "".join(sequence)
+        details["sequence string"] = " > ".join([ACTION_NAMES[action] for action in sequence])
+
+        return details
+
     def getWarnings(self) -> list[str]:
         warningList = []
         self.log.sort()
         for entry in self.log:
             for flag in entry.flags:
                 if "warning" in flag:
-                    warningList.append(f"[{entry.frame}f] {entry.details}")
+                    warningList.append(entry.details)
                     break
         return warningList

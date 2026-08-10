@@ -4,5 +4,3 @@
     - number of symbiote damage ticks
 
 check whether melee sequence timer measures from start or end of action
-
-stop swing whiff from consuming swing charge

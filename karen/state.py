@@ -188,7 +188,13 @@ class State:
         
     # modifies state according to the next action taken
     def applyAction(self, action: str) -> None:
-        State.ApplyAction[action](self)
+
+        # wait logic
+        if action[0] == "[":
+            pass # TO DO
+
+        else:
+            State.ApplyAction[action](self)
 
     # handles waiting for ability availability
     def awaitCharge(self, charge: str, frameOffset: int = 0) -> None:
@@ -341,9 +347,15 @@ class State:
         details["time seconds"] = round(details["time frames"] / 60, 2)
         details["time from damage frames"] = 0 if self.firstDamageTime == "unknown" else self.lastDamageTime - self.firstDamageTime
         details["time from damage seconds"] = round(details["time from damage frames"] / 60, 2)
-
         details["sequence shorthand"] = "".join(sequence)
-        details["sequence string"] = " > ".join([ACTION_NAMES[action] for action in sequence])
+
+        actionNames: list[str] = []
+        for action in sequence:
+            if action[0] == "[":
+                actionNames.append(f"Wait {action}")
+            else:
+                actionNames.append(ACTION_NAMES[action])
+        details["sequence string"] = " > ".join(actionNames)
 
         return details
 

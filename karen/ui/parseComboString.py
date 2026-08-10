@@ -39,7 +39,13 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
         if comboString[0] == "[":
             logUnrecognised(unrecognised, warningList)
             if "]" in comboString:
-                bracketContents = comboString[1:comboString.find("]")] # TO DO: implement
+                bracketContents: str = comboString[1:comboString.find("]")] # TO DO: implement
+                if bracketContents.isnumeric():
+                    actionSequence.append(f"[{bracketContents}f]")
+                elif bracketContents[:-1].isnumeric() and (len(bracketContents) > 0) and (bracketContents[-1] in ["f", "s", "T", "B"]):
+                    actionSequence.append(f"[{bracketContents}]")
+                else:
+                    warningList.append(f"invalid wait duration \"{bracketContents}\"")
                 comboString = comboString[(comboString.find("]") + 1):]
             else:
                 warningList.append("bracket not closed")

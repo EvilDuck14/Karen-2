@@ -14,7 +14,6 @@ def getMaxNextInputLength(comboString: str) -> int:
 def logUnrecognised(unrecognised: str, warningList: list[str]) -> None:
     if unrecognised != "":
         warningList.append(f"unrecognised input \"{unrecognised}\"")
-    unrecognised = ""
 
 # entirely ignore anything in parentheses
 def removeParentheses(string: str) -> str:
@@ -38,6 +37,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
         # wait inputs
         if comboString[0] == "[":
             logUnrecognised(unrecognised, warningList)
+            unrecognised = ""
             if "]" in comboString:
                 bracketContents: str = comboString[1:comboString.find("]")] # TO DO: implement
                 if bracketContents.isnumeric():
@@ -54,6 +54,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
 
         if comboString[0] == ">":
             logUnrecognised(unrecognised, warningList)
+            unrecognised = ""
             comboString = comboString[1:]
             continue
 
@@ -62,6 +63,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
         while(tryLength > 1):
             if comboString[:tryLength].lower() in COMBO_NAMES.keys():
                 logUnrecognised(unrecognised, warningList)
+                unrecognised = ""
                 actionSequence += COMBO_NAMES[comboString[:tryLength]]
                 comboString = comboString[tryLength:]
                 tryLength = 0
@@ -75,6 +77,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
         while(tryLength > 1):
             if comboString[:tryLength].lower() in COMBO_ACTION_NAMES.keys():
                 logUnrecognised(unrecognised, warningList)
+                unrecognised = ""
                 actionSequence += COMBO_ACTION_NAMES[comboString[:tryLength]]
                 comboString = comboString[tryLength:]
                 tryLength = 0
@@ -86,6 +89,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
         # check if the next character is an action symbol
         if comboString[0] in COMBO_ACTION_SYMBOLS.keys():
             logUnrecognised(unrecognised, warningList)
+            unrecognised = ""
             actionSequence += COMBO_ACTION_SYMBOLS[comboString[0]]
             comboString = comboString[1:]
             continue
@@ -95,6 +99,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
             unrecognised += comboString[0]
             comboString = comboString[1:]
     logUnrecognised(unrecognised, warningList)
+    unrecognised = ""
 
     # join movestacks / early cancels
     tempActionSequence = actionSequence

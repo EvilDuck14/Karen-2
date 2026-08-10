@@ -22,7 +22,7 @@ def usePunch(state: State, keepGOHTAvailable: bool = False):
         state.pushLog(f"used {ACTION_NAMES["p"]} when {ACTION_NAMES["k"]} was expected", ["dev warning"])
 
     # minor warning if swing overhead is available
-    if state.hasSwingOverhead:
+    if state.hasSwingOverhead == True:
         state.pushLog(f"used {ACTION_NAMES["p"]} when {ACTION_NAMES["o"]} was expected", ["minor warning", "overhead warning"])
 
     # deal damage
@@ -64,7 +64,7 @@ def useKick(state: State, keepGOHTAvailable: bool = False):
         state.pushLog(f"used illegal {ACTION_NAMES["k"]}", ["major warning"])
 
     # minor warning if swing overhead is available
-    if state.hasSwingOverhead:
+    if state.hasSwingOverhead == True:
         state.pushLog(f"used {ACTION_NAMES["k"]} when {ACTION_NAMES["o"]} was expected", ["minor warning", "overhead warning"])
 
     # deal damage
@@ -177,7 +177,10 @@ def useWhiff(state: State):
 
     # major warning if cooldown is not ready
     state.warnIfNotReady("s")
-    
+ 
+    # ensures swing charge is not consumed
+    state.swingIsWhiff = True
+
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
         state.animationCancelTimes[action] = ANIMATION_CANCEL_TIMES["w"][action]
@@ -207,6 +210,9 @@ def useAutoswing(state: State):
 
     # major warning if cooldown is not ready
     state.warnIfNotReady("s")
+
+    # ensures swing charge is consumed
+    state.swingIsWhiff = False
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -330,8 +336,9 @@ def useUppercut(state: State, keepGOHTAvailable: bool = False):
     state.activeTimers["u"] = ACTIVE_TIMES["u"]
 
     # refresh double jump
-    state.hasDoubleJump = True
-    state.pushLog("refreshed double jump", ["cooldown"])
+    if not state.hasDoubleJump:
+        state.hasDoubleJump = True
+        state.pushLog("refreshed double jump", ["cooldown"])
 
     # cancel active abilities
     state.endActive("s")
@@ -340,7 +347,7 @@ def useUppercut(state: State, keepGOHTAvailable: bool = False):
 def applyUppercut(state: State):
     state.advanceTime(state.animationCancelTimes["u"]) 
     state.awaitCharge("u")
-    useUppercut("u")
+    useUppercut(state)
       
 State.ApplyAction["u"] = applyUppercut
 

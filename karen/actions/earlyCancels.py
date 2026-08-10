@@ -14,7 +14,7 @@ def usePunchCancel(state: State):
         state.pushLog(f"used {ACTION_NAMES["p-"]} when {ACTION_NAMES["k"]} was expected", ["dev warning"])
 
     # minor warning if swing overhead is available
-    if state.hasSwingOverhead:
+    if state.hasSwingOverhead == True:
         state.pushLog(f"used {ACTION_NAMES["p-"]} when {ACTION_NAMES["o"]} was expected", ["minor warning", "overhead warning"])
 
     # prepare animation cancel times
@@ -53,7 +53,7 @@ def useKickCancel(state: State):
         state.pushLog(f"used illegal {ACTION_NAMES["k-"]}", ["major warning"])
 
     # minor warning if swing overhead is available
-    if state.hasSwingOverhead:
+    if state.hasSwingOverhead == True:
         state.pushLog(f"used {ACTION_NAMES["k-"]} when {ACTION_NAMES["o"]} was expected", ["minor warning", "overhead warning"])
 
     # prepare animation cancel times

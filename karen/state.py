@@ -15,6 +15,7 @@ class State:
     meleeSequenceTimer: int = 0 # timer for punch/kick tracking
     tagDelay: int = 0 # tracks time until tracer tag will be applied
     tagTimer: int = 0 # tracks time until tracer tag expires
+    swingIsWhiff: bool = False # tracks whether the last used swing was a whiff to avoid consuming a swing charge
     GOHTAvaiableTimer: int = 0 # helps tracking availability of GOHT throughout overlapping tracers
     isTaggedBomb: bool = False # tracks whether peni web bomb is attached
     bombTimer: int = 0 # tracks time until the web bomb explodes
@@ -123,9 +124,13 @@ class State:
 
         # active abilitiy timers
         for charge in self.activeTimers.keys():
-            if frames >= self.rechargeTimers[charge] > 0:
-                self.charges[charge] -= 1
-                self.pushLog(f"consumed {ACTION_NAMES[charge]} charge", ["cooldown"], frameOffset=self.rechargeTimers[charge])
+            if frames >= self.activeTimers[charge] > 0:
+                self.pushLog(f"active {ACTION_NAMES[charge]} ended", ["cooldown"], frameOffset=self.activeTimers[charge])
+
+                # don't consume charge for swing whiff
+                if (charge != "s") or (not self.swingIsWhiff):
+                    self.charges[charge] -= 1
+                    self.pushLog(f"consumed {ACTION_NAMES[charge]} charge", ["cooldown"], frameOffset=self.activeTimers[charge])
 
                 # starts recharging
                 if self.rechargeTimers[charge] == 0:
@@ -135,11 +140,11 @@ class State:
 
                 # triggers cooldown (fire rate limit)
                 if charge in self.fireRateTimers.keys():
-                    self.fireRateTimers[charge] = COOLDOWN_TIMES[charge] - self.rechargeTimers[charge]
+                    self.fireRateTimers[charge] = COOLDOWN_TIMES[charge] - self.activeTimers[charge]
 
                 # swing overhead reward
                 if charge == "s":
-                    self.pushLog("awarded swing overhead", ["cooldown"], frameOffset=self.fireRateTimers[charge])
+                    self.pushLog("awarded swing overhead", ["cooldown"], frameOffset=self.activeTimers[charge])
                     self.hasSwingOverhead = True
 
             self.activeTimers[charge] = max(self.activeTimers[charge] - frames, 0)
@@ -171,17 +176,17 @@ class State:
         # await active usage
         if (charge in self.activeTimers.keys()) and (self.activeTimers[charge] > frameOffset):
             self.pushLog(f"waiting for current {ACTION_NAMES[charge]} to end", ["waiting", "cooldown", "sequence warning"])
-            self.advanceTime(self.activeTimers["s"] - frameOffset if (MAX_CHARGES[charge] > 0) else 0)
+            self.advanceTime(self.activeTimers[charge] - (frameOffset if (MAX_CHARGES[charge] > 1) else 0))
     
         # await charge
         if self.charges[charge] == 0:
             self.pushLog(f"awaiting {ACTION_NAMES[charge]} recharge", ["waiting", "cooldown", "sequence warning"])
-            self.advanceTime(self.rechargeTimers[charge - frameOffset])
+            self.advanceTime(self.rechargeTimers[charge] - frameOffset)
     
         # await fire rate
         if (charge in self.fireRateTimers.keys()) and (self.fireRateTimers[charge] > 0):
             self.pushLog(f"awaiting {ACTION_NAMES[charge]} fire rate", ["waiting", "cooldown"])
-            self.advanceTime(self.fireRateTimers[charge - frameOffset])
+            self.advanceTime(self.fireRateTimers[charge] - frameOffset)
 
     # handles adding damage in a specified amount of time, properly tracking timers
     def dealDamage(self, source: str, frameOffset: int = 0) -> None:
@@ -222,20 +227,24 @@ class State:
     def endActive(self, charge: str):
         if self.activeTimers[charge] == 0:
             return
-        
-        self.charges[charge] -= 1
+        self.pushLog(f"active {ACTION_NAMES[charge]} ended", ["cooldown"])
+
+        # don't consume charge for swing whiff
+        if (charge != "s") or (not self.swingIsWhiff):
+            self.charges[charge] -= 1
+            self.pushLog(f"consumed {ACTION_NAMES[charge]} charge", ["cooldown"])
+
         if self.rechargeTimers[charge] == 0:
             self.rechargeTimers[charge] = RECHARGE_TIMES[charge]
         if charge in self.fireRateTimers.keys():
             self.fireRateTimers[charge] = COOLDOWN_TIMES[charge]
         if charge in self.activeTimers.keys():
             self.activeTimers[charge] = 0
-        self.log(f"active {ACTION_NAMES[charge]} cancelled", ["cooldown"])
 
         # awarding swing overhead
         if charge == "s":
             self.hasSwingOverhead = True
-            self.log("awarded swing overhead", ["cooldown"])
+            self.pushLog("awarded swing overhead", ["cooldown"])
 
         # canceling symbiote teather
         if charge == "S":

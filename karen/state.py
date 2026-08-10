@@ -140,12 +140,13 @@ class State:
             self.pushLog(f"{ACTION_NAMES["G"]} registered available target", ["cooldown"], frameOffset=(frames + self.tagTimer - (TAG_DURATION - TAG_GOHT_DELAY)))
 
         # symbiote teather damage over time
-        if self.teatherTimer > 0:
-            framesToFirstHit: int = ((self.teatherTimer - 1) % SYMBIOTE_TEATHER_HIT_INTERVAL) + 1
-            teatherTicks: int = max((frames - framesToFirstHit) // SYMBIOTE_TEATHER_HIT_INTERVAL, 1 + ((self.teatherTimer - 1) // SYMBIOTE_TEATHER_HIT_INTERVAL))
-            for i in range(teatherTicks):
-                self.dealDamage("T", frameOffset=(framesToFirstHit + SYMBIOTE_TEATHER_HIT_INTERVAL * i))
-            self.teatherTimer = max(self.teatherTimer - frames, 0)
+        framesToRemove: int = frames
+        while (self.teatherTimer > 0) and framesToRemove > 0:
+            batchFrames: int = min(framesToRemove, (SYMBIOTE_TEATHER_HIT_INTERVAL if self.teatherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL == 0 else self.teatherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL))
+            self.teatherTimer -= batchFrames
+            framesToRemove -= batchFrames
+            if (self.teatherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL == 0) and SYMBIOTE_TEATHER_DURATION >= self.teatherTimer > 0:
+                self.dealDamage("T", frameOffset=(frames - framesToRemove))
 
         # active abilitiy timers
         for charge in self.activeTimers.keys():

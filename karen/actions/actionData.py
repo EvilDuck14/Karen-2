@@ -48,7 +48,7 @@ ACTION_DAMAGE = {
     "g" : 25,
     "G" : 55,
     "u" : 70,
-    "S" : 25,
+    "S" : 30,
     "T" : 1,
     "B" : 1,
     "E" : 50
@@ -80,9 +80,7 @@ WEB_BOMB_TAG_DURATION = 15
 
 GOH_HIT_DISPLACE_DELAY = 7
 
-# TO DO: figure out symbiote timing
-SYMBIOTE_STARTUP_TIME = 21 # symbiote duration past one second
-SYMBIOTE_ACTIVE_DURATION = 1 * 60
+SYMBIOTE_TEATHER_DURATION = 1 * 60
 SYMBIOTE_TEATHER_HIT_INTERVAL = 6
 
 SAPOREN_PRE_HIT_TIME = 5

@@ -468,7 +468,7 @@ def useTeather(state: State):
     state.endActive("u")
 
     # attach teather
-    state.teatherTimer = SYMBIOTE_STARTUP_TIME + SYMBIOTE_ACTIVE_DURATION
+    state.teatherTimer = SYMBIOTE_TEATHER_DURATION + ACTION_DAMAGE_TIME["S"]
 
 def applyTeather(state: State):
     state.advanceTime(state.animationCancelTimes["S"]) 

@@ -43,7 +43,7 @@ def applyPunchSaporen(state: State):
 
     # action sequence
     state.pushActionLog("p+G", frameOffset=ACTION_DAMAGE_TIME["p"])
-    usePunch(state, keepGOHTAvailable=True)
+    usePunch(state)
     state.advanceTime(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
 
@@ -65,7 +65,7 @@ def applyKickSaporen(state: State):
 
     # action sequence
     state.pushActionLog("k+G", frameOffset=ACTION_DAMAGE_TIME["k"])
-    useKick(state, keepGOHTAvailable=True)
+    useKick(state)
     state.advanceTime(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
 
@@ -87,7 +87,7 @@ def applyOverheadSaporen(state: State):
 
     # action sequence
     state.pushActionLog("o+G", frameOffset=ACTION_DAMAGE_TIME["o"])
-    useOverhead(state, keepGOHTAvailable=True)
+    useOverhead(state)
     state.advanceTime(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
     state.GOHTAvaiableTimer = 0
@@ -111,7 +111,7 @@ def applyPunchSaporenFFAmestack(state: State):
 
     # action sequence
     state.pushActionLog("p+G+u", frameOffset=ACTION_DAMAGE_TIME["p"])
-    usePunch(state, keepGOHTAvailable=True)
+    usePunch(state)
     state.advanceTime(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
     state.advanceTime(1)
@@ -140,7 +140,7 @@ def applyKickSaporenFFAmestack(state: State):
 
     # action sequence
     state.pushActionLog("k+G+u", frameOffset=ACTION_DAMAGE_TIME["k"])
-    useKick(state, keepGOHTAvailable=True)
+    useKick(state)
     state.advanceTime(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
     state.advanceTime(1)
@@ -169,7 +169,7 @@ def applyOverheadSaporenFFAmestack(state: State):
 
     # action sequence
     state.pushActionLog("o+G+u", frameOffset=ACTION_DAMAGE_TIME["o"])
-    useOverhead(state, keepGOHTAvailable=True)
+    useOverhead(state)
     state.advanceTime(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
     state.advanceTime(1)
@@ -192,13 +192,13 @@ def applySpaceJam(state: State):
     state.advanceTime(state.animationCancelTimes["o"])
 
     # awaiting actions availability
-    state.awaitCharge("u")
+    awaitUppercutReady(state)
     state.awaitCharge("s", frameOffset=ANIMATION_CANCEL_TIMES["u"]["s"])
     awaitGOHTReady(state, frameOffset=(ANIMATION_CANCEL_TIMES["u"]["s"] + ANIMATION_CANCEL_TIMES["w"]["G"]))
 
     # action sequence
     state.pushActionLog("u+w+G", frameOffset=ACTION_DAMAGE_TIME["u"])
-    useUppercut(state, keepGOHTAvailable=True)
+    useUppercut(state)
     state.advanceTime(ANIMATION_CANCEL_TIMES["u"]["s"])
     useWhiff(state)
     state.advanceTime(ANIMATION_CANCEL_TIMES["w"]["G"])
@@ -217,13 +217,13 @@ def applyFastSpaceJam(state: State):
     state.advanceTime(state.animationCancelTimes["o"])
 
     # awaiting actions availability
-    state.awaitCharge("u")
+    awaitUppercutReady(state)
     state.awaitCharge("s", frameOffset=ANIMATION_CANCEL_TIMES["u"]["s"])
     awaitGOHTReady(state, frameOffset=(ANIMATION_CANCEL_TIMES["u"]["s"] + ANIMATION_CANCEL_TIMES["a"]["G"]))
 
     # action sequence
     state.pushActionLog("u+a+G", frameOffset=ACTION_DAMAGE_TIME["u"])
-    useUppercut(state, keepGOHTAvailable=True)
+    useUppercut(state)
     state.advanceTime(ANIMATION_CANCEL_TIMES["u"]["s"])
     useAutoswing(state)
     state.advanceTime(ANIMATION_CANCEL_TIMES["a"]["G"])

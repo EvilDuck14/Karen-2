@@ -9,7 +9,7 @@ def getMaxNextInputLength(comboString: str) -> int:
     for breaker in INPUT_BREAKERS:
         if breaker in comboString[:tryLength]:
             tryLength = comboString.find(breaker)
-    return tryLength
+    return max(1, tryLength)
 
 def logUnrecognised(unrecognised: str, warningList: list[str]) -> None:
     if unrecognised != "":

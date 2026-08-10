@@ -54,20 +54,20 @@ ACTION_DAMAGE = {
     "E" : 50
 }
 
-ACTION_DAMAGE_TIME = { # TO DO: check
+ACTION_DAMAGE_TIME = {
     "p" : 14,
-    "k" : 24,
-    "o" : 38,
+    "k" : 27,
+    "o" : 36,
     "t" : 12,
     "g" : 17,
-    "G" : 37,
+    "G" : 35,
     "u" : 23,
-    "S" : 1,
-    "B" : 1,
+    "S" : 7,
+    "B" : 12,
     "E" : 0
 }
 
-MELEE_SEQUENCE_WINDOW = 3 * 60 # TO DO: measure
+MELEE_SEQUENCE_WINDOW = 90
 
 TAG_PROC_DAMAGE = 45
 TAG_DURATION = 3 * 60
@@ -75,17 +75,18 @@ TAG_GOHT_DELAY = 3
 PROCS_TAG = [ "p", "k", "o", "u" ]
 APPLIES_TAG = [ "t", "E" ]
 
-WEB_BOMB_DURATION = 2 * 60 # TO DO: check
-WEB_BOMB_TAG_DURATION = 1 # minumum time that the bomb can explode in after landing 
-# TO DO: check ^
+WEB_BOMB_DURATION = (2 * 60) + 5
+WEB_BOMB_TAG_DURATION = 15
 
-GOH_HIT_DISPLACE_DELAY = 1 # TO DO: measure
+GOH_HIT_DISPLACE_DELAY = 7
 
-SYMBIOTE_MAX_DURATION = 1 * 60
+# TO DO: figure out symbiote timing
+SYMBIOTE_STARTUP_TIME = 21 # symbiote duration past one second
+SYMBIOTE_ACTIVE_DURATION = 1 * 60
 SYMBIOTE_TEATHER_HIT_INTERVAL = 6
 
-SAPOREN_PRE_HIT_TIME = 5 # TO DO: measure
-RT_PRE_HIT_TIME = ACTION_DAMAGE_TIME["t"] # TO DO: measure
+SAPOREN_PRE_HIT_TIME = 5
+RT_PRE_HIT_TIME = ACTION_DAMAGE_TIME["t"]
 
 MAX_CHARGES = {
     "t" : 5,
@@ -97,13 +98,13 @@ MAX_CHARGES = {
 }
 
 # when an action is in use, the associated recharge/cooldown doesn't start its timer until the action ends
-ACTIVE_TIMES = { # TO DO: check
+ACTIVE_TIMES = {
     "w" : 30,
     "a" : 1,
-    "g" : 102,
-    "G" : 61,
-    "u" : 70,
-    "S" : 60
+    "g" : 58,
+    "G" : 60,
+    "u" : 50,
+    "S" : 81
 }
 
 RECHARGE_TIMES = {
@@ -115,13 +116,6 @@ RECHARGE_TIMES = {
     "B" : 15 * 60
 }
 
-COOLDOWN_TIMES = {
-    "t" : 30,
-    "s" : 19, # TO DO: check
-    "u" : 2 * 60,
-    "C" : 30 # for stopping melee from being used while clap is active TO DO: check
-}
-
 EARLY_CANCELS_NOT_ENABLED_BY = {
     "p" : [ "p", "k" ],
     "k" : [ "p", "k" ],
@@ -130,7 +124,7 @@ EARLY_CANCELS_NOT_ENABLED_BY = {
 }
 
 ANIMATION_CANCEL_TIMES = {
-    "p" : { # TO DO: check
+    "p" : {
         "p" : 23,
         "o" : 11,
         "t" : 11,
@@ -142,19 +136,19 @@ ANIMATION_CANCEL_TIMES = {
         "B" : 11
     },
 
-    "k" : { # TO DO: check
+    "k" : {
         "p" : 49,
-        "o" : 22,
-        "t" : 22,
-        "s" : 22,
-        "g" : 22,
-        "u" : 22,
-        "S" : 22,
-        "C" : 22,
-        "B" : 22
+        "o" : 23,
+        "t" : 23,
+        "s" : 23,
+        "g" : 23,
+        "u" : 23,
+        "S" : 23,
+        "C" : 23,
+        "B" : 23
     },
 
-    "o" : { # TO DO: check
+    "o" : {
         "p" : 53,
         "o" : 53,
         "t" : 33,
@@ -166,23 +160,23 @@ ANIMATION_CANCEL_TIMES = {
         "B" : 33
     },
 
-    "t" : { # TO DO: check
+    "t" : {
         "p" : 30,
         "o" : 30,
-        "t" : 6,
+        "t" : 30,
         "s" : 6,
         "g" : 6,
         "u" : 6,
         "S" : 6,
         "C" : 6,
-        "B" : 6
+        "B" : 1
     },
 
-    "w" : { # TO DO: check
+    "w" : {
         "p" : 27,
         "o" : 27,
         "t" : 10, 
-        "s" : 1,
+        "s" : 29,
         "g" : 1,
         "u" : 1,
         "S" : 1,
@@ -202,75 +196,82 @@ ANIMATION_CANCEL_TIMES = {
         "B" : 1
     },
 
-    "g" : { # TO DO: CHECK
-        "p" : 50,
-        "o" : 50,
-        "t" : 46,
-        "s" : 14,
-        "g" : 14,
+    "g" : {
+        "p" : 47,
+        "o" : 47,
+        "t" : 47,
+        "s" : 15,
+        "g" : 15,
         "u" : 47,
         "S" : 14,
         "C" : 14,
         "B" : 1
     },
 
-    "G" : { # TO DO: check
+    "G" : {
         "p" : 61,
         "o" : 61,
         "t" : 61,
-        "s" : 28,
-        "g" : 28,
-        "u" : 32,
-        "S" : 28,
-        "C" : 28,
+        "s" : 30,
+        "g" : 30,
+        "u" : 30,
+        "S" : 30,
+        "C" : 20,
         "B" : 1
     },
 
-    "u" : { # TO DO: check
+    "u" : {
         "p" : 48,
         "o" : 48,
-        "t" : 56,
-        "s" : 19,
-        "g" : 48,
-        "u" : 19,
+        "t" : 48,
+        "s" : 20,
+        "g" : 51,
+        "u" : 20,
         "S" : 19,
-        "C" : 1,
-        "B" : 1
+        "C" : 51,
+        "B" : 51
     },
 
-    "S" : { # TO DO: check
-        "p" : 1,
-        "o" : 1,
+    "S" : {
+        "p" : 31,
+        "o" : 31,
+        "t" : 31,
+        "s" : 1,
+        "g" : 31,
+        "u" : 31,
+        "S" : 60,
+        "C" : 31,
+        "B" : 31
+    },
+
+    "C" : {
+        "p" : 23,
+        "o" : 23,
         "t" : 1,
         "s" : 1,
         "g" : 1,
         "u" : 1,
         "S" : 1,
         "C" : 1,
-        "B" : 1
+        "B" : 3
     },
 
-    "C" : { # TO DO: check
-        "p" : 1,
-        "o" : 1,
-        "t" : 1,
-        "s" : 1,
-        "g" : 1,
-        "u" : 1,
-        "S" : 1,
-        "C" : 1,
-        "B" : 1
-    },
-
-    "B" : { # TO DO: check
-        "p" : 1,
-        "o" : 1,
-        "t" : 1,
-        "s" : 1,
+    "B" : {
+        "p" : 20,
+        "o" : 20,
+        "t" : 6,
+        "s" : 6,
         "g" : 1,
         "u" : 1,
         "S" : 1,
         "C" : 1,
         "B" : 1
     }
+}
+
+COOLDOWN_TIMES = {
+    "t" : 30,
+    "s" : 19, 
+    "u" : 2 * 60,
+    "C" : ANIMATION_CANCEL_TIMES["C"]["p"]
 }

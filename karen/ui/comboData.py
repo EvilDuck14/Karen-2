@@ -110,6 +110,20 @@ COMBO_ACTION_NAMES = {
     "peniexplosion" : ["E"],
     "peniwebexplosion" : ["E"],
     "peniexp" : ["E"],
+
+    "ffamestack" : ["G", "+", "u"],
+    "ffame" : ["G", "+", "u"],
+
+    "punchsaporen" : ["p" , "+", "G"],
+    "punchsaporentect" : ["p" , "+", "G"],
+
+    "kicksaporen" : ["k" , "+", "G"],
+    "kicksaporentech" : ["k" , "+", "G"],
+
+    "overheadsaporen" : ["o" , "+", "G"],
+    "overheadsaporentech" : ["o" , "+", "G"],
+    "saporen" : ["o" , "+", "G"],
+    "saporentech" : ["o" , "+", "G"],
 }
 
 COMBO_NAMES = {

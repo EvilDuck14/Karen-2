@@ -3,4 +3,6 @@
     - until bomb timer hits desired value
     - number of symbiote damage ticks
 
-check whether melee sequence timer measures from start or end of action
+multiple hits with the same symbiote
+
+weaving explosion into movestacks with multiple hits

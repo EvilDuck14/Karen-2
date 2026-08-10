@@ -19,7 +19,7 @@ def usePunchCancel(state: State):
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
-        state.animationCancelTimes[action] = "error" if action in ILLEGAL_CANCELS["p"] else 1
+        state.animationCancelTimes[action] = "error" if action in EARLY_CANCELS_NOT_ENABLED_BY["p"] else 1
 
     # tracking melee sequence
     state.meleeSequenceTimer = MELEE_SEQUENCE_WINDOW
@@ -59,7 +59,7 @@ def useKickCancel(state: State):
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
-        state.animationCancelTimes[action] = "error" if action in ILLEGAL_CANCELS["k"] else 1
+        state.animationCancelTimes[action] = "error" if action in EARLY_CANCELS_NOT_ENABLED_BY["k"] else 1
 
     # tracking melee sequence
     state.meleeSequenceTimer = 0
@@ -90,7 +90,7 @@ def useOverheadCancel(state: State):
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
-        state.animationCancelTimes[action] = "error" if action in ILLEGAL_CANCELS["o"] else 1
+        state.animationCancelTimes[action] = "error" if action in EARLY_CANCELS_NOT_ENABLED_BY["o"] else 1
 
     # tracking overhead availability
     if state.hasSwingOverhead != False:
@@ -122,7 +122,7 @@ def useNostick(state: State):
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
-        state.animationCancelTimes[action] = "error" if action in ILLEGAL_CANCELS["a"] else 1
+        state.animationCancelTimes[action] = "error" if action in EARLY_CANCELS_NOT_ENABLED_BY["a"] else 1
 
     # set cooldown (fire rate)
     state.fireRateTimers["s"] = COOLDOWN_TIMES["a"]

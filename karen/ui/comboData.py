@@ -1,3 +1,5 @@
+from karen.actions.actionData import GOH_HIT_DISPLACE_DELAY
+
 COMBO_ACTION_SYMBOLS = {
     "p" : ["p"],
     "k" : ["k"],
@@ -74,8 +76,8 @@ COMBO_ACTION_NAMES = {
 
     "getoverhere" : ["g"],
     "goh" : ["g"],
-    "web pull" : ["g"],
-    "pull" : ["g"],
+    "web pull" : ["g", f"[{GOH_HIT_DISPLACE_DELAY}f]"],
+    "pull" : ["g", f"[{GOH_HIT_DISPLACE_DELAY}f]"],
 
     "getoverheretargeting" : ["G"],
     "getoverheretargetting" : ["G"],

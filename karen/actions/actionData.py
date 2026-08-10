@@ -62,8 +62,8 @@ ACTION_DAMAGE_TIME = { # TO DO: check
     "g" : 17,
     "G" : 37,
     "u" : 23,
-    "S" : 0,
-    "B" : 0,
+    "S" : 1,
+    "B" : 1,
     "E" : 0
 }
 
@@ -76,8 +76,10 @@ PROCS_TAG = [ "p", "k", "o", "u" ]
 APPLIES_TAG = [ "t", "E" ]
 
 WEB_BOMB_DURATION = 2 * 60 # TO DO: check
-WEB_BOMB_TAG_DURATION = 0 # minum time that the bomb can explode in after landing 
+WEB_BOMB_TAG_DURATION = 1 # minumum time that the bomb can explode in after landing 
 # TO DO: check ^
+
+GOH_HIT_DISPLACE_DELAY = 1 # TO DO: measure
 
 SYMBIOTE_MAX_DURATION = 1 * 60
 SYMBIOTE_TEATHER_HIT_INTERVAL = 6
@@ -232,51 +234,43 @@ ANIMATION_CANCEL_TIMES = {
         "g" : 48,
         "u" : 19,
         "S" : 19,
-        "C" : 0,
-        "B" : 0
+        "C" : 1,
+        "B" : 1
     },
 
     "S" : { # TO DO: check
-        "p" : 0,
-        "o" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
+        "p" : 1,
+        "o" : 1,
+        "t" : 1,
+        "s" : 1,
+        "g" : 1,
+        "u" : 1,
+        "S" : 1,
+        "C" : 1,
+        "B" : 1
     },
 
     "C" : { # TO DO: check
-        "p" : 0,
-        "o" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
+        "p" : 1,
+        "o" : 1,
+        "t" : 1,
+        "s" : 1,
+        "g" : 1,
+        "u" : 1,
+        "S" : 1,
+        "C" : 1,
+        "B" : 1
     },
 
     "B" : { # TO DO: check
-        "p" : 0,
-        "o" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
+        "p" : 1,
+        "o" : 1,
+        "t" : 1,
+        "s" : 1,
+        "g" : 1,
+        "u" : 1,
+        "S" : 1,
+        "C" : 1,
+        "B" : 1
     }
-}
-
-# tracking which early cancels are and are not possible
-ILLEGAL_CANCELS = {
-    "p" : [ "p", "o" ],
-    "k" : [ "p", "o" ],
-    "o" : [ "p", "o" ],
-    "a" : [ ],
 }

@@ -19,6 +19,7 @@ class State:
     GOHTAvaiableTimer: int # helps tracking availability of GOHT throughout overlapping tracers
     isTaggedBomb: bool = False # tracks whether peni web bomb is attached
     bombTimer: int # tracks time until the web bomb explodes
+    awaitingExplosion: bool # tells actions that proc tracer to wait for the bomb to explode
     teatherTimer: int # tracks remaining duration that symbiote teather can stay active
     hasDoubleJump: bool # tracks whether double jump overhead can be used (doesn't force overhead)
     hasSwingOverhead: bool | Literal["unknown"] # tracks whether swing overhead can be used (does force overhead)
@@ -48,6 +49,7 @@ class State:
         self.GOHTAvaiableTimer = 0
         self.isTaggedBomb = False 
         self.bombTimer = 0 
+        self.awaitingExplosion = False
         self.teatherTimer = 0 
         self.hasDoubleJump = True
         self.hasSwingOverhead = "unknown"
@@ -98,6 +100,9 @@ class State:
 
         for action in sequence:
             self.applyAction(action)
+
+        if self.awaitingExplosion and (self.bombTimer > 0):
+            self.advanceTime(self.bombTimer)
 
     # increments timers as time passes during combo
     def advanceTime(self, frames: int) -> None:
@@ -238,6 +243,7 @@ class State:
         # tracking explosion time
         if source == "E":
             self.pushActionLog("E", frameOffset=frameOffset)
+            self.awaitingExplosion = False
 
     # tracer tag proc
     def procTag(self, frameOffset: int = 0):

@@ -13,7 +13,7 @@ def applyFFAmestack(state: State):
 
     # awaiting actions availability
     awaitGOHTReady(state)
-    state.awaitCharge("u", frameOffset=1)
+    awaitUppercutReady(state, frameOffset=1)
 
     # action sequence
     useGOHT(state)
@@ -107,7 +107,7 @@ def applyPunchSaporenFFAmestack(state: State):
     # awaiting actions availability
     awaitPunchReady(state)
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME))
-    state.awaitCharge("u", frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1))
+    awaitUppercutReady(state, frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1))
 
     # action sequence
     state.pushActionLog("p+G+u", frameOffset=ACTION_DAMAGE_TIME["p"])
@@ -136,7 +136,7 @@ def applyKickSaporenFFAmestack(state: State):
     # awaiting actions availability
     awaitKickReady(state)
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME))
-    state.awaitCharge("u", frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1))
+    awaitUppercutReady(state, frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1))
 
     # action sequence
     state.pushActionLog("k+G+u", frameOffset=ACTION_DAMAGE_TIME["k"])
@@ -165,7 +165,7 @@ def applyOverheadSaporenFFAmestack(state: State):
     # awaiting actions availability
     awaitOverheadReady(state)
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME))
-    state.awaitCharge("u", frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1))
+    awaitUppercutReady(state, frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1))
 
     # action sequence
     state.pushActionLog("o+G+u", frameOffset=ACTION_DAMAGE_TIME["o"])

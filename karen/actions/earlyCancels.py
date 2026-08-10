@@ -7,15 +7,15 @@ from karen.actions.basicActions import *
 #=========================================================================================================#
 
 def usePunchCancel(state: State):
-    state.pushLog("started punch cancel", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["p-"]}", ["action started"])
 
     # major warning if punch started while kick was available
     if state.meleeSequenceStep == "kick":
-        state.pushLog("used punch when kick was available", ["major warning"])
+        state.pushLog(f"used {ACTION_NAMES["p-"]} when {ACTION_NAMES["k"]} was expected", ["dev warning"])
 
     # minor warning if swing overhead is available
     if state.hasSwingOverhead:
-        state.pushLog("used punch when swing overhead was available", ["minor warning", "overhead warning"])
+        state.pushLog(f"used {ACTION_NAMES["p-"]} when {ACTION_NAMES["o"]} was expected", ["minor warning", "overhead warning"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -46,15 +46,15 @@ State.ApplyAction["p-"] = applyPunchCancel
 #=========================================================================================================#
 
 def useKickCancel(state: State):
-    state.pushLog("started kick cancel", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["k"]}", ["action started"])
 
     # major warning if kick is not available
     if state.meleeSequenceStep in ["punch 1", "punch 2"]:
-        state.pushLog("used illegal kick", ["major warning"])
+        state.pushLog(f"used illegal {ACTION_NAMES["k-"]}", ["major warning"])
 
     # minor warning if swing overhead is available
     if state.hasSwingOverhead:
-        state.pushLog("used kick when swing overhead was available", ["minor warning", "overhead warning"])
+        state.pushLog(f"used {ACTION_NAMES["k-"]} when {ACTION_NAMES["o"]} was expected", ["minor warning", "overhead warning"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -79,11 +79,11 @@ State.ApplyAction["k-"] = applyKickCancel
 #=========================================================================================================#
 
 def useOverheadCancel(state: State):
-    state.pushLog("started overhead slam cancel", ["action started"])
+    state.pushLog(f"started overhead {ACTION_NAMES["o-"]}", ["action started"])
     
     # minor warning if no overhead is available
     if (state.hasSwingOverhead == False) and (state.hasDoubleJump == False):
-        state.pushLog("used potentially illegal overhead", ["minor warning", "overhead warning"])
+        state.pushLog(f"used unexpected {ACTION_NAMES["o-"]}", ["minor warning", "overhead warning"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -111,7 +111,7 @@ State.ApplyAction["o-"] = applyOverheadCancel
 #=========================================================================================================#
 
 def useNostick(state: State):
-    state.pushLog("started no stick", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["a-"]}", ["action started"])
 
     # major warning if cooldown is not ready
     state.warnIfNotReady("s")

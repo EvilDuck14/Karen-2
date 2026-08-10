@@ -7,6 +7,7 @@ EVENT_TYPES = [
     "cooldown",
     "waiting",
 
+    "dev warning", # immediately signals a bug in the code
     "minor warning",
     "major warning",
     "overhead warning",
@@ -14,15 +15,16 @@ EVENT_TYPES = [
 ]
 
 EVENT_COLOURS = {
-    "major warning" : Fore.RED,
-    "minor warning" : Fore.LIGHTRED_EX,
-    "sequence warning" : Fore.LIGHTRED_EX,
-    "overhead warning" : Fore.YELLOW,
-    "waiting" : Fore.LIGHTYELLOW_EX,
+    "dev warning" : Fore.RED,
+    "major warning" : Fore.YELLOW,
+    "sequence warning" : Fore.YELLOW,
+    "minor warning" : Fore.MAGENTA,
+    "overhead warning" : Fore.MAGENTA,
+    "waiting" : Fore.MAGENTA,
     "timer expired" : Fore.MAGENTA,
-    "cooldown" : Fore.LIGHTMAGENTA_EX,
+    "cooldown" : Fore.CYAN,
     "action started" : Fore.CYAN,
-    "damage" : Fore.LIGHTCYAN_EX
+    "damage" : Fore.CYAN
 }
 
 class LogEntry:

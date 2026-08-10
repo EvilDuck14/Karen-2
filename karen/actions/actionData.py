@@ -14,7 +14,33 @@ ACTION_NAMES = {
     "T" : "Symbiote Teather", # only used for logging damage source
     "C" : "Clap",
     "B" : "Web Bomb",
-    "E" : "Web Bomb Explosion"
+    "E" : "Web Bomb Explosion",
+
+    # Early Cancels
+    "p-" : "Punch (Burn)",
+    "k-" : "Kick (Burn)",
+    "o-" : "Overhead (Burn)",
+    "a-" : "No Stick",
+
+    # Movestacks
+    "G+u" : "FFAmestack",
+    "p+G" : "Punch Saporen",
+    "k+G" : "Kick Saporen",
+    "o+G" : "Overhead Saporen",
+    "p+G+u" : "Punch Saporen FFAmestack",
+    "k+G+u" : "Kick Saporen FFAmestack",
+    "o+G+u" : "Overhead Saporen FFAmestack",
+    "u+w+G" : "Space Jam",
+    "u+a+G" : "Space Jam (Auto Swing)",
+    "p+t" : "Punch Reverse Trigger",
+    "k+t" : "Kick Reverse Trigger",
+    "p+o" : "Unique Punch Overhead Stack",
+    "k+o" : "Unique Kick Overhaed Stack",
+    "g+B" : "GOH Bomb Stack",
+    "G+B" : "GOHT Bomb Stack",
+    "w+C" : "Swing Whiff Clap Stack",
+    "a+C" : "Auto Swing Clap Stack",
+    "C+a" : "Clap Auto Swing Stack"
 }
 
 ACTION_DAMAGE = {

@@ -7,14 +7,23 @@ from karen.actions.basicActions import *
 #=========================================================================================================#
 
 def applyFFAmestack(state: State):
+
+    # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["g"]) 
+
+    # awaiting actions availability
     awaitGOHTReady(state)
     state.awaitCharge("u", frameOffset=1)
+
+    # action sequence
     useGOHT(state)
     state.advanceTime(1)
     useUppercut(state)
+
+    # following swing / symbiote must await goht finishing
     state.animationCancelTimes["s"] = ANIMATION_CANCEL_TIMES["G"]["s"] - 1
     state.animationCancelTimes["S"] = ANIMATION_CANCEL_TIMES["G"]["S"] - 1
+
 State.ApplyAction["G+u"] = applyFFAmestack
 
 
@@ -23,13 +32,19 @@ State.ApplyAction["G+u"] = applyFFAmestack
 #=========================================================================================================#
 
 def applyPunchSaporen(state: State):
+
+    # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["p"])
+
+    # awaiting actions availability
     awaitPunchReady(state)
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME))
+
+    # action sequence
     usePunch(state, keepGOHTAvailable=True)
     state.advanceTime(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
-    state.GOHTAvaiableTimer = 0
+
 State.ApplyAction["p+G"] = applyPunchSaporen
 
 
@@ -38,12 +53,18 @@ State.ApplyAction["p+G"] = applyPunchSaporen
 #=========================================================================================================#
 
 def applyKickSaporen(state: State):
+
+    # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["p"])
+
+    # awaiting actions availability
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME))
+
+    # action sequence
     useKick(state, keepGOHTAvailable=True)
     state.advanceTime(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
-    state.GOHTAvaiableTimer = 0
+
 State.ApplyAction["k+G"] = applyKickSaporen
 
 
@@ -52,13 +73,20 @@ State.ApplyAction["k+G"] = applyKickSaporen
 #=========================================================================================================#
 
 def applyOverheadSaporen(state: State):
+
+    # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["o"])
+
+    # awaiting actions availability
     awaitOverheadReady(state)
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME))
+
+    # action sequence
     useOverhead(state, keepGOHTAvailable=True)
     state.advanceTime(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
     state.GOHTAvaiableTimer = 0
+
 State.ApplyAction["o+G"] = applyOverheadSaporen
 
 
@@ -67,18 +95,26 @@ State.ApplyAction["o+G"] = applyOverheadSaporen
 #=========================================================================================================#
 
 def applyPunchSaporenFFAmestack(state: State):
+
+    # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["p"])
+
+    # awaiting actions availability
     awaitPunchReady(state)
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME))
     state.awaitCharge("u", frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1))
+
+    # action sequence
     usePunch(state, keepGOHTAvailable=True)
     state.advanceTime(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
-    state.GOHTAvaiableTimer = 0
     state.advanceTime(1)
     useUppercut(state)
+
+    # following swing / symbiote must await goht finishing
     state.animationCancelTimes["s"] = ANIMATION_CANCEL_TIMES["G"]["s"] - 1
     state.animationCancelTimes["S"] = ANIMATION_CANCEL_TIMES["G"]["S"] - 1
+
 State.ApplyAction["p+G+u"] = applyPunchSaporenFFAmestack
 
 
@@ -87,17 +123,25 @@ State.ApplyAction["p+G+u"] = applyPunchSaporenFFAmestack
 #=========================================================================================================#
 
 def applyKickSaporenFFAmestack(state: State):
+
+    # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["p"])
+
+    # awaiting actions availability
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME))
     state.awaitCharge("u", frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1))
+
+    # action sequence
     useKick(state, keepGOHTAvailable=True)
     state.advanceTime(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
-    state.GOHTAvaiableTimer = 0
     state.advanceTime(1)
     useUppercut(state)
+
+    # following swing / symbiote must await goht finishing
     state.animationCancelTimes["s"] = ANIMATION_CANCEL_TIMES["G"]["s"] - 1
     state.animationCancelTimes["S"] = ANIMATION_CANCEL_TIMES["G"]["S"] - 1
+
 State.ApplyAction["k+G+u"] = applyKickSaporenFFAmestack
 
 
@@ -106,18 +150,26 @@ State.ApplyAction["k+G+u"] = applyKickSaporenFFAmestack
 #=========================================================================================================#
 
 def applyOverheadSaporenFFAmestack(state: State):
+
+    # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["o"])
+
+    # awaiting actions availability
     awaitOverheadReady(state)
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME))
     state.awaitCharge("u", frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1))
+
+    # action sequence
     useOverhead(state, keepGOHTAvailable=True)
     state.advanceTime(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
-    state.GOHTAvaiableTimer = 0
     state.advanceTime(1)
     useUppercut(state)
+
+    # following swing / symbiote must await goht finishing
     state.animationCancelTimes["s"] = ANIMATION_CANCEL_TIMES["G"]["s"] - 1
     state.animationCancelTimes["S"] = ANIMATION_CANCEL_TIMES["G"]["S"] - 1
+
 State.ApplyAction["o+G+u"] = applyOverheadSaporenFFAmestack
 
 
@@ -126,7 +178,22 @@ State.ApplyAction["o+G+u"] = applyOverheadSaporenFFAmestack
 #=========================================================================================================#
 
 def applySpaceJam(state: State):
-    pass
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["o"])
+
+    # awaiting actions availability
+    state.awaitCharge("u")
+    state.awaitCharge("s", frameOffset=ANIMATION_CANCEL_TIMES["u"]["s"])
+    awaitGOHTReady(state, frameOffset=(ANIMATION_CANCEL_TIMES["u"]["s"] + ANIMATION_CANCEL_TIMES["w"]["G"]))
+
+    # action sequence
+    useUppercut(state, keepGOHTAvailable=True)
+    state.advanceTime(ANIMATION_CANCEL_TIMES["u"]["s"])
+    useWhiff(state)
+    state.advanceTime(ANIMATION_CANCEL_TIMES["w"]["G"])
+    useGOHT(state)
+
 State.ApplyAction["u+w+G"] = applySpaceJam
 
 
@@ -135,7 +202,22 @@ State.ApplyAction["u+w+G"] = applySpaceJam
 #=========================================================================================================#
 
 def applyFastSpaceJam(state: State):
-    pass
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["o"])
+
+    # awaiting actions availability
+    state.awaitCharge("u")
+    state.awaitCharge("s", frameOffset=ANIMATION_CANCEL_TIMES["u"]["s"])
+    awaitGOHTReady(state, frameOffset=(ANIMATION_CANCEL_TIMES["u"]["s"] + ANIMATION_CANCEL_TIMES["a"]["G"]))
+
+    # action sequence
+    useUppercut(state, keepGOHTAvailable=True)
+    state.advanceTime(ANIMATION_CANCEL_TIMES["u"]["s"])
+    useAutoswing(state)
+    state.advanceTime(ANIMATION_CANCEL_TIMES["a"]["G"])
+    useGOHT(state)
+
 State.ApplyAction["u+a+G"] = applyFastSpaceJam
 
 
@@ -185,24 +267,6 @@ State.ApplyAction["p+o"] = applyKickU3H
 
 
 #=========================================================================================================#
-#                                           Unique 2 Hit Punch                                            #
-#=========================================================================================================#
-
-def applyPunchU2H(state: State):
-    pass
-State.ApplyAction["a+p+o"] = applyPunchU2H
-
-
-#=========================================================================================================#
-#                                            Unique 2 Hit Kick                                            #
-#=========================================================================================================#
-
-def applyKickU2H(state: State):
-    pass
-State.ApplyAction["a+p+o"] = applyKickU2H
-
-
-#=========================================================================================================#
 #                                             GOH + Web Bomb                                              #
 #=========================================================================================================#
 
@@ -244,4 +308,4 @@ State.ApplyAction["a+C"] = applyAutoswingClap
 
 def applyClapAutoswing(state: State):
     pass
-State.ApplyAction["C+a"]
+State.ApplyAction["C+a"] = applyClapAutoswing

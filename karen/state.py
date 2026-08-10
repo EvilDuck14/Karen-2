@@ -60,6 +60,7 @@ class State:
     # time until current animation can be cancelled into each class of action
     animationCancelTimes: dict[str, int] = { 
         "p" : 0,
+        "o" : 0,
         "t" : 0,
         "s" : 0,
         "g" : 0,
@@ -92,26 +93,25 @@ class State:
         if frames >= self.bombTimer > 0:
             if self.isTaggedBomb:
                 self.dealDamage("E", frameOffset=self.bombTimer)
-                self.appplyTag(frameOffset=self.bombTimer)
                 self.isTaggedBomb = False
             else:
-                self.pushLog("web bomb expired without firing", ["timer expired"], frameOffset=self.bombTimer)
+                self.pushLog(f"{ACTION_NAMES["B"]} expired without firing", ["timer expired"], frameOffset=self.bombTimer)
                 self.charges["t"] = MAX_CHARGES["t"]
                 self.rechargeTimers["t"] = 0
         self.bombTimer = max(self.bombTimer - frames, 0)
 
         # tracer tag timer
         if frames >= self.tagTimer > 0:
-            self.pushLog("tracer tag expired", ["timer expired"], frameOffset=self.tagTimer)
+            self.pushLog("tag expired", ["timer expired"], frameOffset=self.tagTimer)
         self.tagTimer = max(self.tagTimer - frames, 0)
 
         # GOHT availability timer
         if frames >= self.GOHTAvaiableTimer > 0:
-            self.pushLog("GOHT availability expired", ["timer expired"], frameOffset=self.GOHTAvaiableTimer)
+            self.pushLog(f"{ACTION_NAMES["G"]} availability expired", ["timer expired"], frameOffset=self.GOHTAvaiableTimer)
         self.GOHTAvaiableTimer = max(self.GOHTAvaiableTimer - frames, 0)
         if self.tagTimer > self.GOHTAvaiableTimer and self.tagTimer <= TAG_DURATION - TAG_GOHT_DELAY:
             self.GOHTAvaiableTimer = self.tagTimer
-            self.pushLog("GOHT registered available target", ["cooldown"], frameOffset=(frames + self.tagTimer - (TAG_DURATION - TAG_GOHT_DELAY)))
+            self.pushLog(f"{ACTION_NAMES["G"]} registered available target", ["cooldown"], frameOffset=(frames + self.tagTimer - (TAG_DURATION - TAG_GOHT_DELAY)))
 
         # symbiote teather damage over time
         if self.teatherTimer > 0:
@@ -195,27 +195,28 @@ class State:
         # tracking last damage time
         self.lastDamageTime = max(self.lastDamageTime, self.timeElapsed + frameOffset)
 
-    # deals damage for procing tag if applicable
-    def procTag(self, frameOffset: int = 0, keepGOHTAvailable: bool = False) -> None:
+        # tracer tag proc
+        if source in PROCS_TAG:
 
-        # handles web bomb exploding during frame offset
-        if (frameOffset >= self.bombTimer > 0) and self.isTaggedBomb:
-            self.dealDamage("E", frameOffset=self.bombTimer)
-            self.appplyTag(frameOffset=self.bombTimer)
-            self.isTaggedBomb = False
+            # handles web bomb exploding during frame offset
+            if (frameOffset >= self.bombTimer > 0) and self.isTaggedBomb:
+                self.dealDamage("E", frameOffset=self.bombTimer)
+                self.appplyTag(frameOffset=self.bombTimer)
+                self.isTaggedBomb = False
 
-        # regular tracer proc
-        if frameOffset < self.tagTimer:
-            self.damageDealt += TAG_PROC_DAMAGE
-            self.tagTimer = 0
-            if not keepGOHTAvailable: # flag used for saporen movestacks
-                self.GOHTAvaiableTimer = 0
-            self.pushLog(f"proced tag, dealing {TAG_PROC_DAMAGE} damage", ["damage"], frameOffset)
+            # regular tracer proc
+            if frameOffset < self.tagTimer:
+                self.damageDealt += TAG_PROC_DAMAGE
+                self.tagTimer = min(self.tagTimer, frameOffset)
+                self.GOHTAvaiableTimer = min(self.GOHTAvaiableTimer, frameOffset)
+                if TAG_DURATION - TAG_GOHT_DELAY + frameOffset >= self.tagTimer > self.GOHTAvaiableTimer:
+                    self.GOHTAvaiableTimer = self.tagTimer
+                self.pushLog(f"proced tag, dealing {TAG_PROC_DAMAGE} damage", ["damage"], frameOffset)
 
-    # tracer tag application
-    def appplyTag(self, frameOffset: int = 0) -> None:
-        self.tagTimer = TAG_DURATION + frameOffset
-        self.pushLog("applied tracer tag", ["cooldown"], frameOffset)
+        # tracer tag application
+        if source in APPLIES_TAG:
+            self.tagTimer = TAG_DURATION + frameOffset
+            self.pushLog("applied tag", ["cooldown"], frameOffset)
 
     # reduces charge and sets relevant timers
     def endActive(self, charge: str):
@@ -243,11 +244,11 @@ class State:
     # major warning if ability charge is used currently but isn't available
     def warnIfNotReady(self, charge: str):
         if (charge in self.activeTimers.keys()) and (self.activeTimers[charge] > 0):
-            self.pushLog(f"used {ACTION_NAMES[charge]} while charge still in use", ["major warning"])
+            self.pushLog(f"used {ACTION_NAMES[charge]} while charge still in use", ["dev warning"])
         if (charge in self.charges.keys()) and (self.charges[charge] == 0):
-            self.pushLog(f"used {ACTION_NAMES[charge]} without required charge", ["major warning"])
-        if (charge in self.fireRateTimers.keys()) and (self.fireRateTimers[charge] == 0):
-            self.pushLog(f"used {ACTION_NAMES[charge]} faster than fire rate limit allows", ["major warning"])
+            self.pushLog(f"used {ACTION_NAMES[charge]} without required charge", ["dev warning"])
+        if (charge in self.fireRateTimers.keys()) and (self.fireRateTimers[charge] > 0):
+            self.pushLog(f"used {ACTION_NAMES[charge]} faster than fire rate limit allows", ["dev warning"])
 
     # creates a log entry at the current time
     def pushLog(self, details: str, flags: list[str] = [], frameOffset: int = 0):

@@ -9,25 +9,24 @@ def awaitPunchReady(state: State, frameOffset: int = 0):
 
     # await kick expiration
     if (state.meleeSequenceStep == "kick") and (state.meleeSequenceTimer > frameOffset):
-        state.pushLog("awaiting kick expiration", ["waiting"])
+        state.pushLog("awaiting melee sequence timer expiration", ["waiting"])
         if state.meleeSequenceTimer - frameOffset >= (ACTION_DAMAGE_TIME["k"] - ACTION_DAMAGE_TIME["p"]):
-            state.pushLog("waiting for punch when kick would likely be faster", ["sequence warning"])
+            state.pushLog(f"waiting for {ACTION_NAMES["p"]} when {ACTION_NAMES["k"]} would likely be faster", ["sequence warning"])
         state.advanceTime(state.meleeSequenceTimer - frameOffset)
 
 def usePunch(state: State, keepGOHTAvailable: bool = False):
-    state.pushLog("started punch", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["p"]}", ["action started"])
 
     # major warning if punch started while kick was available
     if state.meleeSequenceStep == "kick":
-        state.pushLog("used punch when kick was available", ["major warning"])
+        state.pushLog(f"used {ACTION_NAMES["p"]} when {ACTION_NAMES["k"]} was expected", ["dev warning"])
 
     # minor warning if swing overhead is available
     if state.hasSwingOverhead:
-        state.pushLog("used punch when swing overhead was available", ["minor warning", "overhead warning"])
+        state.pushLog(f"used {ACTION_NAMES["p"]} when {ACTION_NAMES["o"]} was expected", ["minor warning", "overhead warning"])
 
     # deal damage
     state.dealDamage("p", frameOffset=ACTION_DAMAGE_TIME["p"])
-    state.procTag(frameOffset=ACTION_DAMAGE_TIME["p"], keepGOHTAvailable=keepGOHTAvailable)
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -58,19 +57,18 @@ State.ApplyAction["p"] = applyPunch
 #=========================================================================================================#
 
 def useKick(state: State, keepGOHTAvailable: bool = False):
-    state.pushLog("started kick", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["k"]}", ["action started"])
 
     # major warning if kick is not available
     if state.meleeSequenceStep in ["punch 1", "punch 2"]:
-        state.pushLog("used illegal kick", ["major warning"])
+        state.pushLog(f"used illegal {ACTION_NAMES["k"]}", ["major warning"])
 
     # minor warning if swing overhead is available
     if state.hasSwingOverhead:
-        state.pushLog("used kick when swing overhead was available", ["minor warning", "overhead warning"])
+        state.pushLog(f"used {ACTION_NAMES["k"]} when {ACTION_NAMES["o"]} was expected", ["minor warning", "overhead warning"])
 
     # deal damage
     state.dealDamage("k", frameOffset=ACTION_DAMAGE_TIME["k"])
-    state.procTag(frameOffset=ACTION_DAMAGE_TIME["k"], keepGOHTAvailable=keepGOHTAvailable)
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -98,22 +96,21 @@ def awaitOverheadReady(state: State, frameOffset: int = 0):
 
     # await swing whiff end
     if (state.fireRateTimers["s"] > frameOffset) and (state.hasSwingOverhead != True):
-        state.pushLog("used overhead slam after swing whiff - was U3H intended?", ["sequence warning"])
+        state.pushLog(f"used {ACTION_NAMES["o"]} after swing whiff - was U3H intended?", ["sequence warning"])
 
         # if an immediate overhead available, using it gives a faster overhead, otherwise await swing whiff end
         if not (state.hasDoubleJump or state.hasSwingOverhead == "unknown"):
             state.advanceTime(state.fireRateTimers["s"] - frameOffset)
 
 def useOverhead(state: State, keepGOHTAvailable: bool = False):
-    state.pushLog("started overhead slam", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["o"]}", ["action started"])
     
     # minor warning if no overhead is available
     if (state.hasSwingOverhead == False) and (state.hasDoubleJump == False):
-        state.pushLog("used potentially illegal overhead", ["minor warning", "overhead warning"])
+        state.pushLog(f"used unexpected {ACTION_NAMES["o"]}", ["minor warning", "overhead warning"])
 
     # deal damage
     state.dealDamage("o", frameOffset=ACTION_DAMAGE_TIME["o"])
-    state.procTag(frameOffset=ACTION_DAMAGE_TIME["o"], keepGOHTAvailable=keepGOHTAvailable)
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -141,14 +138,13 @@ State.ApplyAction["o"] = applyOverhead
 #=========================================================================================================#
 
 def useTracer(state: State):
-    state.pushLog("started tracer", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["t"]}", ["action started"])
 
     # major warning if cooldown is not ready
     state.warnIfNotReady("t")
     
     # deal damage (function handles tag application)
     state.dealDamage("t", frameOffset=ACTION_DAMAGE_TIME["t"])
-    state.appplyTag(frameOffset=ACTION_DAMAGE_TIME["t"])
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -177,7 +173,7 @@ State.ApplyAction["t"] = applyTracer
 #=========================================================================================================#
 
 def useWhiff(state: State):
-    state.pushLog("started swing whiff", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["w"]}", ["action started"])
 
     # major warning if cooldown is not ready
     state.warnIfNotReady("s")
@@ -207,7 +203,7 @@ State.ApplyAction["w"] = applyWhiff
 #=========================================================================================================#
 
 def useAutoswing(state: State):
-    state.pushLog("started auto swing", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["a"]}", ["action started"])
 
     # major warning if cooldown is not ready
     state.warnIfNotReady("s")
@@ -237,7 +233,7 @@ State.ApplyAction["a"] = applyAutoswing
 #=========================================================================================================#
 
 def useGOH(state: State):
-    state.pushLog("started get over here", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["g"]}", ["action started"])
 
     # major warning if cooldown is not ready
     state.warnIfNotReady("g")
@@ -273,23 +269,23 @@ def awaitGOHTReady(state: State, frameOffset: int = 0):
 
     # tag applied but not yet registered
     if state.tagTimer > frameOffset + (TAG_DURATION - TAG_GOHT_DELAY):
-        state.pushLog("get over here (targetting) awaiting tracer registering", ["waiting"])
+        state.pushLog(f"{ACTION_NAMES["G"]} awaiting tag registering", ["waiting"])
         state.advanceTime(state.tagTimer - frameOffset - (TAG_DURATION - TAG_GOHT_DELAY))
 
     # awaiting bomb explosion
     if (state.GOHTAvaiableTimer <= frameOffset) and state.isTaggedBomb:
-        state.pushLog("get over here (targetting) awaiting web bomb explosion", ["waiting"])
+        state.pushLog(f"{ACTION_NAMES["G"]} awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
         state.advanceTime(state.bombTimer + TAG_GOHT_DELAY - frameOffset)
 
 def useGOHT(state: State):
-    state.pushLog("started get over here (targeting)", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["G"]}", ["action started"])
 
     # major warning if cooldown is not ready
     state.warnIfNotReady("g")
 
-    # major warning if no tag is applied
-    if state.tagTimer == 0:
-        state.pushLog("used illegal get over here (targeting)", ["major warning"])
+    # major warning if no tag is available
+    if state.GOHTAvaiableTimer == 0:
+        state.pushLog(f"used illegal {ACTION_NAMES["G"]}", ["major warning"])
 
     # deal damage
     state.dealDamage("G", frameOffset=ACTION_DAMAGE_TIME["G"])
@@ -318,14 +314,13 @@ State.ApplyAction["G"] = applyGOHT
 #=========================================================================================================#
 
 def useUppercut(state: State, keepGOHTAvailable: bool = False):
-    state.pushLog("started uppercut", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["u"]}", ["action started"])
 
     # major warning if cooldown is not ready
     state.warnIfNotReady("u")
 
     # deal damage
     state.dealDamage("u", frameOffset=ACTION_DAMAGE_TIME["u"])
-    state.procTag(frameOffset=ACTION_DAMAGE_TIME["u"], keepGOHTAvailable=keepGOHTAvailable)
 
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
@@ -333,6 +328,10 @@ def useUppercut(state: State, keepGOHTAvailable: bool = False):
 
     # set ability to active state
     state.activeTimers["u"] = ACTIVE_TIMES["u"]
+
+    # refresh double jump
+    state.hasDoubleJump = True
+    state.pushLog("refreshed double jump", ["cooldown"])
 
     # cancel active abilities
     state.endActive("s")
@@ -351,7 +350,7 @@ State.ApplyAction["u"] = applyUppercut
 #=========================================================================================================#
 
 def useSymbiote(state: State):
-    state.pushLog("started symbiote", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["S"]}", ["action started"])
     
     # major warning if cooldown is not ready
     state.warnIfNotReady("S")
@@ -374,6 +373,7 @@ def useSymbiote(state: State):
 def applySymbiote(state: State):
     state.advanceTime(state.animationCancelTimes["S"]) 
     state.awaitCharge("S")
+    useSymbiote(state)
       
 State.ApplyAction["S"] = applySymbiote
 
@@ -383,12 +383,33 @@ State.ApplyAction["S"] = applySymbiote
 #=========================================================================================================#
 
 def useTeather(state: State):
-    useSymbiote(state)
+    state.pushLog(f"started {ACTION_NAMES["V"]}", ["action started"])
+        
+    # major warning if cooldown is not ready
+    state.warnIfNotReady("S")
+
+    # deal damage
+    state.dealDamage("S", frameOffset=ACTION_DAMAGE_TIME["S"])
+
+    # prepare animation cancel times
+    for action in state.animationCancelTimes.keys():
+        state.animationCancelTimes[action] = ANIMATION_CANCEL_TIMES["S"][action]
+
+    # set ability to active state
+    state.activeTimers["S"] = ACTIVE_TIMES["S"]
+
+    # cancel active abilities
+    state.endActive("s")
+    state.endActive("g")
+    state.endActive("u")
+
+    # attach teather
     state.teatherTimer = SYMBIOTE_MAX_DURATION
 
 def applyTeather(state: State):
-    applySymbiote(state)
-    state.teatherTimer = SYMBIOTE_MAX_DURATION
+    state.advanceTime(state.animationCancelTimes["S"]) 
+    state.awaitCharge("S")
+    useTeather(state)
 
 State.ApplyAction["V"] = applyTeather
 
@@ -398,7 +419,7 @@ State.ApplyAction["V"] = applyTeather
 #=========================================================================================================#
 
 def useClap(state: State):
-    state.pushLog("started clap", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["C"]}", ["action started"])
 
     # major warning if cooldown is not ready
     state.warnIfNotReady("B")
@@ -430,11 +451,11 @@ State.ApplyAction["C"] = applyClap
 #=========================================================================================================#
 
 def useBomb(state: State):
-    state.pushLog("started clap", ["action started"])
+    state.pushLog(f"started {ACTION_NAMES["B"]}", ["action started"])
 
     # major warning if bomb is not available
     if state.bombTimer == 0:
-        state.pushLog("used illegal web bomb", ["major warning"])
+        state.pushLog(f"used illegal {ACTION_NAMES["B"]}", ["major warning"])
 
     # deal damage
     state.dealDamage("B", frameOffset=ACTION_DAMAGE_TIME["B"])
@@ -468,11 +489,11 @@ def applyExplosion(state: State):
 
     # major warning if bomb is not active
     if state.bombTimer == 0:
-        state.log("used illegal explosion", ["major warning"])
+        state.log(f"used illegal {ACTION_NAMES["E"]}", ["major warning"])
         return
 
     # await explosion
-    state.log("awaiting web bomb explosion", ["waiting"])
+    state.log(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
     state.advanceTime(state.bombTimer) 
       
 State.ApplyAction["E"] = applyExplosion

@@ -16,13 +16,16 @@ def logUnrecognised(unrecognised: str, warningList: list[str]) -> None:
         warningList.append(f"unrecognised input \"{unrecognised}\"")
     unrecognised = ""
 
+# entirely ignore anything in parentheses
+def removeParentheses(string: str) -> str:
+    while ("(" in string) and (")" in string[string.find("("):]):
+        string = string[:string.find("(")] + string[(string.find("(") + string[string.find("("):].find(")") + 1):]
+    string = string.replace("(", "").replace(")", "")
+    return string
+
 def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
     actionSequence: list[str] = []
-
-    # entirely ignore anything in parentheses
-    while ("(" in comboString) and (")" in comboString[comboString.find("("):]):
-        comboString = comboString[:comboString.find("(")] + comboString[(comboString.find("(") + comboString[comboString.find("("):].find(")") + 1):]
-    comboString = comboString.replace("(", "").replace(")", "")
+    comboString = removeParentheses(comboString)
 
     # remove white space
     comboString = comboString.replace(" ", "")

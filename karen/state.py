@@ -192,7 +192,7 @@ class State:
         for charge in self.fireRateTimers.keys():
             if frames > self.fireRateTimers[charge] > 0:
                 self.pushLog(f"{ACTION_NAMES[charge]} came off cooldown (fire rate limit)", ["cooldown"], frameOffset=self.fireRateTimers[charge])
-            self.fireRateTimers[charge] = max(self.fireRateTimers[charge], 0)
+            self.fireRateTimers[charge] = max(self.fireRateTimers[charge] - frames, 0)
 
         # animation cancel tracking
         for action in self.animationCancelTimes.keys():

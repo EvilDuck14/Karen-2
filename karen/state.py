@@ -104,6 +104,10 @@ class State:
         if self.awaitingExplosion and (self.bombTimer > 0):
             self.advanceTime(self.bombTimer)
 
+        if (self.activeTimers["S"] > 0) and (self.teatherTimer > SYMBIOTE_TEATHER_HIT_INTERVAL):
+            self.pushLog("awaiting symbiote teather damage", ["cooldown"])
+            self.advanceTime(self.teatherTimer - SYMBIOTE_TEATHER_HIT_INTERVAL)
+
     # increments timers as time passes during combo
     def advanceTime(self, frames: int) -> None:
         if frames == 0:
@@ -189,6 +193,10 @@ class State:
             if frames > self.fireRateTimers[charge] > 0:
                 self.pushLog(f"{ACTION_NAMES[charge]} came off cooldown (fire rate limit)", ["cooldown"], frameOffset=self.fireRateTimers[charge])
             self.fireRateTimers[charge] = max(self.fireRateTimers[charge], 0)
+
+        # animation cancel tracking
+        for action in self.animationCancelTimes.keys():
+            self.animationCancelTimes[action] = max(self.animationCancelTimes[action] - frames, 0)
         
         self.timeElapsed += frames
         

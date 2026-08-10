@@ -416,7 +416,9 @@ def awaitSymbioteAvailable(state: State, frameOffset: int = 0):
 
     # allow multiple hits with single usage
     if state.activeTimers["S"] > frameOffset:
+        print(state.activeTimers["S"])
         state.advanceTime(state.animationCancelTimes["S"] - frameOffset)
+        print(state.activeTimers["S"])
         if state.activeTimers["S"] > frameOffset:
             return
 
@@ -436,7 +438,8 @@ def useSymbiote(state: State):
         state.animationCancelTimes[action] = ANIMATION_CANCEL_TIMES["S"][action]
 
     # set ability to active state
-    state.activeTimers["S"] = ACTIVE_TIMES["S"]
+    if state.activeTimers["S"] == 0:
+        state.activeTimers["S"] = ACTIVE_TIMES["S"]
 
     # cancel active abilities
     state.endActive("s")
@@ -470,7 +473,8 @@ def useTeather(state: State):
         state.animationCancelTimes[action] = ANIMATION_CANCEL_TIMES["S"][action]
 
     # set ability to active state
-    state.activeTimers["S"] = ACTIVE_TIMES["S"]
+    if state.activeTimers["S"] == 0:
+        state.activeTimers["S"] = ACTIVE_TIMES["S"]
 
     # cancel active abilities
     state.endActive("s")

@@ -202,26 +202,29 @@ class State:
 
         # tracer tag proc
         if source in PROCS_TAG:
-
-            # handles web bomb exploding during frame offset
-            if (frameOffset >= self.bombTimer > 0) and self.isTaggedBomb:
-                self.dealDamage("E", frameOffset=self.bombTimer)
-                self.appplyTag(frameOffset=self.bombTimer)
-                self.isTaggedBomb = False
-
-            # regular tracer proc
-            if frameOffset < self.tagTimer:
-                self.damageDealt += TAG_PROC_DAMAGE
-                self.tagTimer = min(self.tagTimer, frameOffset)
-                self.GOHTAvaiableTimer = min(self.GOHTAvaiableTimer, frameOffset)
-                if TAG_DURATION - TAG_GOHT_DELAY + frameOffset >= self.tagTimer > self.GOHTAvaiableTimer:
-                    self.GOHTAvaiableTimer = self.tagTimer
-                self.pushLog(f"proced tag, dealing {TAG_PROC_DAMAGE} damage", ["damage"], frameOffset)
+            self.procTag(frameOffset=frameOffset)
 
         # tracer tag application
         if source in APPLIES_TAG:
             self.tagTimer = TAG_DURATION + frameOffset
             self.pushLog("applied tag", ["cooldown"], frameOffset)
+
+    # tracer tag proc
+    def procTag(self, frameOffset: int = 0):
+    
+        # handles web bomb exploding during frame offset
+        if (frameOffset >= self.bombTimer > 0) and self.isTaggedBomb:
+            self.dealDamage("E", frameOffset=self.bombTimer)
+            self.isTaggedBomb = False
+
+        # regular tracer proc
+        if frameOffset < self.tagTimer:
+            self.damageDealt += TAG_PROC_DAMAGE
+            self.tagTimer = min(self.tagTimer, frameOffset)
+            self.GOHTAvaiableTimer = min(self.GOHTAvaiableTimer, frameOffset)
+            if TAG_DURATION - TAG_GOHT_DELAY + frameOffset >= self.tagTimer > self.GOHTAvaiableTimer:
+                self.GOHTAvaiableTimer = self.tagTimer
+            self.pushLog(f"proced tag, dealing {TAG_PROC_DAMAGE} damage", ["damage"], frameOffset)
 
     # reduces charge and sets relevant timers
     def endActive(self, charge: str):

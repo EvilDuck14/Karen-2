@@ -69,6 +69,7 @@ def useKickCancel(state: State):
 
 def applyKickCancel(state: State):
     state.advanceTime(state.animationCancelTimes["p"]) 
+    awaitKickReady(state)
     useKickCancel(state)
 
 State.ApplyAction["k-"] = applyKickCancel

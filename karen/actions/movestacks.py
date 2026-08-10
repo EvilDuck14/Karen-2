@@ -58,6 +58,7 @@ def applyKickSaporen(state: State):
     state.advanceTime(state.animationCancelTimes["p"])
 
     # awaiting actions availability
+    awaitKickReady(state)
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME))
 
     # action sequence
@@ -128,6 +129,7 @@ def applyKickSaporenFFAmestack(state: State):
     state.advanceTime(state.animationCancelTimes["p"])
 
     # awaiting actions availability
+    awaitKickReady(state)
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME))
     state.awaitCharge("u", frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1))
 
@@ -226,7 +228,20 @@ State.ApplyAction["u+a+G"] = applyFastSpaceJam
 #=========================================================================================================#
 
 def applyPunchRT(state: State):
-    pass
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["p"])
+
+    # awaiting actions availability
+    awaitPunchReady(state)
+    state.awaitCharge("t", ACTION_DAMAGE_TIME["p"] - RT_PRE_HIT_TIME)
+
+    # action sequence
+    usePunch(state)
+    state.advanceTime(ACTION_DAMAGE_TIME["p"] - RT_PRE_HIT_TIME)
+    useTracer(state)
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["t"])
+
 State.ApplyAction["p+t"] = applyPunchRT
 
 
@@ -235,7 +250,20 @@ State.ApplyAction["p+t"] = applyPunchRT
 #=========================================================================================================#
 
 def applyKickRT(state: State):
-    pass
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["p"])
+
+    # awaiting actions availability
+    awaitKickReady(state)
+    state.awaitCharge("t", ACTION_DAMAGE_TIME["k"] - RT_PRE_HIT_TIME)
+
+    # action sequence
+    useKick(state)
+    state.advanceTime(ACTION_DAMAGE_TIME["k"] - RT_PRE_HIT_TIME)
+    useTracer(state)
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["t"])
+
 State.ApplyAction["k+t"] = applyKickRT
 
 
@@ -244,8 +272,21 @@ State.ApplyAction["k+t"] = applyKickRT
 #=========================================================================================================#
 
 def applyOverheadRT(state: State):
-    pass
-State.ApplyAction["k+t"] = applyOverheadRT
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["o"])
+
+    # awaiting actions availability
+    awaitOverheadReady(state)
+    state.awaitCharge("t", ACTION_DAMAGE_TIME["o"] - RT_PRE_HIT_TIME)
+
+    # action sequence
+    useOverhead(state)
+    state.advanceTime(ACTION_DAMAGE_TIME["o"] - RT_PRE_HIT_TIME)
+    useTracer(state)
+    state.procTag(frameOffset=ACTION_DAMAGE_TIME["t"])
+
+State.ApplyAction["o+t"] = applyOverheadRT
 
 
 #=========================================================================================================#

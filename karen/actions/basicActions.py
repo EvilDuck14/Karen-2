@@ -161,7 +161,7 @@ def useTracer(state: State):
     # major warning if cooldown is not ready
     state.warnIfNotReady("t")
     
-    # deal damage (function handles tag application)
+    # deal damage
     state.dealDamage("t", frameOffset=ACTION_DAMAGE_TIME["t"])
 
     # prepare animation cancel times

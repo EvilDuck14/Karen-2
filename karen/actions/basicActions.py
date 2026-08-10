@@ -516,11 +516,11 @@ def applyExplosion(state: State):
 
     # major warning if bomb is not active
     if state.bombTimer == 0:
-        state.log(f"used illegal {ACTION_NAMES["E"]}", ["major warning"])
+        state.pushLog(f"used illegal {ACTION_NAMES["E"]}", ["major warning"])
         return
 
     # await explosion
-    state.log(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
+    state.pushLog(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
     state.advanceTime(state.bombTimer) 
       
 State.ApplyAction["E"] = applyExplosion

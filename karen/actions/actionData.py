@@ -83,7 +83,7 @@ SYMBIOTE_MAX_DURATION = 1 * 60
 SYMBIOTE_TEATHER_HIT_INTERVAL = 6
 
 SAPOREN_PRE_HIT_TIME = 5 # TO DO: measure
-RT_PRE_HIT_TIME = 5 # TO DO: measure
+RT_PRE_HIT_TIME = ACTION_DAMAGE_TIME["t"] # TO DO: measure
 
 MAX_CHARGES = {
     "t" : 5,
@@ -118,6 +118,13 @@ COOLDOWN_TIMES = {
     "s" : 19, # TO DO: check
     "u" : 2 * 60,
     "C" : 30 # for stopping melee from being used while clap is active TO DO: check
+}
+
+EARLY_CANCELS_NOT_ENABLED_BY = {
+    "p" : [ "p", "k" ],
+    "k" : [ "p", "k" ],
+    "o" : [ "p", "k", "o" ],
+    "a" : []
 }
 
 ANIMATION_CANCEL_TIMES = {

@@ -3,79 +3,97 @@ from typing import Literal, Callable
 from karen.log import LogEntry
 
 class State:
-    sequence: list[str] = [] # list of actions that have been applied to the state
-    log: list[LogEntry] = [] # stores more information for debugging / advanced users
+    log: list[LogEntry] # stores more information for debugging / advanced users
 
-    timeElapsed: int = 0 # time from start of combo until current point in calculation
-    lastDamageTime: int = 0 # time from start of combo until final queued hit
-    firstDamageTime: int | Literal["unknown"] = "unknown" # time that first tick of damage registers
-    damageDealt: int = 0 # cumulative damage counter
+    timeElapsed: int # time from start of combo until current point in calculation
+    lastDamageTime: int # time from start of combo until final queued hit
+    firstDamageTime: int | Literal["unknown"] # time that first tick of damage registers
+    damageDealt: int # cumulative damage counter
 
-    meleeSequenceStep: Literal["punch 1", "punch 2", "kick", "unknown", "not punch 1"] = "unknown" # tracks melee sequence)
-    meleeSequenceTimer: int = 0 # timer for punch/kick tracking
-    tagDelay: int = 0 # tracks time until tracer tag will be applied
-    tagTimer: int = 0 # tracks time until tracer tag expires
-    swingIsWhiff: bool = False # tracks whether the last used swing was a whiff to avoid consuming a swing charge
-    GOHTAvaiableTimer: int = 0 # helps tracking availability of GOHT throughout overlapping tracers
+    meleeSequenceStep: Literal["punch 1", "punch 2", "kick", "unknown", "not punch 1"] # tracks melee sequence)
+    meleeSequenceTimer: int # timer for punch/kick tracking
+    tagDelay: int # tracks time until tracer tag will be applied
+    tagTimer: int # tracks time until tracer tag expires
+    swingIsWhiff: bool # tracks whether the last used swing was a whiff to avoid consuming a swing charge
+    GOHTAvaiableTimer: int # helps tracking availability of GOHT throughout overlapping tracers
     isTaggedBomb: bool = False # tracks whether peni web bomb is attached
-    bombTimer: int = 0 # tracks time until the web bomb explodes
-    teatherTimer: int = 0 # tracks remaining duration that symbiote teather can stay active
-    hasDoubleJump: bool = True # tracks whether double jump overhead can be used (doesn't force overhead)
-    hasSwingOverhead: bool | Literal["unknown"] = "unknown" # tracks whether swing overhead can be used (does force overhead)
+    bombTimer: int # tracks time until the web bomb explodes
+    teatherTimer: int # tracks remaining duration that symbiote teather can stay active
+    hasDoubleJump: bool # tracks whether double jump overhead can be used (doesn't force overhead)
+    hasSwingOverhead: bool | Literal["unknown"] # tracks whether swing overhead can be used (does force overhead)
 
-    # charges available for relevant actions
-    charges: dict[str, int] = { 
-        "t" : MAX_CHARGES["t"],
-        "s" : MAX_CHARGES["s"],
-        "g" : MAX_CHARGES["g"],
-        "u" : MAX_CHARGES["u"],
-        "S" : MAX_CHARGES["S"],
-        "B" : MAX_CHARGES["B"]
-    }
-
-    # time until action ends if not cancelled, cooldown is only taken afterwards
-    activeTimers: dict[str, int] = {
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0
-    }
-
-    # time until respective charge is replenished
-    rechargeTimers: dict[str, int] = { 
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "B" : 0
-    }
-
-    # time until charges can be used, regardless of availability
-    fireRateTimers: dict[str, int] = { 
-        "t" : 0,
-        "s" : 0,
-        "u" : 0
-    }
-
-    # time until current animation can be cancelled into each class of action
-    animationCancelTimes: dict[str, int] = { 
-        "p" : 0,
-        "o" : 0,
-        "t" : 0,
-        "s" : 0,
-        "g" : 0,
-        "u" : 0,
-        "S" : 0,
-        "C" : 0,
-        "B" : 0
-    }
+    charges: dict[str, int] # charges available for relevant actions
+    activeTimers: dict[str, int] # time until action ends if not cancelled, cooldown is only taken afterwards
+    rechargeTimers: dict[str, int] # time until respective charge is replenished
+    fireRateTimers: dict[str, int] # time until charges can be used, regardless of availability   
+    animationCancelTimes: dict[str, int] # time until current animation can be cancelled into each class of action
 
     # static variable holding functions which append actions to a state
     ApplyAction: dict[str, Callable[[State]], None] = {}
 
     # creates state and applies actions in the sequence
     def __init__(self, sequence: list[str]):
+        self.log = []
+        self.timeElapsed = 0 
+        self.lastDamageTime = 0 
+        self.firstDamageTime = "unknown"
+        self.damageDealt = 0
+        self.meleeSequenceStep = "unknown" 
+        self.meleeSequenceTimer = 0 
+        self.tagDelay = 0 
+        self.tagTimer = 0
+        self.swingIsWhiff = False
+        self.GOHTAvaiableTimer = 0
+        self.isTaggedBomb = False 
+        self.bombTimer = 0 
+        self.teatherTimer = 0 
+        self.hasDoubleJump = True
+        self.hasSwingOverhead = "unknown"
+
+        self.charges = { 
+            "t" : MAX_CHARGES["t"],
+            "s" : MAX_CHARGES["s"],
+            "g" : MAX_CHARGES["g"],
+            "u" : MAX_CHARGES["u"],
+            "S" : MAX_CHARGES["S"],
+            "B" : MAX_CHARGES["B"]
+        }
+    
+        self.activeTimers = {
+            "s" : 0,
+            "g" : 0,
+            "u" : 0,
+            "S" : 0
+        }
+    
+        self.rechargeTimers = { 
+            "t" : 0,
+            "s" : 0,
+            "g" : 0,
+            "u" : 0,
+            "S" : 0,
+            "B" : 0
+        }
+    
+        self.fireRateTimers = { 
+            "t" : 0,
+            "s" : 0,
+            "u" : 0,
+            "C" : 0
+        }
+
+        self.animationCancelTimes = { 
+            "p" : 0,
+            "o" : 0,
+            "t" : 0,
+            "s" : 0,
+            "g" : 0,
+            "u" : 0,
+            "S" : 0,
+            "C" : 0,
+            "B" : 0
+        }
+
         for action in sequence:
             self.applyAction(action)
 
@@ -280,3 +298,13 @@ class State:
               f"\nTime: {round(self.lastDamageTime / 60, 2)}s" +
               f"\nTime From First Hit: {round((0 if self.firstDamageTime == "unknown" else self.lastDamageTime - self.firstDamageTime) / 60, 2)}s"
         )
+
+    def getWarnings(self) -> list[str]:
+        warningList = []
+        self.log.sort()
+        for entry in self.log:
+            for flag in entry.flags:
+                if "warning" in flag:
+                    warningList.append(f"[{entry.frame}f] {entry.details}")
+                    break
+        return warningList

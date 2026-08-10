@@ -292,7 +292,7 @@ class State:
 
     # major warning if ability charge is used currently but isn't available
     def warnIfNotReady(self, charge: str):
-        if (charge in self.activeTimers.keys()) and (self.activeTimers[charge] > 0):
+        if (charge in self.activeTimers.keys()) and (self.activeTimers[charge] > 0) and (charge != "S"):
             self.pushLog(f"used {ACTION_NAMES[charge]} while charge still in use", ["dev warning"])
         if (charge in self.charges.keys()) and (self.charges[charge] == 0):
             self.pushLog(f"used {ACTION_NAMES[charge]} without required charge", ["dev warning"])

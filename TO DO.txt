@@ -3,6 +3,4 @@
     - until bomb timer hits desired value
     - number of symbiote damage ticks
 
-multiple hits with the same symbiote
-
 weaving explosion into movestacks with multiple hits

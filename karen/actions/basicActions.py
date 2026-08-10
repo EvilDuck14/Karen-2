@@ -412,6 +412,16 @@ State.ApplyAction["u"] = applyUppercut
 #                                                Symbiote                                                 #
 #=========================================================================================================#
 
+def awaitSymbioteAvailable(state: State, frameOffset: int = 0):
+
+    # allow multiple hits with single usage
+    if state.activeTimers["S"] > frameOffset:
+        state.advanceTime(state.animationCancelTimes["S"] - frameOffset)
+        if state.activeTimers["S"] > frameOffset:
+            return
+
+    state.awaitCharge("S", frameOffset=frameOffset)
+
 def useSymbiote(state: State):
     state.pushLog(f"started {ACTION_NAMES["S"]}", ["action started"])
     
@@ -435,7 +445,7 @@ def useSymbiote(state: State):
 
 def applySymbiote(state: State):
     state.advanceTime(state.animationCancelTimes["S"]) 
-    state.awaitCharge("S")
+    awaitSymbioteAvailable(state)
     state.pushActionLog("S")
     useSymbiote(state)
       
@@ -467,12 +477,13 @@ def useTeather(state: State):
     state.endActive("g")
     state.endActive("u")
 
-    # attach teather
-    state.teatherTimer = SYMBIOTE_TEATHER_DURATION + ACTION_DAMAGE_TIME["S"]
+    # attach teather - don't reset timer on multiple symbiote hits
+    if state.teatherTimer == 0:
+        state.teatherTimer = SYMBIOTE_TEATHER_DURATION + ACTION_DAMAGE_TIME["S"]
 
 def applyTeather(state: State):
     state.advanceTime(state.animationCancelTimes["S"]) 
-    state.awaitCharge("S")
+    awaitSymbioteAvailable(state)
     state.pushActionLog("V")
     useTeather(state)
 

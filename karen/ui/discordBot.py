@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from karen.ui.parseComboString import parseComboString
+from karen.ui.parseComboString import parseComboString, preEval
 from karen.state import State
 from karen.actions.basicActions import *
 from karen.actions.earlyCancels import *
@@ -54,9 +54,12 @@ async def eval(ctx: commands.Context, *arr: str):
 
     inputString: str = " ".join(arr)
     print(f"\nreceived command: !eval {inputString}")
+
     warningList: list[str] = []
     actionSequence = parseComboString(inputString, warningList)
     print(f"interpreted action sequence as {actionSequence}")
+    actionSequence = preEval(actionSequence, warningList, advancedMode=False)
+
     evalState = State(actionSequence)
     warningList += evalState.getWarnings()
 

@@ -1,4 +1,4 @@
-weaving explosion into movestacks with multiple hits
+weaving explosion into movestacks with multiple hits (saporen ffamestacks and UXH)
 
 add all action names
 

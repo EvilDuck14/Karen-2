@@ -123,15 +123,9 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
             if (len(actionSequence) == 0) or (len(tempActionSequence) == 1):
                 break
 
-            # movestack valid
-            if (actionSequence[-1] + "+" + tempActionSequence[1]) in State.ApplyAction.keys():
+            else:
                 actionSequence[-1] += "+" + tempActionSequence[1]
                 tempActionSequence = tempActionSequence[2:]
-
-            # movestack invalid
-            else:
-                warningList.append(f"unrecognised movestack \"{actionSequence[-1]}+{tempActionSequence[1]}\"")
-                tempActionSequence = tempActionSequence[1:]
 
         # early cancels
         elif tempActionSequence[0] == "-":
@@ -154,4 +148,54 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
             actionSequence.append(tempActionSequence[0])
             tempActionSequence = tempActionSequence[1:]
 
+    # extra pass to check that movestacks are valid
+    tempActionSequence = actionSequence
+    actionSequence = []
+    for action in tempActionSequence:
+        if action in State.ApplyAction.keys():
+            actionSequence.append(action)
+
+        else:
+            warningList.append(f"unrecognised movestack \"{action}\"")
+            actionSequence += action.split("+")
+
     return actionSequence
+
+from karen.actions.actionData import ACTION_NAMES, ANIMATION_CANCEL_TIMES
+
+# replaces suboptimal inputs / typos and raises warnings for sequence errors
+def preEval(actionSequence: list[str], warningList: list[str], advancedMode: bool = False):
+    improvedActionSequence: list[str] = []
+
+    while len(actionSequence) > 0:
+
+        # automatic swing whiff insertion
+        if (not advancedMode) and (len(improvedActionSequence) > 0):
+
+            # skip for wait action
+            if (improvedActionSequence[-1][0] == "[") or (actionSequence[0][0] == "["):
+                pass           
+
+            # don't use a swing whiff if one action is explosion
+            if (improvedActionSequence[-1] == "E") or (actionSequence[0] == "E"):
+                pass
+
+            # don't use a swing whiff to speed up clap/bomb > melee
+            elif (improvedActionSequence[-1] in ["C", "B"]) and (actionSequence[0][0] in ["p", "k", "o"]):
+                pass
+
+            # don't use a swing whiff to speed up symbiote > symbiote
+            elif (improvedActionSequence[-1] in ["S", "V"] and actionSequence[0] in ["S", "V"]):
+                pass
+
+            # otherwise, insert swing whiff if it speeds up the combo
+            else:
+                nextActionType = actionSequence[0][0].replace("k", "p").replace("w", "s").replace("a", "s").replace("g", "G")
+                if (ANIMATION_CANCEL_TIMES[improvedActionSequence[-1][-1]]["s"] + ANIMATION_CANCEL_TIMES["w"][nextActionType] < ANIMATION_CANCEL_TIMES[improvedActionSequence[-1][-1]][nextActionType]):
+                    warningList.append(f"automatically weaved swing whiff between {ACTION_NAMES[improvedActionSequence[-1]]} and {ACTION_NAMES[actionSequence[0]]}")
+                    improvedActionSequence.append("w")
+        
+        improvedActionSequence.append(actionSequence[0])
+        actionSequence = actionSequence[1:]
+
+    return improvedActionSequence

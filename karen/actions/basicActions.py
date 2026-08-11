@@ -14,9 +14,9 @@ def awaitPunchReady(state: State, frameOffset: int = 0):
             state.pushLog(f"waiting for {ACTION_NAMES["p"]} when {ACTION_NAMES["k"]} would likely be faster", ["sequence warning"])
         state.advanceTime(state.meleeSequenceTimer - frameOffset)
 
-    # await clap animation
+    # await clap/bomb animation
     if state.fireRateTimers["C"] > frameOffset:
-        state.pushLog(f"awaiting {ACTION_NAMES["c"]} animation", ["waiting"])
+        state.pushLog(f"awaiting Peni team-up animation", ["waiting"])
         state.advanceTime(state.fireRateTimers["C"] - frameOffset)
 
     # await web bomb explosion
@@ -70,9 +70,9 @@ State.ApplyAction["p"] = applyPunch
 
 def awaitKickReady(state: State, frameOffset: int = 0):
 
-    # await clap animation
+    # await clap/bomb animation
     if state.fireRateTimers["C"] > frameOffset:
-        state.pushLog(f"awaiting {ACTION_NAMES["c"]} animation", ["waiting"])
+        state.pushLog(f"awaiting Peni team-up animation", ["waiting"])
         state.advanceTime(state.fireRateTimers["C"] - frameOffset)
 
     # await web bomb explosion
@@ -129,9 +129,9 @@ def awaitOverheadReady(state: State, frameOffset: int = 0):
         if not (state.hasDoubleJump or state.hasSwingOverhead == "unknown"):
             state.advanceTime(state.activeTimers["s"] - frameOffset)
 
-    # await clap animation
+    # await clap/bomb animation
     if state.fireRateTimers["C"] > frameOffset:
-        state.pushLog(f"awaiting {ACTION_NAMES["c"]} animation", ["waiting"])
+        state.pushLog(f"awaiting Peni team-up animation", ["waiting"])
         state.advanceTime(state.fireRateTimers["C"] - frameOffset)
 
     # await web bomb explosion
@@ -513,6 +513,9 @@ def useClap(state: State):
     state.charges["B"] -= 1
     state.rechargeTimers["B"] = RECHARGE_TIMES["B"]
 
+    # fire rate timer stops punch from coming out faster via swing weave
+    state.fireRateTimers["C"] = ANIMATION_CANCEL_TIMES["C"]["p"]
+
     # cancel active abilities
     state.endActive("g")
 
@@ -546,6 +549,9 @@ def useBomb(state: State):
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
         state.animationCancelTimes[action] = ANIMATION_CANCEL_TIMES["B"][action]
+
+    # fire rate timer stops punch from coming out faster via swing weave
+    state.fireRateTimers["C"] = ANIMATION_CANCEL_TIMES["B"]["p"]
 
     # cancel active abilities
     state.endActive("s")

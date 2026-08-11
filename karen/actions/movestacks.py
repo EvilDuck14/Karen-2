@@ -227,17 +227,18 @@ def applySpaceJam(state: State):
     # awaiting actions availability
     awaitUppercutReady(state)
     state.awaitCharge("s", frameOffset=ANIMATION_CANCEL_TIMES["u"]["s"])
-    awaitGOHTReady(state, frameOffset=(ANIMATION_CANCEL_TIMES["u"]["s"] + ANIMATION_CANCEL_TIMES["w"]["G"]))
+    awaitGOHTReady(state, frameOffset=(ANIMATION_CANCEL_TIMES["u"]["s"] + ANIMATION_CANCEL_TIMES["w"]["g"]))
 
     # action sequence
     state.pushActionLog("u+w+G", frameOffset=ACTION_DAMAGE_TIME["u"])
     useUppercut(state)
     state.advanceTime(ANIMATION_CANCEL_TIMES["u"]["s"])
     useWhiff(state)
-    state.advanceTime(ANIMATION_CANCEL_TIMES["w"]["G"])
+    state.advanceTime(ANIMATION_CANCEL_TIMES["w"]["g"])
     useGOHT(state)
 
 State.ApplyAction["u+w+G"] = applySpaceJam
+State.ApplyAction["u+G"] = applySpaceJam
 
 
 #=========================================================================================================#
@@ -252,14 +253,14 @@ def applyFastSpaceJam(state: State):
     # awaiting actions availability
     awaitUppercutReady(state)
     state.awaitCharge("s", frameOffset=ANIMATION_CANCEL_TIMES["u"]["s"])
-    awaitGOHTReady(state, frameOffset=(ANIMATION_CANCEL_TIMES["u"]["s"] + ANIMATION_CANCEL_TIMES["a"]["G"]))
+    awaitGOHTReady(state, frameOffset=(ANIMATION_CANCEL_TIMES["u"]["s"] + ANIMATION_CANCEL_TIMES["a"]["g"]))
 
     # action sequence
     state.pushActionLog("u+a+G", frameOffset=ACTION_DAMAGE_TIME["u"])
     useUppercut(state)
     state.advanceTime(ANIMATION_CANCEL_TIMES["u"]["s"])
     useAutoswing(state)
-    state.advanceTime(ANIMATION_CANCEL_TIMES["a"]["G"])
+    state.advanceTime(ANIMATION_CANCEL_TIMES["a"]["g"])
     useGOHT(state)
 
 State.ApplyAction["u+a+G"] = applyFastSpaceJam

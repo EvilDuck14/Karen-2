@@ -10,6 +10,7 @@ class State:
     lastDamageTime: int # time from start of combo until final queued hit
     firstDamageTime: int | Literal["unknown"] # time that first tick of damage registers
     damageDealt: int # cumulative damage counter
+    bombDamageTime: int # tracks whether to remove the bomb damage from the dps calculation
 
     meleeSequenceStep: Literal["punch 1", "punch 2", "kick", "unknown", "not punch 1"] # tracks melee sequence)
     meleeSequenceTimer: int # timer for punch/kick tracking
@@ -41,6 +42,7 @@ class State:
         self.lastDamageTime = 0 
         self.firstDamageTime = "unknown"
         self.damageDealt = 0
+        self.bombDamageTime = "unknown"
         self.meleeSequenceStep = "unknown" 
         self.meleeSequenceTimer = 0 
         self.tagDelay = 0 
@@ -267,7 +269,10 @@ class State:
 
         # tracking first damage time
         if self.firstDamageTime == "unknown" or self.firstDamageTime > self.timeElapsed + frameOffset:
-            self.firstDamageTime = self.timeElapsed + frameOffset
+            if source != "B":
+                self.firstDamageTime = self.timeElapsed + frameOffset
+            elif self.bombDamageTime == "unknown":
+                self.bombDamageTime = self.timeElapsed + frameOffset
 
         # tracking last damage time
         self.lastDamageTime = max(self.lastDamageTime, self.timeElapsed + frameOffset)
@@ -375,7 +380,7 @@ class State:
 
         # insert explosions in the correct positions
         for explosionEntry in explosionEntries:
-            position: int = 0
+            position: int = len(otherEntries)
             for index, entry in enumerate(otherEntries):
                 if entry.frame >= explosionEntry.frame:
                     position = index
@@ -392,8 +397,14 @@ class State:
         details["damage"] = self.damageDealt
         details["time frames"] = self.lastDamageTime
         details["time seconds"] = round(details["time frames"] / 60, 2)
-        details["time from damage frames"] = 0 if self.firstDamageTime == "unknown" else self.lastDamageTime - self.firstDamageTime
-        details["time from damage seconds"] = round(details["time from damage frames"] / 60, 2)
+
+        tfd: int = 0 if self.firstDamageTime == "unknown" else self.lastDamageTime - self.firstDamageTime
+        details["time from damage frames"] = tfd
+        details["time from damage seconds"] = round(tfd / 60, 2)
+
+        dpsNumerator: int = 60 * (self.damageDealt - (ACTION_DAMAGE["b"] if ((self.bombDamageTime != "unknown") and (self.bombDamageTime < self.firstDamageTime)) else 0))
+        details["dps"] = "NaN" if tfd == 0 else round(dpsNumerator / tfd, 2)
+
         details["sequence shorthand"] = "".join(sequence)
 
         actionNames: list[str] = []

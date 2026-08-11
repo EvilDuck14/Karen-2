@@ -6,5 +6,8 @@ add combo names
 
 implement combo namer
 
-auto swing weaves
+implement parameters
 
+implement preferences
+
+remember to subtract 1 damage from dps calculation if bomb comes before other damage

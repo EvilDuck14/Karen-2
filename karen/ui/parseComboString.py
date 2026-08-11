@@ -152,7 +152,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
     tempActionSequence = actionSequence
     actionSequence = []
     for action in tempActionSequence:
-        if action in State.ApplyAction.keys():
+        if (action in State.ApplyAction.keys()) or (action[0] == "["):
             actionSequence.append(action)
 
         else:
@@ -177,11 +177,11 @@ def preEval(actionSequence: list[str], warningList: list[str], advancedMode: boo
                 pass           
 
             # don't use a swing whiff if one action is explosion
-            if (improvedActionSequence[-1] == "E") or (actionSequence[0] == "E"):
+            elif (improvedActionSequence[-1] == "E") or (actionSequence[0] == "E"):
                 pass
 
-            # don't use a swing whiff to speed up clap/bomb > melee
-            elif (improvedActionSequence[-1] in ["C", "B"]) and (actionSequence[0][0] in ["p", "k", "o"]):
+            # don't use a swing whiff to speed up clap/bomb > melee or clap > bomb
+            elif (improvedActionSequence[-1] in ["C", "B"]) and (actionSequence[0][0] in ["p", "k", "o", "B"]):
                 pass
 
             # don't use a swing whiff to speed up symbiote > symbiote
@@ -190,7 +190,7 @@ def preEval(actionSequence: list[str], warningList: list[str], advancedMode: boo
 
             # otherwise, insert swing whiff if it speeds up the combo
             else:
-                nextActionType = actionSequence[0][0].replace("k", "p").replace("w", "s").replace("a", "s").replace("g", "G")
+                nextActionType = actionSequence[0][0].replace("k", "p").replace("w", "s").replace("a", "s").replace("G", "g").replace("b", "B")
                 if (ANIMATION_CANCEL_TIMES[improvedActionSequence[-1][-1]]["s"] + ANIMATION_CANCEL_TIMES["w"][nextActionType] < ANIMATION_CANCEL_TIMES[improvedActionSequence[-1][-1]][nextActionType]):
                     warningList.append(f"automatically weaved swing whiff between {ACTION_NAMES[improvedActionSequence[-1]]} and {ACTION_NAMES[actionSequence[0]]}")
                     improvedActionSequence.append("w")

@@ -58,9 +58,11 @@ async def eval(ctx: commands.Context, *arr: str):
     warningList: list[str] = []
     actionSequence = parseComboString(inputString, warningList)
     print(f"interpreted action sequence as {actionSequence}")
-    actionSequence = preEval(actionSequence, warningList, advancedMode=False)
+    improvedActionSequence: list[str] = preEval(actionSequence, warningList, advancedMode=False)
+    if (len(actionSequence) != len(improvedActionSequence)) or (False in [actionSequence[i] == improvedActionSequence[i] for i in range(len(actionSequence))]):
+        print(f"improved action sequence to {improvedActionSequence}")
 
-    evalState = State(actionSequence)
+    evalState = State(improvedActionSequence)
     warningList += evalState.getWarnings()
 
     # formatting

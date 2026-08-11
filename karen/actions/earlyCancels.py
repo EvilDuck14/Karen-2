@@ -26,7 +26,7 @@ def usePunchCancel(state: State):
     if state.meleeSequenceStep == "punch 1":
         state.meleeSequenceStep = "punch 2"
     elif state.meleeSequenceStep in ["punch 2", "not punch 1"]:
-        state.meleeSequenceStep == "kick"
+        state.meleeSequenceStep = "kick"
     elif state.meleeSequenceStep == "unknown":
         state.meleeSequenceStep = "not punch 1"
 

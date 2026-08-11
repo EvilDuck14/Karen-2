@@ -1,4 +1,4 @@
-add all action names
+add automatic saporen / spacejam detection
 
 add combo names
 

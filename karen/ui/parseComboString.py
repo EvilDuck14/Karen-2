@@ -74,7 +74,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
             if comboString[:tryLength].lower() in COMBO_NAMES.keys():
                 logUnrecognised(unrecognised, warningList)
                 unrecognised = ""
-                actionSequence += COMBO_NAMES[comboString[:tryLength]]
+                actionSequence += COMBO_NAMES[comboString[:tryLength].lower()]
                 comboString = comboString[tryLength:]
                 tryLength = 0
                 break
@@ -88,7 +88,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> list[str]:
             if comboString[:tryLength].lower() in COMBO_ACTION_NAMES.keys():
                 logUnrecognised(unrecognised, warningList)
                 unrecognised = ""
-                actionSequence += COMBO_ACTION_NAMES[comboString[:tryLength]]
+                actionSequence += COMBO_ACTION_NAMES[comboString[:tryLength].lower()]
                 comboString = comboString[tryLength:]
                 tryLength = 0
                 break
@@ -174,7 +174,11 @@ def preEval(actionSequence: list[str], warningList: list[str], advancedMode: boo
 
             # skip for wait action
             if (improvedActionSequence[-1][0] == "[") or (actionSequence[0][0] == "["):
-                pass           
+                pass   
+
+            # skip if last animation was an early cancel
+            elif (improvedActionSequence[-1][-1] == "-"):
+                pass        
 
             # don't use a swing whiff if one action is explosion
             elif (improvedActionSequence[-1] == "E") or (actionSequence[0] == "E"):

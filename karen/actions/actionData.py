@@ -7,7 +7,7 @@ ACTION_NAMES = {
     "w" : "Swing Whiff", 
     "a" : "Auto Swing", 
     "g" : "Get Over Here", 
-    "G" : "Get Over Here (Targetting)", 
+    "G" : "Get Over Here (Targeting)", 
     "u" : "Uppercut",
     "S" : "Symbiote",
     "V" : "Symbiote (Upgraded)",

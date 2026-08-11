@@ -16,13 +16,13 @@ ACTION_NAMES = {
     "B" : "Web Bomb",
     "E" : "Web Bomb Explosion",
 
-    # Early Cancels
+    # early cancels
     "p-" : "Punch (Burn)",
     "k-" : "Kick (Burn)",
     "o-" : "Overhead (Burn)",
     "a-" : "No Stick",
 
-    # Movestacks
+    # movestacks
     "G+u" : "FFAmestack",
     "p+G" : "Punch Saporen",
     "k+G" : "Kick Saporen",
@@ -35,9 +35,16 @@ ACTION_NAMES = {
     "p+t" : "Punch Reverse Trigger",
     "k+t" : "Kick Reverse Trigger",
     "p+o" : "Unique Punch Overhead Stack",
-    "k+o" : "Unique Kick Overhaed Stack",
+    "k+o" : "Unique Kick Overhead Stack",
     "g+B" : "GOH Bomb Stack",
-    "G+B" : "GOHT Bomb Stack"
+    "G+B" : "GOHT Bomb Stack",
+
+    # explosion weave movestacks
+    "p+G+E+u" : "Punch Explosion Saporen FFAmestack",
+    "k+G+E+u" : "Kick Explosion Saporen FFAmestack",
+    "o+G+E+u" : "Overhead Explosion Saporen FFAmestack",
+    "p+E+o" : "Unique Punch Explosion Overhead Stack",
+    "p+E+o" : "Unique Kick Explosion Overhead Stack"
 }
 
 ACTION_DAMAGE = {

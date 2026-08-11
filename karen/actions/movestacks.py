@@ -99,7 +99,7 @@ State.ApplyAction["o+G"] = applyOverheadSaporen
 #                                        Punch Saporen FFAmestack                                         #
 #=========================================================================================================#
 
-def applyPunchSaporenFFAmestack(state: State):
+def applyPunchSaporenFFAmestack(state: State, weaveExplosion: bool = False):
 
     # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["p"])
@@ -109,12 +109,23 @@ def applyPunchSaporenFFAmestack(state: State):
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME))
     awaitUppercutReady(state, frameOffset=(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1))
 
+    # weave explosion variation
+    if weaveExplosion:
+        if state.bombTimer > ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]:
+            state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
+            state.advanceTime(state.bombTimer - (ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]))
+
     # action sequence
-    state.pushActionLog("p+G+u", frameOffset=ACTION_DAMAGE_TIME["p"])
+    state.pushActionLog("p+G+E+u" if weaveExplosion else "p+G+u", frameOffset=ACTION_DAMAGE_TIME["p"])
     usePunch(state)
     state.advanceTime(ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
     state.advanceTime(1)
+
+    # weave explosion test
+    if weaveExplosion and not ((state.tagTimer > ACTION_DAMAGE_TIME["u"]) or (state.bombTimer <= ACTION_DAMAGE_TIME["u"])):
+        state.pushLog("explosion weave failed", ["major warning"])
+
     useUppercut(state)
 
     # following swing / symbiote must await goht finishing
@@ -128,7 +139,7 @@ State.ApplyAction["p+G+u"] = applyPunchSaporenFFAmestack
 #                                         Kick Saporen FFAmestack                                         #
 #=========================================================================================================#
 
-def applyKickSaporenFFAmestack(state: State):
+def applyKickSaporenFFAmestack(state: State, weaveExplosion: bool = False):
 
     # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["p"])
@@ -138,12 +149,23 @@ def applyKickSaporenFFAmestack(state: State):
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME))
     awaitUppercutReady(state, frameOffset=(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1))
 
+    # weave explosion variation
+    if weaveExplosion:
+        if state.bombTimer > ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]:
+            state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
+            state.advanceTime(state.bombTimer - (ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]))
+
     # action sequence
-    state.pushActionLog("k+G+u", frameOffset=ACTION_DAMAGE_TIME["k"])
+    state.pushActionLog("k+G+E+u" if weaveExplosion else "k+G+u", frameOffset=ACTION_DAMAGE_TIME["k"])
     useKick(state)
     state.advanceTime(ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
     state.advanceTime(1)
+
+    # weave explosion test
+    if weaveExplosion and not ((state.tagTimer > ACTION_DAMAGE_TIME["u"]) or (state.bombTimer <= ACTION_DAMAGE_TIME["u"])):
+        state.pushLog("explosion weave failed", ["major warning"])
+
     useUppercut(state)
 
     # following swing / symbiote must await goht finishing
@@ -157,7 +179,7 @@ State.ApplyAction["k+G+u"] = applyKickSaporenFFAmestack
 #                                       Overhead Saporen FFAmestack                                       #
 #=========================================================================================================#
 
-def applyOverheadSaporenFFAmestack(state: State):
+def applyOverheadSaporenFFAmestack(state: State, weaveExplosion: bool = False):
 
     # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["o"])
@@ -167,12 +189,23 @@ def applyOverheadSaporenFFAmestack(state: State):
     awaitGOHTReady(state, frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME))
     awaitUppercutReady(state, frameOffset=(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1))
 
+    # weave explosion variation
+    if weaveExplosion:
+        if state.bombTimer > ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]:
+            state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
+            state.advanceTime(state.bombTimer - (ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]))
+
     # action sequence
-    state.pushActionLog("o+G+u", frameOffset=ACTION_DAMAGE_TIME["o"])
+    state.pushActionLog("o+G+E+u" if weaveExplosion else "o+G+u", frameOffset=ACTION_DAMAGE_TIME["o"])
     useOverhead(state)
     state.advanceTime(ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME)
     useGOHT(state)
     state.advanceTime(1)
+
+    # weave explosion test
+    if weaveExplosion and not ((state.tagTimer > ACTION_DAMAGE_TIME["u"]) or (state.bombTimer <= ACTION_DAMAGE_TIME["u"])):
+        state.pushLog("explosion weave failed", ["major warning"])
+
     useUppercut(state)
 
     # following swing / symbiote must await goht finishing
@@ -305,7 +338,7 @@ State.ApplyAction["o+t"] = applyOverheadRT
 #                                           Unique X Hit Punch                                            #
 #=========================================================================================================#
 
-def applyPunchU3H(state: State):
+def applyPunchU3H(state: State, weaveExplosion: bool = False):
 
     # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["p"])
@@ -313,10 +346,21 @@ def applyPunchU3H(state: State):
     # awaiting actions availability
     awaitPunchReady(state)
 
+    # weave explosion variation
+    if weaveExplosion:
+        if state.bombTimer > state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]:
+            state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
+            state.advanceTime(state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]))
+
     # action sequence
-    state.pushActionLog("p+o", frameOffset=ACTION_DAMAGE_TIME["p"])
+    state.pushActionLog("p+E+o" if weaveExplosion else "p+o", frameOffset=ACTION_DAMAGE_TIME["p"])
     usePunch(state)
     state.advanceTime(state.activeTimers["s"])
+
+    # weave explosion test
+    if weaveExplosion and not ((state.tagTimer > ACTION_DAMAGE_TIME["o"]) or (state.bombTimer <= ACTION_DAMAGE_TIME["o"])):
+        state.pushLog("explosion weave failed", ["major warning"])
+
     useOverhead(state)
 
 State.ApplyAction["p+o"] = applyPunchU3H
@@ -326,7 +370,7 @@ State.ApplyAction["p+o"] = applyPunchU3H
 #                                            Unique X Hit Kick                                            #
 #=========================================================================================================#
 
-def applyKickU3H(state: State):
+def applyKickU3H(state: State, weaveExplosion: bool = False):
 
     # awaiting previous animation
     state.advanceTime(state.animationCancelTimes["p"])
@@ -334,10 +378,21 @@ def applyKickU3H(state: State):
     # awaiting actions availability
     awaitPunchReady(state)
 
+    # weave explosion variation
+    if weaveExplosion:
+        if state.bombTimer > state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]:
+            state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
+            state.advanceTime(state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]))
+
     # action sequence
-    state.pushActionLog("k+o", frameOffset=ACTION_DAMAGE_TIME["k"])
+    state.pushActionLog("k+E+o" if weaveExplosion else "k+o", frameOffset=ACTION_DAMAGE_TIME["k"])
     useKick(state)
     state.advanceTime(state.activeTimers["s"])
+
+    # weave explosion test
+    if weaveExplosion and not ((state.tagTimer > ACTION_DAMAGE_TIME["o"]) or (state.bombTimer <= ACTION_DAMAGE_TIME["o"])):
+        state.pushLog("explosion weave failed", ["major warning"])
+
     useOverhead(state)
 
 State.ApplyAction["k+o"] = applyKickU3H
@@ -363,7 +418,7 @@ def applyGOHBomb(state: State):
 
     # ensure GOH isn't cancelled early
     for action in state.animationCancelTimes.keys():
-        state.animationCancelTimes[action] = max(state.animationCancelTimes[action], ANIMATION_CANCEL_TIMES["g"][action] - 1) # TO DO: check
+        state.animationCancelTimes[action] = ANIMATION_CANCEL_TIMES["g"][action] - 1
 
 State.ApplyAction["g+B"] = applyGOHBomb
 
@@ -388,6 +443,34 @@ def applyGOHTBomb(state: State):
 
     # ensure GOHT isn't cancelled early
     for action in state.animationCancelTimes.keys():
-        state.animationCancelTimes[action] = max(state.animationCancelTimes[action], ANIMATION_CANCEL_TIMES["G"][action] - 1) # TO DO: check
+        state.animationCancelTimes[action] = ANIMATION_CANCEL_TIMES["G"][action] - 1
 
 State.ApplyAction["G+B"] = applyGOHTBomb
+
+
+#=========================================================================================================#
+#                                       Explosion Weave Movestacks                                        #
+#=========================================================================================================#
+
+def applyPunchExplosionSaporenFFAmestack(state: State):
+    applyPunchSaporenFFAmestack(state, weaveExplosion=True)
+State.ApplyAction["p+G+E+u"] = applyPunchExplosionSaporenFFAmestack
+State.ApplyAction["p+E+G+u"] = applyPunchExplosionSaporenFFAmestack
+
+def applyKickExplosionSaporenFFAmestack(state: State):
+    applyKickSaporenFFAmestack(state, weaveExplosion=True)
+State.ApplyAction["k+G+E+u"] = applyKickExplosionSaporenFFAmestack
+State.ApplyAction["k+E+G+u"] = applyKickExplosionSaporenFFAmestack
+
+def applyOverheadExplosionSaporenFFAmestack(state: State):
+    applyOverheadSaporenFFAmestack(state, weaveExplosion=True)
+State.ApplyAction["o+G+E+u"] = applyOverheadExplosionSaporenFFAmestack
+State.ApplyAction["o+E+G+u"] = applyOverheadExplosionSaporenFFAmestack
+
+def applyUniquePunchExplosionOverhead(state: State):
+    applyPunchU3H(state, weaveExplosion=True)
+State.ApplyAction["p+E+o"] = applyUniquePunchExplosionOverhead
+
+def applyUniqueKickExplosionOverhead(state: State):
+    applyKickU3H(state, weaveExplosion=True)
+State.ApplyAction["k+E+o"] = applyUniqueKickExplosionOverhead

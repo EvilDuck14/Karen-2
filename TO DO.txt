@@ -1,5 +1,3 @@
-weaving explosion into movestacks with multiple hits (saporen ffamestacks and UXH)
-
 add all action names
 
 add combo names
@@ -10,4 +8,4 @@ implement parameters
 
 implement preferences
 
-remember to subtract 1 damage from dps calculation if bomb comes before other damage
+if first action is clap, second action isnt explosion, and explosion is in action list, then calculate the time that should be waited after the clap

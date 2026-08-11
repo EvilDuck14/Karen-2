@@ -385,7 +385,10 @@ class State:
                 if entry.frame >= explosionEntry.frame:
                     position = index
                     break
-            otherEntries = otherEntries[:position] + [explosionEntry] + otherEntries[position:]
+
+            # dont insert explosion if it's already accounted for in an explosion weave movestack
+            if (position == 0) or not ("E" in otherEntries[position - 1].details):
+                otherEntries = otherEntries[:position] + [explosionEntry] + otherEntries[position:]
 
         # return list of actions
         return [entry.details for entry in otherEntries]
@@ -402,7 +405,7 @@ class State:
         details["time from damage frames"] = tfd
         details["time from damage seconds"] = round(tfd / 60, 2)
 
-        dpsNumerator: int = 60 * (self.damageDealt - (ACTION_DAMAGE["b"] if ((self.bombDamageTime != "unknown") and (self.bombDamageTime < self.firstDamageTime)) else 0))
+        dpsNumerator: int = 60 * (self.damageDealt - (ACTION_DAMAGE["B"] if ((self.bombDamageTime != "unknown") and (self.bombDamageTime < self.firstDamageTime)) else 0))
         details["dps"] = "NaN" if tfd == 0 else round(dpsNumerator / tfd, 2)
 
         details["sequence shorthand"] = "".join(sequence)

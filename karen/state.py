@@ -410,7 +410,7 @@ class State:
         return [entry.details for entry in otherEntries]
 
     def getComboDetails(self) -> dict[str, str | int]:
-        details: dict[str, str | int] = {}
+        details: dict[str, str | int | float] = {}
         sequence: list[str] = self.getSequence()
 
         details["damage"] = self.damageDealt

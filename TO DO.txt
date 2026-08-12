@@ -1,7 +1,6 @@
 add stat tracking
 
 implement commands
-  - comp
   - list
   - help
   - prefs

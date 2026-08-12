@@ -178,10 +178,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> tuple[list[str
         if tempActionSequence[0] == "+":
 
             # no previous/following action
-            if (len(actionSequence) == 0) or (len(tempActionSequence) == 1):
-                break
-
-            else:
+            if (len(actionSequence) > 0) and (len(tempActionSequence) >= 2):
                 actionSequence[-1] += "+" + tempActionSequence[1]
                 tempActionSequence = tempActionSequence[2:]
 
@@ -210,7 +207,7 @@ def parseComboString(comboString: str, warningList: list[str]) -> tuple[list[str
     tempActionSequence = actionSequence
     actionSequence = []
     for action in tempActionSequence:
-        if (action in State.ApplyAction.keys()) or (action[0] == "["):
+        if (action in State.ApplyAction.keys()) or (action[0] in ["[", ","]):
             actionSequence.append(action)
 
         else:

@@ -188,7 +188,7 @@ async def singleEval(ctx: commands.context, actionSequence: list[str], warningLi
 
         try:
             await ctx.send(embed=discord.Embed(
-                title="Debug log",
+                title="Breakdown",
                 description=message,
                 color=DEV_LOG_COLOUR
             )

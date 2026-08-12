@@ -108,7 +108,7 @@ class State:
             self.applyAction(action)
 
         if self.awaitingExplosion and (self.bombTimer > 0):
-            self.explosionWaitTimer = self.bombTimer
+            self.explosionWaitTimer += self.bombTimer
             self.advanceTime(self.bombTimer)
 
         if (self.activeTimers["S"] > 0) and (self.teatherTimer > SYMBIOTE_TEATHER_HIT_INTERVAL):

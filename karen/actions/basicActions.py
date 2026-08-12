@@ -21,7 +21,7 @@ def awaitPunchReady(state: State, frameOffset: int = 0):
 
     # await web bomb explosion
     if state.awaitingExplosion and (state.bombTimer > frameOffset + ACTION_DAMAGE_TIME["p"]):
-        state.explosionWaitTimer = state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["p"])
+        state.explosionWaitTimer += state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["p"])
         state.pushLog(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
         state.pushActionLog(f"[{state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["p"])}f]")
         state.advanceTime(state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["p"]))
@@ -78,7 +78,7 @@ def awaitKickReady(state: State, frameOffset: int = 0):
 
     # await web bomb explosion
     if state.awaitingExplosion and (state.bombTimer > frameOffset + ACTION_DAMAGE_TIME["k"]):
-        state.explosionWaitTimer = state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["k"])
+        state.explosionWaitTimer += state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["k"])
         state.pushLog(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
         state.pushActionLog(f"[{state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["k"])}f]")
         state.advanceTime(state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["k"]))
@@ -138,7 +138,7 @@ def awaitOverheadReady(state: State, frameOffset: int = 0):
 
     # await web bomb explosion
     if state.awaitingExplosion and (state.bombTimer > frameOffset + ACTION_DAMAGE_TIME["o"]):
-        state.explosionWaitTimer = state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["o"])
+        state.explosionWaitTimer += state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["o"])
         state.pushLog(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
         state.pushActionLog(f"[{state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["o"])}f]")
         state.advanceTime(state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["o"]))
@@ -328,7 +328,7 @@ def awaitGOHTReady(state: State, frameOffset: int = 0):
 
     # awaiting bomb explosion
     if (state.GOHTAvaiableTimer <= frameOffset) and state.isTaggedBomb:
-        state.explosionWaitTimer = state.bombTimer + TAG_GOHT_DELAY - frameOffset
+        state.explosionWaitTimer += state.bombTimer + TAG_GOHT_DELAY - frameOffset
         state.pushLog(f"{ACTION_NAMES["G"]} awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
         state.advanceTime(state.bombTimer + TAG_GOHT_DELAY - frameOffset)
 
@@ -374,7 +374,7 @@ def awaitUppercutReady(state: State, frameOffset: int = 0):
 
     # await web bomb explosion
     if state.awaitingExplosion and (state.bombTimer > frameOffset + ACTION_DAMAGE_TIME["u"]):
-        state.explosionWaitTimer = state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["u"])
+        state.explosionWaitTimer += state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["u"])
         state.pushLog(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
         state.pushActionLog(f"[{state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["u"])}f]")
         state.advanceTime(state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["u"]))
@@ -575,13 +575,14 @@ State.ApplyAction["B"] = applyBomb
 
 def applyExplosion(state: State):
 
-    # wait for queued attacks to hit
-    state.advanceTime(state.lastDamageTime - state.timeElapsed)
-
     # major warning if bomb is not active
-    if state.bombTimer == 0:
+    if state.bombTimer <= state.lastDamageTime - state.timeElapsed:
+        state.dealDamage("E", state.lastDamageTime - state.timeElapsed + 1)
         state.pushLog(f"used illegal {ACTION_NAMES["E"]}", ["major warning"])
         return
+
+    # wait for queued attacks to hit
+    state.advanceTime(state.lastDamageTime - state.timeElapsed)
 
     # await explosion
     state.awaitingExplosion = True

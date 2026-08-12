@@ -112,7 +112,7 @@ def applyPunchSaporenFFAmestack(state: State, weaveExplosion: bool = False):
     # weave explosion variation
     if weaveExplosion:
         if state.bombTimer > ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]:
-            state.explosionWaitTimer = state.bombTimer - (ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"])
+            state.explosionWaitTimer += state.bombTimer - (ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"])
             state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
             state.advanceTime(state.bombTimer - (ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]))
 
@@ -124,8 +124,9 @@ def applyPunchSaporenFFAmestack(state: State, weaveExplosion: bool = False):
     state.advanceTime(1)
 
     # weave explosion test
-    if weaveExplosion and not ((state.tagTimer > ACTION_DAMAGE_TIME["u"]) or (state.bombTimer <= ACTION_DAMAGE_TIME["u"])):
-        state.pushLog("explosion weave failed", ["major warning"])
+    if weaveExplosion and (state.tagTimer < ACTION_DAMAGE_TIME["u"]) and ((ACTION_DAMAGE_TIME["u"] < state.bombTimer) or (state.bombTimer == 0)):
+        state.dealDamage("E")
+        state.pushLog("used illegal weave explosion", ["major warning"])
 
     useUppercut(state)
 
@@ -153,7 +154,7 @@ def applyKickSaporenFFAmestack(state: State, weaveExplosion: bool = False):
     # weave explosion variation
     if weaveExplosion:
         if state.bombTimer > ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]:
-            state.explosionWaitTimer = state.bombTimer - (ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"])
+            state.explosionWaitTimer += state.bombTimer - (ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"])
             state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
             state.advanceTime(state.bombTimer - (ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]))
 
@@ -165,8 +166,9 @@ def applyKickSaporenFFAmestack(state: State, weaveExplosion: bool = False):
     state.advanceTime(1)
 
     # weave explosion test
-    if weaveExplosion and not ((state.tagTimer > ACTION_DAMAGE_TIME["u"]) or (state.bombTimer <= ACTION_DAMAGE_TIME["u"])):
-        state.pushLog("explosion weave failed", ["major warning"])
+    if weaveExplosion and (state.tagTimer < ACTION_DAMAGE_TIME["u"]) and ((ACTION_DAMAGE_TIME["u"] < state.bombTimer) or (state.bombTimer == 0)):
+        state.dealDamage("E")
+        state.pushLog("used illegal weave explosion", ["major warning"])
 
     useUppercut(state)
 
@@ -194,7 +196,7 @@ def applyOverheadSaporenFFAmestack(state: State, weaveExplosion: bool = False):
     # weave explosion variation
     if weaveExplosion:
         if state.bombTimer > ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]:
-            state.explosionWaitTimer = state.bombTimer - (ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"])
+            state.explosionWaitTimer += state.bombTimer - (ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"] )
             state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
             state.advanceTime(state.bombTimer - (ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]))
 
@@ -206,8 +208,9 @@ def applyOverheadSaporenFFAmestack(state: State, weaveExplosion: bool = False):
     state.advanceTime(1)
 
     # weave explosion test
-    if weaveExplosion and not ((state.tagTimer > ACTION_DAMAGE_TIME["u"]) or (state.bombTimer <= ACTION_DAMAGE_TIME["u"])):
-        state.pushLog("explosion weave failed", ["major warning"])
+    if weaveExplosion and (state.tagTimer < ACTION_DAMAGE_TIME["u"]) and ((ACTION_DAMAGE_TIME["u"] < state.bombTimer) or (state.bombTimer == 0)):
+        state.dealDamage("E")
+        state.pushLog("used illegal weave explosion", ["major warning"])
 
     useUppercut(state)
 
@@ -353,7 +356,7 @@ def applyPunchU3H(state: State, weaveExplosion: bool = False):
     # weave explosion variation
     if weaveExplosion:
         if state.bombTimer > state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]:
-            state.explosionWaitTimer = state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"])
+            state.explosionWaitTimer += state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"])
             state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
             state.advanceTime(state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]))
 
@@ -363,8 +366,9 @@ def applyPunchU3H(state: State, weaveExplosion: bool = False):
     state.advanceTime(state.activeTimers["s"])
 
     # weave explosion test
-    if weaveExplosion and not ((state.tagTimer > ACTION_DAMAGE_TIME["o"]) or (state.bombTimer <= ACTION_DAMAGE_TIME["o"])):
-        state.pushLog("explosion weave failed", ["major warning"])
+    if weaveExplosion and (state.tagTimer < ACTION_DAMAGE_TIME["o"]) and ((ACTION_DAMAGE_TIME["o"] < state.bombTimer) or (state.bombTimer == 0)):
+        state.dealDamage("E")
+        state.pushLog("used illegal weave explosion", ["major warning"])
 
     useOverhead(state)
 
@@ -386,7 +390,7 @@ def applyKickU3H(state: State, weaveExplosion: bool = False):
     # weave explosion variation
     if weaveExplosion:
         if state.bombTimer > state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]:
-            state.explosionWaitTimer = state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"])
+            state.explosionWaitTimer += state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"])
             state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
             state.advanceTime(state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]))
 
@@ -396,7 +400,7 @@ def applyKickU3H(state: State, weaveExplosion: bool = False):
     state.advanceTime(state.activeTimers["s"])
 
     # weave explosion test
-    if weaveExplosion and not ((state.tagTimer > ACTION_DAMAGE_TIME["o"]) or (state.bombTimer <= ACTION_DAMAGE_TIME["o"])):
+    if weaveExplosion and (state.tagTimer < ACTION_DAMAGE_TIME["o"]) and ((ACTION_DAMAGE_TIME["o"] < state.bombTimer) or (state.bombTimer == 0)):
         state.pushLog("explosion weave failed", ["major warning"])
 
     useOverhead(state)

@@ -46,8 +46,8 @@ def preEval(actionSequence: list[str], warningList: list[str], advancedMode: boo
         dummyState: State = State(improvedActionSequence)
         explosionWaitTimeMin: int = dummyState.explosionWaitTimer
         if explosionWaitTimeMin != 0:
-            explosionWaitTimeMax: int = max(WEB_BOMB_DURATION - 1- dummyState.lastTagProcPreExplosion, 0)
-            explosionWaitTime: str = f"[{explosionWaitTimeMin}-{explosionWaitTimeMax}R]" if explosionWaitTimeMax > explosionWaitTimeMin else f"[{explosionWaitTimeMax}f]"
+            explosionWaitTimeWindow: int = min(max(WEB_BOMB_DURATION - 1- dummyState.lastTagProcPreExplosion, 0), WEB_BOMB_DURATION - 1)
+            explosionWaitTime: str = f"[{explosionWaitTimeMin}-{explosionWaitTimeMin + explosionWaitTimeWindow}R]" if explosionWaitTimeWindow > 0 else f"[{explosionWaitTimeMin}f]"
             improvedActionSequence = improvedActionSequence[:1] + [explosionWaitTime] + improvedActionSequence[1:]
 
     return improvedActionSequence

@@ -541,7 +541,7 @@ def useBomb(state: State):
     state.pushLog(f"started {ACTION_NAMES["B"]}", ["action started"])
 
     # major warning if bomb is not available
-    if state.bombTimer == 0:
+    if (state.bombTimer == 0) or state.isTaggedBomb:
         state.pushLog(f"used illegal {ACTION_NAMES["B"]}", ["major warning"])
 
     # deal damage

@@ -3,5 +3,16 @@ add combo names
 implement combo namer
 
 implement parameters
+  - advanced mode
+  - breakdown
+  - time
+  - tfd
+  - damage
+  - dps
 
-implement preferences
+implement commands
+  - comp
+  - list
+  - help
+  - prefs
+  - unsend

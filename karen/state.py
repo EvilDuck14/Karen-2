@@ -261,17 +261,17 @@ class State:
 
         # await active usage
         if (charge in self.activeTimers.keys()) and (self.activeTimers[charge] > frameOffset):
-            self.pushLog(f"has to wait {self.activeTimers[charge] - (frameOffset if (MAX_CHARGES[charge] > 1) else 0)} frames for overlapping {ACTION_NAMES[charge]} to end", ["waiting", "cooldown", "sequence warning"])
+            self.pushLog(f"has to wait {self.activeTimers[charge] - (frameOffset if (MAX_CHARGES[charge] > 1) else 0)} frames for overlapping {ACTION_NAMES[charge]} to end", ["waiting", "cooldown"])
             self.advanceTime(self.activeTimers[charge] - (frameOffset if (MAX_CHARGES[charge] > 1) else 0))
     
         # await charge
         if self.charges[charge] == 0:
-            self.pushLog(f"has to wait {self.rechargeTimers[charge] - frameOffset} frames for {ACTION_NAMES[charge]} recharge", ["waiting", "cooldown", "sequence warning"])
+            self.pushLog(f"has to wait {self.rechargeTimers[charge] - frameOffset} frames for {ACTION_NAMES[charge]} recharge", ["waiting", "cooldown"])
             self.advanceTime(self.rechargeTimers[charge] - frameOffset)
     
         # await fire rate
         if (charge in self.fireRateTimers.keys()) and (self.fireRateTimers[charge] > 0):
-            self.pushLog(f"has to wait {self.fireRateTimers[charge] - frameOffset} frames for {ACTION_NAMES[charge]} fire rate", ["waiting", "cooldown", "sequence warning"])
+            self.pushLog(f"has to wait {self.fireRateTimers[charge] - frameOffset} frames for {ACTION_NAMES[charge]} fire rate", ["waiting", "cooldown"])
             self.advanceTime(self.fireRateTimers[charge] - frameOffset)
 
     # handles adding damage in a specified amount of time, properly tracking timers
@@ -441,7 +441,7 @@ class State:
         self.log.sort()
         for entry in self.log:
             for flag in entry.flags:
-                if "warning" in flag:
+                if flag in ["dev warning", "major warning", "sequence warning"]:
                     warningList.append(entry.details)
                     break
         return warningList

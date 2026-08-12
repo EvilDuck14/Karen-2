@@ -1,8 +1,11 @@
 import discord
 from discord.ext import commands
 
-from karen.ui.parseComboString import parseComboString, preEval
+from karen.ui.parseComboString import parseComboString
+from karen.ui.preEval import preEval
 from karen.state import State
+
+# causes ApplyAction functions to load
 from karen.actions.basicActions import *
 from karen.actions.earlyCancels import *
 from karen.actions.movestacks import *
@@ -26,10 +29,10 @@ def devModeMismatch(ctx: commands.Context):
     return bool((ctx.guild.id == DEV_SERVER_ID) and (ctx.channel.id == DEV_CHANNEL_ID)) ^ bool(DEV_MODE)
 
 # basic discord setup
-intents = discord.Intents.default()
+intents: discord.Intents = discord.Intents.default()
 intents.guild_messages = True
 intents.message_content = True
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot: commands.Bot = commands.Bot(command_prefix="!", intents=intents)
 bot.remove_command("help")
 
 # prints to console on successful launch
@@ -52,39 +55,49 @@ async def eval(ctx: commands.Context, *arr: str):
     if devModeMismatch(ctx):
         return
 
+    warningList: list[str] = []
+
     inputString: str = " ".join(arr)
     print(f"\nreceived command: !eval {inputString}")
 
-    warningList: list[str] = []
-    actionSequence = parseComboString(inputString, warningList)
+    actionSequence: list[str] 
+    params: dict[str, bool]
+    actionSequence, params = parseComboString(inputString, warningList)
     print(f"interpreted action sequence as {actionSequence}")
-    improvedActionSequence: list[str] = preEval(actionSequence, warningList, advancedMode=False)
+
+    improvedActionSequence: list[str] = preEval(actionSequence, warningList, advancedMode=params["a"])
     if (len(actionSequence) != len(improvedActionSequence)) or (False in [actionSequence[i] == improvedActionSequence[i] for i in range(len(actionSequence))]):
         print(f"improved action sequence to {improvedActionSequence}")
 
-    evalState = State(improvedActionSequence)
+    evalState: State = State(improvedActionSequence)
     warningList += evalState.getWarnings()
 
     # formatting
     details: dict[str, str | int] = evalState.getComboDetails()
-    message: str = f"*{details["sequence string"]}*" if details["sequence string"] != "" else ""
-    message += f"\n\n**Time:** {details["time seconds"]}s ({details["time frames"]}f)"
-    message += f"\n**Time From Damage:** {details["time from damage seconds"]}s ({details["time from damage frames"]}f)"
-    message += f"\n**Damage:** {details["damage"]}"
+    message: str = f"> {details["sequence string"]}"
+    if params["t"]:
+        message += f"\n**Time:** {details["time seconds"]}s ({details["time frames"]}f)"
+    if params["tfd"]:
+        message += f"\n**Time From Damage:** {details["time from damage seconds"]}s ({details["time from damage frames"]}f)"
+    if params["d"]:
+        message += f"\n**Damage:** {details["damage"]}"
+    if params["dps"]:
+        message += f"\n**Damage Per Second:** {details["dps"]}"
 
     try:
-        await ctx.send(embed=discord.Embed(
+        messageEmbed: discord.Embed = discord.Embed(
             title="Unknown Combo",
             description=message,
             color=EVAL_COLOUR
         )
-    )
+        messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
+        await ctx.send(embed=messageEmbed)
     except Exception as e:
         print(e)
 
     # output warnings
-    if len(warningList) > 0:
-        message = ""
+    if (len(warningList) > 0) and (not params["n"]):
+        message: str = ""
         for warning in warningList:
             message += f"**WARNING:** {warning}\n"
         message = message[:-1]
@@ -98,9 +111,9 @@ async def eval(ctx: commands.Context, *arr: str):
         except Exception as e:
             print(e)
 
-    # development mode only: send action log
-    if len(evalState.log) > 0:
-        message = "```"
+    # breakdown mode only: send action log
+    if (params["b"]) and (len(evalState.log) > 0):
+        message: str = "```"
         for entry in evalState.log:
             message += f"\n[{entry.frame}] {entry.details}"
         message += "\n```"

@@ -1,6 +1,6 @@
 add stat tracking
 
 implement commands
+  - tech
   - list
-  - help
   - prefs

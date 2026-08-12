@@ -188,6 +188,10 @@ def preEval(actionSequence: list[str], warningList: list[str], advancedMode: boo
             elif (improvedActionSequence[-1] in ["C", "B"]) and (actionSequence[0][0] in ["p", "k", "o", "B"]):
                 pass
 
+            # don't use a swing whiff to speed up tracer > tracer
+            elif (improvedActionSequence[-1][-1] == "t") and (actionSequence[0] == "t"):
+                pass
+
             # don't use a swing whiff to speed up symbiote > symbiote
             elif (improvedActionSequence[-1] in ["S", "V"] and actionSequence[0] in ["S", "V"]):
                 pass

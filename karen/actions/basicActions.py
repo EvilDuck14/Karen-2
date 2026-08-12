@@ -21,6 +21,7 @@ def awaitPunchReady(state: State, frameOffset: int = 0):
 
     # await web bomb explosion
     if state.awaitingExplosion and (state.bombTimer > frameOffset + ACTION_DAMAGE_TIME["p"]):
+        state.explosionWaitTimer = state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["p"])
         state.pushLog(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
         state.pushActionLog(f"[{state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["p"])}f]")
         state.advanceTime(state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["p"]))
@@ -77,6 +78,7 @@ def awaitKickReady(state: State, frameOffset: int = 0):
 
     # await web bomb explosion
     if state.awaitingExplosion and (state.bombTimer > frameOffset + ACTION_DAMAGE_TIME["k"]):
+        state.explosionWaitTimer = state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["k"])
         state.pushLog(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
         state.pushActionLog(f"[{state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["k"])}f]")
         state.advanceTime(state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["k"]))
@@ -136,6 +138,7 @@ def awaitOverheadReady(state: State, frameOffset: int = 0):
 
     # await web bomb explosion
     if state.awaitingExplosion and (state.bombTimer > frameOffset + ACTION_DAMAGE_TIME["o"]):
+        state.explosionWaitTimer = state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["o"])
         state.pushLog(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
         state.pushActionLog(f"[{state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["o"])}f]")
         state.advanceTime(state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["o"]))
@@ -370,6 +373,7 @@ def awaitUppercutReady(state: State, frameOffset: int = 0):
 
     # await web bomb explosion
     if state.awaitingExplosion and (state.bombTimer > frameOffset + ACTION_DAMAGE_TIME["u"]):
+        state.explosionWaitTimer = state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["u"])
         state.pushLog(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
         state.pushActionLog(f"[{state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["u"])}f]")
         state.advanceTime(state.bombTimer - (frameOffset + ACTION_DAMAGE_TIME["u"]))

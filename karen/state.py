@@ -21,6 +21,8 @@ class State:
     isTaggedBomb: bool = False # tracks whether peni web bomb is attached
     bombTimer: int # tracks time until the web bomb explodes
     awaitingExplosion: bool # tells actions that proc tracer to wait for the bomb to explode
+    explosionWaitTimer: int # tracks how long the combo waited for the explosion, used to calculate time to wait if the combo starts with a clap
+    lastTagProcPreExplosion: int # tracks the last frame that a tag was proced before the explosion was registered, used to calculate pre combo wait time range
     teatherTimer: int # tracks remaining duration that symbiote teather can stay active
     hasDoubleJump: bool # tracks whether double jump overhead can be used (doesn't force overhead)
     hasSwingOverhead: bool | Literal["unknown"] # tracks whether swing overhead can be used (does force overhead)
@@ -52,6 +54,8 @@ class State:
         self.isTaggedBomb = False 
         self.bombTimer = 0 
         self.awaitingExplosion = False
+        self.explosionWaitTimer = 0
+        self.lastTagProcPreExplosion = 0
         self.teatherTimer = 0 
         self.hasDoubleJump = True
         self.hasSwingOverhead = "unknown"
@@ -104,6 +108,7 @@ class State:
             self.applyAction(action)
 
         if self.awaitingExplosion and (self.bombTimer > 0):
+            self.explosionWaitTimer = self.bombTimer
             self.advanceTime(self.bombTimer)
 
         if (self.activeTimers["S"] > 0) and (self.teatherTimer > SYMBIOTE_TEATHER_HIT_INTERVAL):
@@ -192,7 +197,7 @@ class State:
 
         # cooldowns / fire rate timers
         for charge in self.fireRateTimers.keys():
-            if frames > self.fireRateTimers[charge] > 0:
+            if (frames > self.fireRateTimers[charge] > 0) and (charge != "C"):
                 self.pushLog(f"{ACTION_NAMES[charge]} came off cooldown (fire rate limit)", ["cooldown"], frameOffset=self.fireRateTimers[charge])
             self.fireRateTimers[charge] = max(self.fireRateTimers[charge] - frames, 0)
 
@@ -239,6 +244,13 @@ class State:
                 waitTime: int = self.bombTimer - int(action[1:-2])
                 self.pushLog(f"waiting for bomb timer to reach {int(action[1:-2])} frames", ["waiting"])
                 self.pushActionLog(f"[{waitTime}f]")
+                self.advanceTime(waitTime)
+
+            # wait amount given as a range (cannot be entered by user)
+            if action[-2] == "R":
+                waitTime: int = int(action[1:action.find("-")])
+                self.pushLog(f"waiting {waitTime} frames", ["waiting"])
+                self.pushActionLog(f"[{action[1:-2]}f]")
                 self.advanceTime(waitTime)
 
         else:
@@ -307,6 +319,10 @@ class State:
             if TAG_DURATION - TAG_GOHT_DELAY + frameOffset >= self.tagTimer > self.GOHTAvaiableTimer:
                 self.GOHTAvaiableTimer = self.tagTimer
             self.pushLog(f"proced tag, dealing {TAG_PROC_DAMAGE} damage", ["damage"], frameOffset)
+
+        # tracking explosion window for calculating pre-wait time
+        if ((self.bombTimer == 0) or (frameOffset < self.bombTimer)) and not ("E" in [entry.details for entry in self.actionLog if entry.frame <= self.timeElapsed + frameOffset]):
+            self.lastTagProcPreExplosion = max(self.timeElapsed, self.timeElapsed + frameOffset)
 
     # reduces charge and sets relevant timers
     def endActive(self, charge: str):

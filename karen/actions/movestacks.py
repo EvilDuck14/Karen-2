@@ -112,6 +112,7 @@ def applyPunchSaporenFFAmestack(state: State, weaveExplosion: bool = False):
     # weave explosion variation
     if weaveExplosion:
         if state.bombTimer > ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]:
+            state.explosionWaitTimer = state.bombTimer - (ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"])
             state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
             state.advanceTime(state.bombTimer - (ACTION_DAMAGE_TIME["p"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]))
 
@@ -152,6 +153,7 @@ def applyKickSaporenFFAmestack(state: State, weaveExplosion: bool = False):
     # weave explosion variation
     if weaveExplosion:
         if state.bombTimer > ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]:
+            state.explosionWaitTimer = state.bombTimer - (ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"])
             state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
             state.advanceTime(state.bombTimer - (ACTION_DAMAGE_TIME["k"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]))
 
@@ -192,6 +194,7 @@ def applyOverheadSaporenFFAmestack(state: State, weaveExplosion: bool = False):
     # weave explosion variation
     if weaveExplosion:
         if state.bombTimer > ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]:
+            state.explosionWaitTimer = state.bombTimer - (ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"])
             state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
             state.advanceTime(state.bombTimer - (ACTION_DAMAGE_TIME["o"] - SAPOREN_PRE_HIT_TIME + 1 + ACTION_DAMAGE_TIME["u"]))
 
@@ -350,6 +353,7 @@ def applyPunchU3H(state: State, weaveExplosion: bool = False):
     # weave explosion variation
     if weaveExplosion:
         if state.bombTimer > state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]:
+            state.explosionWaitTimer = state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"])
             state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
             state.advanceTime(state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]))
 
@@ -382,6 +386,7 @@ def applyKickU3H(state: State, weaveExplosion: bool = False):
     # weave explosion variation
     if weaveExplosion:
         if state.bombTimer > state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]:
+            state.explosionWaitTimer = state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"])
             state.pushLog(f"awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
             state.advanceTime(state.bombTimer - (state.activeTimers["s"] + ACTION_DAMAGE_TIME["o"]))
 

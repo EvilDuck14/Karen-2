@@ -5,5 +5,3 @@ implement combo namer
 implement parameters
 
 implement preferences
-
-if first action is clap, second action isnt explosion, and explosion is in action list, then calculate the time that should be waited after the clap

@@ -21,14 +21,9 @@ def usePunchCancel(state: State):
     for action in state.animationCancelTimes.keys():
         state.animationCancelTimes[action] = 1
 
-    # tracking melee sequence
-    state.meleeSequenceTimer = MELEE_SEQUENCE_WINDOW
-    if state.meleeSequenceStep == "punch 1":
-        state.meleeSequenceStep = "punch 2"
-    elif state.meleeSequenceStep in ["punch 2", "not punch 1"]:
-        state.meleeSequenceStep = "kick"
-    elif state.meleeSequenceStep == "unknown":
-        state.meleeSequenceStep = "not punch 1"
+    # early cancel melee resets melee sequence
+    state.meleeSequenceTimer = 0
+    state.meleeSequenceStep = "punch 1"
 
     # cancel symbiote teather
     state.endActive("S")
@@ -61,7 +56,7 @@ def useKickCancel(state: State):
     for action in state.animationCancelTimes.keys():
         state.animationCancelTimes[action] = 1
 
-    # tracking melee sequence
+    # early cancel melee resets melee sequence
     state.meleeSequenceTimer = 0
     state.meleeSequenceStep = "punch 1"
 
@@ -91,6 +86,10 @@ def useOverheadCancel(state: State):
     # prepare animation cancel times
     for action in state.animationCancelTimes.keys():
         state.animationCancelTimes[action] = 1
+
+    # early cancel melee resets melee sequence
+    state.meleeSequenceTimer = 0
+    state.meleeSequenceStep = "punch 1"
 
     # tracking overhead availability
     if state.hasSwingOverhead != False:

@@ -6,17 +6,13 @@ def nameCombo(actionSequence: list[str]) -> str:
         if action[0] != "[":
             comboString += action
 
-    # all combos in database use S instead of V
+    # formatting to match combos in database
     comboString = comboString.replace("V", "S")
-
-    # no combos in database use nostick
     comboString = comboString.replace("a-", "a")
-
-    # all combos in database put explosion after swing
     comboString = comboString.replace("Ew", "wE").replace("Ea", "aE")
-
-    # all combos in database use melee+G+E+u rather than melee+E+G+u
     comboString = comboString.replace("E+G", "G+E")
+    comboString = comboString.replace("u+G", "u+w+G")
+    comboString = comboString.replace("u+S+G", "u+S+w+G")
 
     # missing explosion at the end / clap at the start is still the same combo
     if "B" in comboString:

@@ -162,6 +162,10 @@ COMBO_ACTION_NAMES = {
 
     "spacejam" : ["u", "+", "w", "+", "G"],
 
+    "fastspacejam" : ["u", "+", "a", "+", "G"],
+    "autoswingspacejam" : ["u", "+", "a", "+", "G"],
+    "autospacejam" : ["u", "+", "a", "+", "G"],
+
     "punchreversetrigger" : ["p", "+", "t"],
     "punchrt" : ["p", "+", "t"],
     "reversetrigger" : ["p", "+", "t"],
@@ -244,6 +248,16 @@ COMBO_ACTION_NAMES = {
     "uniquekickexplosionohstack" : ["p", "+", "E", "+", "o"],
     "uniquekickexplosiondownslamstack" : ["p", "+", "E", "+", "o"],
     "uniquekickexplosionslamstack" : ["p", "+", "E", "+", "o"],
+
+    "symbioticspacejam" : ["u", "+", "S", "+", "w", "+", "G"],
+    "symbiotespacejam" : ["u", "+", "S", "+", "w", "+", "G"],
+    
+    "fastsymbioticspacejam" : ["u", "+", "S", "+", "a", "+", "G"],
+    "autoswingsymbioticspacejam" : ["u", "+", "S", "+", "a", "+", "G"],
+    "autosymbioticspacejam" : ["u", "+", "S", "+", "a", "+", "G"],
+    "fastsymbiotespacejam" : ["u", "+", "S", "+", "a", "+", "G"],
+    "autoswingsymbiotespacejam" : ["u", "+", "S", "+", "a", "+", "G"],
+    "autosymbiotespacejam" : ["u", "+", "S", "+", "a", "+", "G"],
 
     "punchcancel" : ["p-"],
     "meleecancel" : ["p-"],

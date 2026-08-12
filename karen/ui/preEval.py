@@ -12,15 +12,30 @@ def preEval(actionSequence: list[str], warningList: list[str], advancedMode: boo
             warningList.append(f"automatically weaved swing whiff between {ACTION_NAMES["u"]} and {ACTION_NAMES[actionSequence[0]]}")
             improvedActionSequence.append("w")
 
+        # automatic goh/bomb stack
+        if (len(actionSequence) >= 2) and (actionSequence[0] in ["g", "G"]) and (actionSequence[1] == "B"):
+            improvedActionSequence.append(f"{actionSequence[0]}+B")
+            actionSequence = actionSequence[2:]
+            continue
+
         # automatic saporen/spacejam detection
         if (len(actionSequence) >= 2) and (actionSequence[0] in ["p", "k", "o", "u"]) and (actionSequence[1] == "G"):
             improvedActionSequence.append(f"{actionSequence[0]}+G")
             actionSequence = actionSequence[2:]
             continue
-
         if (len(actionSequence) >= 3) and (actionSequence[0] == "u") and (actionSequence[1] in ["w", "a"]) and (actionSequence[2] == "G"):
             improvedActionSequence.append(f"u+{actionSequence[1]}+G")
             actionSequence = actionSequence[3:]
+            continue
+
+        # automatic symbiotic spacejam detection
+        if (len(actionSequence) >= 3) and (actionSequence[0] == "u") and (actionSequence[1] in ["S", "V"]) and (actionSequence[2] == "G"):
+            improvedActionSequence.append(f"u+{actionSequence[1]}+G")
+            actionSequence = actionSequence[3:]
+            continue
+        if (len(actionSequence) >= 4) and (actionSequence[0] == "u") and (actionSequence[1] in ["S", "V"]) and (actionSequence[2] in ["w", "a"]) and (actionSequence[3] == "G"):
+            improvedActionSequence.append(f"u+{actionSequence[1]}+{actionSequence[2]}+G")
+            actionSequence = actionSequence[4:]
             continue
         
         improvedActionSequence.append(actionSequence[0])

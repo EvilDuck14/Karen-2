@@ -405,6 +405,65 @@ State.ApplyAction["k+o"] = applyKickU3H
 
 
 #=========================================================================================================#
+#                                           Symbiotic Space Jam                                           #
+#=========================================================================================================#
+
+def applySymbioticSpaceJam(state: State):
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["o"])
+
+    # awaiting actions availability
+    awaitUppercutReady(state)
+    awaitSymbioteReady(state, frameOffset=ANIMATION_CANCEL_TIMES["u"]["S"])
+    state.awaitCharge("s", frameOffset=(ANIMATION_CANCEL_TIMES["u"]["S"] + ANIMATION_CANCEL_TIMES["S"]["s"]))
+    awaitGOHTReady(state, frameOffset=(ANIMATION_CANCEL_TIMES["u"]["S"] + ANIMATION_CANCEL_TIMES["S"]["s"] + ANIMATION_CANCEL_TIMES["w"]["g"]))
+
+    # action sequence
+    state.pushActionLog("u+S+w+G", frameOffset=ACTION_DAMAGE_TIME["u"])
+    useUppercut(state)
+    state.advanceTime(ANIMATION_CANCEL_TIMES["u"]["S"])
+    useSymbiote(state)
+    state.advanceTime(ANIMATION_CANCEL_TIMES["S"]["s"])
+    useWhiff(state)
+    state.advanceTime(ANIMATION_CANCEL_TIMES["w"]["g"])
+    useGOHT(state)
+
+State.ApplyAction["u+S+w+G"] = applySymbioticSpaceJam
+State.ApplyAction["u+S+G"] = applySymbioticSpaceJam
+State.ApplyAction["u+V+G"] = applySymbioticSpaceJam
+
+
+#=========================================================================================================#
+#                                    Symbiotic Space Jam (Auto Swing)                                     #
+#=========================================================================================================#
+
+def applyFastSymbioticSpaceJam(state: State):
+
+    # awaiting previous animation
+    state.advanceTime(state.animationCancelTimes["o"])
+
+    # awaiting actions availability
+    awaitUppercutReady(state)
+    awaitSymbioteReady(state, frameOffset=ANIMATION_CANCEL_TIMES["u"]["S"])
+    state.awaitCharge("s", frameOffset=(ANIMATION_CANCEL_TIMES["u"]["S"] + ANIMATION_CANCEL_TIMES["S"]["s"]))
+    awaitGOHTReady(state, frameOffset=(ANIMATION_CANCEL_TIMES["u"]["S"] + ANIMATION_CANCEL_TIMES["S"]["s"] + ANIMATION_CANCEL_TIMES["a"]["g"]))
+
+    # action sequence
+    state.pushActionLog("u+S+a+G", frameOffset=ACTION_DAMAGE_TIME["u"])
+    useUppercut(state)
+    state.advanceTime(ANIMATION_CANCEL_TIMES["u"]["S"])
+    useSymbiote(state)
+    state.advanceTime(ANIMATION_CANCEL_TIMES["S"]["s"])
+    useAutoswing(state)
+    state.advanceTime(ANIMATION_CANCEL_TIMES["a"]["g"])
+    useGOHT(state)
+
+State.ApplyAction["u+S+a+G"] = applyFastSymbioticSpaceJam
+State.ApplyAction["u+V+a+G"] = applyFastSymbioticSpaceJam
+
+
+#=========================================================================================================#
 #                                             GOH + Web Bomb                                              #
 #=========================================================================================================#
 

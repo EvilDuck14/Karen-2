@@ -1,4 +1,4 @@
-add symbiotic spacejam
+add stat tracking
 
 implement commands
   - comp

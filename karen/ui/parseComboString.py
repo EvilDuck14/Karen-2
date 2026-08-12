@@ -129,10 +129,10 @@ def parseComboString(comboString: str, warningList: list[str]) -> tuple[list[str
         # check the next input against known combo names
         tryLength: int = getMaxNextInputLength(comboString)
         while(tryLength > 1):
-            if comboString[:tryLength].lower() in COMBO_NAMES.keys():
+            if comboString[:tryLength].lower() in SEQUENCE_NAMES.keys():
                 logUnrecognised(unrecognised, warningList)
                 unrecognised = ""
-                actionSequence += COMBO_NAMES[comboString[:tryLength].lower()]
+                actionSequence += SEQUENCE_NAMES[comboString[:tryLength].lower()]
                 comboString = comboString[tryLength:]
                 tryLength = 0
                 break

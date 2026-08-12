@@ -3,6 +3,7 @@ from discord.ext import commands
 
 from karen.ui.parseComboString import parseComboString
 from karen.ui.preEval import preEval
+from karen.ui.nameCombo import nameCombo
 from karen.state import State
 
 # causes ApplyAction functions to load
@@ -73,6 +74,7 @@ async def eval(ctx: commands.Context, *arr: str):
     warningList += evalState.getWarnings()
 
     # formatting
+    title: str = nameCombo(improvedActionSequence)
     details: dict[str, str | int] = evalState.getComboDetails()
     message: str = f"> {details["sequence string"]}"
     if params["t"]:
@@ -86,7 +88,7 @@ async def eval(ctx: commands.Context, *arr: str):
 
     try:
         messageEmbed: discord.Embed = discord.Embed(
-            title="Unknown Combo",
+            title=title,
             description=message,
             color=EVAL_COLOUR
         )

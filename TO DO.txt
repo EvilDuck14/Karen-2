@@ -1,14 +1,4 @@
-add combo names
-
-implement combo namer
-
-implement parameters
-  - advanced mode
-  - breakdown
-  - time
-  - tfd
-  - damage
-  - dps
+add symbiotic spacejam
 
 implement commands
   - comp

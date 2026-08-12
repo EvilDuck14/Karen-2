@@ -188,13 +188,6 @@ COMBO_ACTION_NAMES = {
     "uniquepunchohstack" : ["p", "+", "o"],
     "uniquepunchdownslamstack" : ["p", "+", "o"],
     "uniquepunchslamstack" : ["p", "+", "o"],
-    "uniquetwohit" : ["p", "+", "o"],
-    "unique2hit" : ["p", "+", "o"],
-    "u2h" : ["p", "+", "o"],
-
-    "uniquethreehit" : ["w", "p", "p", "+", "o"],
-    "unique3hit" : ["w", "p", "p", "+", "o"],
-    "u3h" : ["w", "p", "p", "+", "o"],
 
     "uniquekickstack" : ["p", "+", "o"],
     "uniquekickoverheadslamstack" : ["p", "+", "o"],
@@ -292,6 +285,93 @@ COMBO_ACTION_NAMES = {
     "nostick" : ["a-"]
 }
 
-COMBO_NAMES = {
+SEQUENCE_NAMES = {
+    "bnb" : ["t", "G", "u"],
+    "bandb" : ["t", "G", "u"],
+    "b&b" : ["t", "G", "u"],
+    "breadnbutter" : ["t", "G", "u"],
+    "breadandbutter" : ["t", "G", "u"],
+    "bread&butter" : ["t", "G", "u"],
 
+    "shortplink" : ["a", "o"],
+    "longplink" : ["w", "t", "o"],
+    "plink" : ["w", "t", "o"],
+    "doubleplink" : ["w", "t", "a", "o"],
+    "doubleswingoverhead" : ["w", "t", "a", "o"],
+    "dsoverhead" : ["w", "t", "a", "o"],
+    "dsoh" : ["w", "t", "a", "o"],
+
+    "uniquetwohit" : ["a", "p", "+", "o"],
+    "unique2hit" : ["a", "p", "+", "o"],
+    "u2h" : ["a", "p", "+", "o"],
+    "uniquethreehit" : ["w", "p", "p", "+", "o"],
+    "unique3hit" : ["w", "p", "p", "+", "o"],
+    "u3h" : ["w", "p", "p", "+", "o"],
+}
+
+COMBO_NAMES = {
+    "tGu" : "Bread & Butter",
+    "tGuwtt" : "Bread & Butter Tracers",
+    "tGuwto" : "Bread & Butter Long Plink",
+    "tGuao" : "Bread & Butter Short Plink",
+    "tGuao" : "Bread & Butter Short Plink",
+    "tGuwtao" : "Bread & Butter Double Plink",
+    "tGup" : "Bread & Butter Punch",
+    "tGutp" : "Reverse Panther Combo",
+    "tGuwpp+o" : "Bread & Butter Unique 3 Hit",
+    "tGwtuwt" : "Weave Combo",
+    
+    "tGptu" : "Panther Combo",
+    "tGaptu" : "Fast Panther Combo",
+    "tGaotu" : "Overhead Panther Combo",
+
+    "tptu" : "One Two",
+    "totu" : "Slam Combo",
+    "otu" : "The Opener",
+    "otuwtt" : "The Opener Tracers",
+    "otuao" : "The Opener Short Plink",
+    "otuwto" : "The Opener Long Plink",
+    "otuwtao" : "The Opener Double Plink",
+
+    "otaptu" : "Overhead Burst",
+    "otgwtu" : "Master Masher",
+    "otgwtuwto" : "Fantastic Killer",
+
+    "tgptu" : "Sekkombo",
+    "tgotu" : "Reverse Yo-Yo",
+    "tgktu" : "Grip Kick Rip",
+    "tgptapt" : "Short Hydro Combo",
+    "tgptaptu" : "Hydro Combo",
+    "tptaptu" : "No Pull Hydro Combo",
+
+    "to+G+u" : "Saporen FFAmestack",
+    "otG+u" : "Fast FFAmestack",
+
+    "gwtuwto" : "Yo-Yo",
+    "gwtuwtao" : "Double Plink Yo-Yo",
+    "tguwto" : "Pre-Tag Yo-Yo",
+    "gwtuo-tp" : "Agni-Kai Yo-Yo",
+
+    "tuwtGu" : "Driveby",
+    "twGuot" : "Bald Slam",
+    "uwtGo" : "Vortex",
+    "o+tgatu" : "Evil Combo",
+
+    "tGuS" : "Noob Combo",
+    "tGuwtS" : "Bread & Butter Symbiote Weave",
+    "tgptSaptu" : "Matchydrokunsekkombiotombo",
+    "otSatu" : "Symbiotic Opener",
+
+    "CotBuE" : "Super Opener",
+    "CotBuaEo" : "Super Opener Short Plink",
+    "CtGBuE" : "Super Bread & Butter",
+    "CtGBuaEo" : "Super Bread & Butter Short Plink",
+    "CgBptuE" : "Tracer Replacer",
+    "CtgBptuE" : "Super Sekkombo",
+    "CtgBptuaEo" : "Super Sekkombo Short Plink",
+    "CgBwtuwt" : "Short Super Yo-Yo",
+    "CgBwtuwto" : "Super Yo-Yo",
+    "CotBG+uE" : "Super Stack",
+    "CotBG+uEp" : "Super Stack Punch",
+    "CotBG+uaEo" : "Super Stack Short Plink"
 }

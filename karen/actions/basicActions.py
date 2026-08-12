@@ -328,6 +328,7 @@ def awaitGOHTReady(state: State, frameOffset: int = 0):
 
     # awaiting bomb explosion
     if (state.GOHTAvaiableTimer <= frameOffset) and state.isTaggedBomb:
+        state.explosionWaitTimer = state.bombTimer + TAG_GOHT_DELAY - frameOffset
         state.pushLog(f"{ACTION_NAMES["G"]} awaiting {ACTION_NAMES["B"]} explosion", ["waiting"])
         state.advanceTime(state.bombTimer + TAG_GOHT_DELAY - frameOffset)
 

@@ -4,4 +4,3 @@ implement commands
   - list
   - help
   - prefs
-  - unsend

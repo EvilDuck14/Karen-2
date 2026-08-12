@@ -46,6 +46,68 @@ async def on_ready():
     except Exception as e:
         print(e)
 
+#=========================================================================================================#
+#                                                  Help                                                   #
+#=========================================================================================================#
+
+@bot.command()
+async def help(ctx: commands.Context, *arr: str):
+    if devModeMismatch(ctx):
+            return
+
+    inputString: str = " ".join(arr)
+    print(f"\nreceived command: !help {inputString}")
+
+    while (len(inputString) > 0) and (inputString[0] == "!"):
+        inputString = inputString[1:]
+
+    message: str = ""
+    colour: int = INFO_COLOUR
+
+    # !help
+    if inputString.replace(" ", "") == "":
+        message += "**!eval [action sequence]**\n"
+        message += "Evaluates the time taken & damage dealt by a given combo.\n\n"
+
+        message += "**!tech [tech name]**\n"
+        message += "Outputs description of given tech.\n\n"
+
+        message += "**!list [actions/combos/techs/params]**\n"
+        message += "Displays a list of all documented items of the requested type.\n\n"
+
+        message += "**!prefs [params]**\n"
+        message += "Allows the user to set a default set of parameters to apply to their inputs.\n\n"
+
+        message += "**!help [command]**\n"
+        message += "Explains the given command in greater detail.\n\n"
+
+        message += "To report a bug/issue, please contact user evilduck_"
+
+    # !help eval
+    elif inputString in ["eval", "comp"]:
+        pass
+
+    # !help help
+    elif inputString == "help":
+        pass
+
+    # unknown command
+    else:
+        message += f"Unknown command \"!{inputString}\"."
+        message += "\n\nYou can use \"!help\" for a list of all commands."
+        colour = WARNING_COLOUR
+
+    # sending message
+    try:
+        messageEmbed: discord.Embed = discord.Embed(
+            title="Karen Help Desk",
+            description=message,
+            color=colour
+        )
+        messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
+        await ctx.send(embed=messageEmbed)
+    except Exception as e:
+        print(e)
 
 #=========================================================================================================#
 #                                                  Eval                                                   #

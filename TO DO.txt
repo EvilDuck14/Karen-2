@@ -1,5 +1,3 @@
 add tech descriptions
 
-allow all combo names to be used in eval
-
 finish readme

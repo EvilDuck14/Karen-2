@@ -75,6 +75,34 @@ def parseComboString(ctx: commands.Context, comboString: str, warningList: list[
             continue
 
         # check the next input against known combo names
+        match: bool = False
+        for sequence in COMBO_NAMES.keys():
+            comboName: str = COMBO_NAMES[sequence].lower().replace(" ", "")
+
+            variations = [comboName]
+            if comboName[-5:] == "combo":
+                variations.append(comboName[:-5])
+            else:
+                variations.append(comboName + "combo")
+            if "bread&butter" in comboName:
+                variations.append(comboName.replace("bread&butter", "breadandbutter"))
+                variations.append(comboName.replace("bread&butter", "breadnbutter"))
+                variations.append(comboName.replace("bread&butter", "b&b"))
+                variations.append(comboName.replace("bread&butter", "bandb"))
+                variations.append(comboName.replace("bread&butter", "bnb"))
+
+            for variation in variations:
+                if comboString[:len(variation)] == variation:
+                    match = True
+                    comboString = comboString[len(variation):]
+                    actionSequence += [action for action in sequence]
+                    break
+            if match:
+                break
+        if match:
+            continue
+
+        # check the next input against known sequence names
         tryLength: int = getMaxNextInputLength(comboString)
         while(tryLength > 1):
             if comboString[:tryLength].lower() in SEQUENCE_NAMES.keys():

@@ -194,7 +194,7 @@ TECHS = {
     },
 
     "Momentum Pull" : {
-        "description" : "By building momentum before landing get over here on a target, Spidey can pull opponents up to 50 meters - much further than is usually possible. This also allows targets to be pulled much further over pits than can be achieved by a standing pull, so that characters with small amounts of mobility still can't recover.\n\nThere are many variations and setups, but the most common setup for a Momentum Pull is a low swing zip cancelled by a tracer, followed by a double jump and immediate uppercut. Then the uppercut can be cancelled with a swing whiff quickly weaved into get over here.",
+        "description" : "By building momentum before landing get over here on a target, Spidey can pull opponents up to 60 meters - much further than is usually possible. This also allows targets to be pulled much further over pits than can be achieved by a standing pull, so that characters with small amounts of mobility still can't recover.\n\nThere are many variations and setups, but the most common setup for a Momentum Pull is a low swing zip cancelled by a tracer, followed by a double jump and immediate uppercut. Then the uppercut can be cancelled with a swing whiff quickly weaved into get over here.",
         "youtube link" : "https://youtu.be/JR64N7ZQAPM",
         "discord link" : ""
     },

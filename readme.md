@@ -16,67 +16,48 @@ Karen is designed to be used as a Discord bot to aid with labbing and communicat
 
 ### [Commands](#commands)
 - [Evaluate](#commands-eval)
-- [Compare](#commands-comp)
 - [Tech](#commands-tech)
 - [List](#commands-list)
-- [Unsend](#commands-unsend)
 - [Preferences](#commands-prefs)
 - [Help](#commands-help)
 
 ### [Combo Comprehension](#comprehension)
 - [Individual Actions](#comprehension-actions)
-- [Named Sequences](#comprehension-sequences)
 - [Movestacks](#comprehension-movestacks)
+- [Named Sequences](#comprehension-sequences)
 - [Mixed Inputs / Grammar](#comprehension-mixed)
 - [Comments](#comprehension-comments)
 - [Wait](#comprehension-wait)
 - [Autocorrection](#comprehension-autocorrection)
-    <!-- 
-    - [Swing Correction](#comprehension-autocorrection-swing)
-    - [Movestack Detection](#comprehension-autocorrection-movestack) 
-    -->
 
 ### [Parameters](#params)
-- [Outputs](#params-outputs)
-    <!-- 
-    - [Time](#params-outputs-t)
-    - [Time From Damage](#params-outputs-tfd)
-    - [Damage](#params-outputs-d)
-    - [Raw DPS](#params-outputs-rdps)
-    - [DPS](#params-outputs-dps)
-    - [Ult Charge](#params-outputs-uc)
-    - [No Warnings](#params-outputs-n) 
-    -->
-- [Damage Boost](#params-boost)
-- [Healing Per Second](#params-hps)
-- [Season](#params-season)
+- [Advanced Mode](#params-a) 
+- [Show Breakdown](#params-b) 
+- [No Warnings](#params-n) 
+- [Display Time](#params-t)
+- [Display Time From Damage](#params-tfd)
+- [Display Damage](#params-d)
+- [Display DPS](#params-dps)
+- [Display Ult Charge Generation](#params-ult)
 
-### [Warnings](#warn)
-- [Improper Formatting](#warn-format)
-- [Impossible GOHT](#warn-goht)
-- [Impossible Kick](#warn-kick)
-- [Downtime Awaiting Cooldowns](#warn-downtime)
-
-### [License](#license)
+### [License](#liscense)
 
 
 
 <a id="install"></a>
 ## <br> Installation
 
-If you're already in a Discord server which has Karen added, there's no need to install anything - you can start using commands in the designated channels right away! Jump to the [section on usage](#usage) for a detailed explanation of how to use these commands to their fullest potential.
+If you're already in a Discord server which has Karen added, there's no need to install anything - you can start using commands in the designated channels right away! Jump to the [section on usage](#commands) for a detailed explanation of how to use these commands to their fullest potential.
 
 <a id="install-discord"></a>
 ### Adding to Discord
 
-If you want to add Karen to your Discord server, you can do it using [this link](<!-- to do -->). Karen requests minimal premissions to function, but it does need to be able to read and send messages to function.
+If you want to add Karen to your Discord server, you can do it using [this link](https://discord.com/oauth2/authorize?client_id=1343900821405827072&permissions=18432&integration_type=0&scope=bot). Karen requests minimal premissions to function, but it does need to be able to read and send messages to function.
 
 <a id="install-data"></a>
 ### Data Sharing
 
-By default, Karen collects data to help understand how it is being used. This includes a count of how many servers are running the bot, how often it is used on each server, and a tally of how many times each combo has been calculated. Karen **does not** read messages in your server besides commands (but as a PSA, Discord is fundamentally a public platform, and you should never consider your messages in any server to be truly private).
-
-When Karen is added to a server, the server owner will receive a message with the option between sharing data anonymously (which may be preferred by small servers) or to associate their server name with their data.
+Karen keeps a tally of how many times each combo has been evaluated to help understand how it is being used. It also knows how many servers it is running on. Karen **does not** read messages in your server besides commands (but as a PSA, Discord is fundamentally a public platform, and you should never consider your messages in any server to be truly private).
 
 
 
@@ -88,9 +69,6 @@ All commands are accessed using a `!` followed by the name of the command and an
 <a id="commands-eval"></a>
 ### Evaluate
 
-<a id="commands-comp"></a>
-### Compare
-
 <a id="commands-tech"></a>
 ### Tech
 
@@ -98,11 +76,7 @@ All commands are accessed using a `!` followed by the name of the command and an
 ### List
 
 The `!list` command causes Karen to output a list of all named combos.
-
-<a id="commands-unsend"></a>
-### Unsend
-
-The `!unsend` command allows a user to cause Karen to unsend their previous output. A user cannot unsend the output of another user's command.
+Lists of all actions available in combos, 
 
 <a id="commands-prefs"></a>
 ### Preferences
@@ -114,7 +88,7 @@ If any parameters are explicitly given to a command, the user's preferences are 
 <a id="commands-help"></a>
 ### Help
 
-The `!help` command will give a list of all recognised commands and link to this documentation. More information can be found on any command via `!help [command]`.
+The `!help` command will give a list of all recognised commands and link to this documentation. More information can be found on any command using `!help [command]`.
 
 
 
@@ -123,10 +97,32 @@ The `!help` command will give a list of all recognised commands and link to this
 
 To make Karen as intuitive and efficient to use as possible, many ways of describing the same combo are supported. There are three broad categories of notation:
 - Long-form: `tracer > get over here targetting > uppercut`
-- Short-form: `tgu`
+- Short-form: `tGu`
 - Named sequences: `bread and butter`
 
 A user can mix and match notations, and Karen will do its best to interpret what is meant. Regardless of the user's chosen notation, Karen will always output the full long-form sequence with its output so that the user can verify that their input was understood correctly.
+
+<a id="comprehension-actions"></a>
+### Individual Actions
+
+<a id="comprehension-movestacks"></a>
+### Movestacks
+
+<a id="comprehension-sequences"></a>
+### Named Sequences
+
+<a id="comprehension-mixed"></a>
+### Mixed Inputs / Grammar
+
+<a id="comprehension-comments"></a>
+### Comments
+
+<a id="comprehension-wait"></a>
+### Wait
+
+<a id="comprehension-autocorrection"></a>
+### Autocorrection
+
 
 
 
@@ -135,12 +131,29 @@ A user can mix and match notations, and Karen will do its best to interpret what
 
 Each command supports the addition of parameters which allow the user to adjust the format/information presented in the output of the command. A user can save a default set of parameters using the [prefs](#commands-prefs) command.
 
+<a id=params-a></a>
+### Advanced Mode (--a)
 
+<a id=params-b></a>
+### Show Breakdown (--b)
 
-<a id="warn"></a>
-## <br> Warnings
+<a id=params-n></a>
+### No Warnings (--n)
 
-When Karen is unable to parse a command, or unconfident that it has understood the intention of the user, it will output a warning alongside its regular output. These warnings are fairly self-explanatory, but have been documented here for the sake of completeness.
+<a id=params-t></a>
+### Display Time (--t)
+
+<a id=params-tfd></a>
+### Display Time From Damage (--tfd)
+
+<a id=params-d></a>
+### Display Damage (--d)
+
+<a id=params-dps></a>
+### Display DPS (--dps)
+
+<a id=params-ult></a>
+### Display Ult Charge Generation (--ult)
 
 
 

@@ -425,6 +425,8 @@ class State:
         dpsNumerator: int = 60 * (self.damageDealt - (ACTION_DAMAGE["B"] if ((self.bombDamageTime != "unknown") and (self.bombDamageTime < self.firstDamageTime)) else 0))
         details["dps"] = "NaN" if tfd == 0 else round(dpsNumerator / tfd, 2)
 
+        details["ult charge gained"] = round(100 * ((details["damage"] * ULT_CHARGE_PER_DAMAGE) + (details["time frames"] * ULT_CHARGE_PER_SECOND / 60)) / ULT_REQURED_CHARGE, 1)
+
         details["sequence shorthand"] = "".join(sequence)
 
         actionNames: list[str] = []

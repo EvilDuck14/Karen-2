@@ -10,7 +10,8 @@ PARAMS = {
     "t" : "Display time",
     "tfd" : "Display time from damage",
     "d" : "Display damage",
-    "dps" : "Display damage per second"
+    "dps" : "Display damage per second",
+    "ult" : "Display ult charge generation"
 }
 
 async def prefs(ctx: commands.Context, *arr: str):

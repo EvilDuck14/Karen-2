@@ -1,8 +1,8 @@
 add stat tracking
 
-add more sequence names
-
 add tech descriptions
+
+allow all combo names to be used in eval
 
 implement commands
   - prefs

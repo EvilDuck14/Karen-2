@@ -44,6 +44,8 @@ async def singleEval(ctx: commands.context, actionSequence: list[str], warningLi
         message += f"\n**Damage:** {details["damage"]}"
     if params["dps"]:
         message += f"\n**Damage Per Second:** {details["dps"]}"
+    if params["ult"]:
+        message += f"\n**Ult Charge Gained:** {details["ult charge gained"]}%"
 
     try:
         messageEmbed: discord.Embed = discord.Embed(
@@ -81,6 +83,7 @@ async def comparisonEval(ctx: commands.context, combos: list[list[str]], warning
     timesFromDamage: list[int] = [0] * numCombos
     damages: list[int] = [0] * numCombos
     damagePerSeconds: list[int] = [0] * numCombos
+    ultChargesGained: list[float] = [0] * numCombos
 
     for index in range(numCombos):
         combos[index] = preEval(combos[index], warningList, advancedMode=params["a"])
@@ -95,6 +98,7 @@ async def comparisonEval(ctx: commands.context, combos: list[list[str]], warning
         damages[index] = details["damage"]
         damagePerSeconds[index] = details["dps"]
         damagePerSeconds[index] = 0 if damagePerSeconds[index] == "NaN" else int(damagePerSeconds[index])
+        ultChargesGained[index] = details["ult charge gained"]
 
     message: str = ""
     for index in range(numCombos):
@@ -132,6 +136,14 @@ async def comparisonEval(ctx: commands.context, combos: list[list[str]], warning
         message += f"\n\n**Damage Per Second:** Combo{"s" if len(winners) > 1 else ""} {" & ".join(winners)}"
         message += "\n`" + " vs ".join(
             [(("🟢" if value == winValue else "🟥") + f" {value if value != 0 else "NaN"}" + ("" if (value == winValue or value == 0) else f" (-{abs(value - winValue)})")) for value in damagePerSeconds]
+        ) + "`"
+
+    if params["ult"]:
+        winValue = max(ultChargesGained)
+        winners = [str(index + 1) for index in range(numCombos) if ultChargesGained[index] == winValue]
+        message += f"\n\n**Ult Charge Gained:** Combo{"s" if len(winners) > 1 else ""} {" & ".join(winners)}"
+        message += "\n`" + " vs ".join(
+            [(("🟢" if value == winValue else "🟥") + f" {value}%" + ("" if value == winValue else f" (-{round(abs(value - winValue), 1)}%)")) for value in ultChargesGained]
         ) + "`"
 
     try:

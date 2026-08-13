@@ -31,9 +31,7 @@ async def help(ctx: commands.Context, *arr: str):
         message += "Allows the user to set a default set of parameters to apply to their inputs.\n\n"
 
         message += "**!help [command]**\n"
-        message += "Explains the given command in greater detail.\n\n"
-
-        message += "To report a bug/issue, please contact user evilduck_"
+        message += "Explains the given command in greater detail."
 
     # !help eval
     elif inputString in ["eval", "comp"]:
@@ -80,6 +78,8 @@ async def help(ctx: commands.Context, *arr: str):
         message += f"Unknown command \"!{inputString}\"."
         message += "\n\nYou can use \"!help\" for a list of all commands."
         colour = WARNING_COLOUR
+
+    message += "\n\nSee the full documentation [here](https://github.com/EvilDuck14/Karen-2), or to report a bug contact [evilduck_](https://discordapp.com/users/233099051757731851)"
 
     # sending message
     try:

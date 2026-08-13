@@ -45,7 +45,8 @@ def extractParams(inputString: str, warningList: list[str]) -> tuple[str, dict[s
         "t" : True, # display time
         "tfd" : True, # display time from damage
         "d" : True, # display damage
-        "dps" : False # display damage per second
+        "dps" : False, # display damage per second
+        "ult" : False # display ult charge generation
     }
 
     # the first time a display parameter is changed, set all others to false
@@ -69,12 +70,13 @@ def extractParams(inputString: str, warningList: list[str]) -> tuple[str, dict[s
                 warningList.append(f"parameter not recognised \"{word}\"")
                 continue
 
-            if (not displayChanged) and (word[2:] in ["t", "tfd", "d", "dps"]):
+            if (not displayChanged) and (word[2:] in ["t", "tfd", "d", "dps", "ult"]):
                 displayChanged = True
                 params["t"] = False
                 params["tfd"] = False
                 params["d"] = False
                 params["dps"] = False
+                params["ult"] = False
 
             params[word[2:]] = True
             

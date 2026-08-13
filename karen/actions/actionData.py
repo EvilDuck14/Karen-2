@@ -95,6 +95,11 @@ SYMBIOTE_TEATHER_HIT_INTERVAL = 6
 SAPOREN_PRE_HIT_TIME = 5
 RT_PRE_HIT_TIME = ACTION_DAMAGE_TIME["t"]
 
+# ult charge numbers multiplied by 100 to work with integers
+ULT_REQURED_CHARGE = 280000
+ULT_CHARGE_PER_DAMAGE = 55
+ULT_CHARGE_PER_SECOND = 1100
+
 MAX_CHARGES = {
     "t" : 5,
     "s" : 3,

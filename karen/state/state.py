@@ -384,8 +384,8 @@ class State:
             lastProcTime: int = max([0] + [entry.frame for entry in self.log if (entry.details in [
                 f"{ACTION_NAMES[source]} dealt {ACTION_DAMAGE[source]} damage" for source in PROCS_TAG
             ] and entry.frame < explosionTime)])
-            timeRange = min(explosionTime - lastProcTime, WEB_BOMB_DURATION - 1)
-            if timeRange == 0:
+            timeRange = min(explosionTime - lastProcTime, WEB_BOMB_DURATION - 1) - 1
+            if timeRange <= 0:
                 otherEntries[1].details = otherEntries[1].details[:otherEntries[1].details.find("-")] + "f]"
             else:
                 maxTime: int = int(otherEntries[1].details[1:(otherEntries[1].details.find("-"))]) + timeRange

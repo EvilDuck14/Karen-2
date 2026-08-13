@@ -53,7 +53,6 @@ def parseComboString(ctx: commands.Context, comboString: str, warningList: list[
             unrecognised = ""
             if "]" in comboString:
                 bracketContents: str = comboString[1:comboString.find("]")]
-                print(bracketContents)
                 if bracketContents.isnumeric():
                     actionSequence.append(f"[{bracketContents}f]")
                 elif bracketContents[:-1].isnumeric() and (len(bracketContents) > 0) and (bracketContents[-1] in ["f", "T", "B"]):

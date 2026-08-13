@@ -40,8 +40,8 @@ DEFAULT_PARAMS = {
 }
 
 def getUserPrefs(userId: int) -> dict[str, bool]:
-    if userId in userPrefs.keys():
-        return userPrefs[userId].copy()
+    if str(userId) in userPrefs.keys():
+        return userPrefs[str(userId)].copy()
     else:
         return DEFAULT_PARAMS.copy()
 
@@ -116,11 +116,11 @@ async def prefs(ctx: commands.Context, *arr: str):
     params: dict[str, bool] 
     _, params = extractParams(ctx, processedString, warningList)
 
-    userPrefs[ctx.author.id] = params
+    userPrefs[str(ctx.author.id)] = params
     isDefault = not (False in [params[key] == DEFAULT_PARAMS[key] for key in DEFAULT_PARAMS.keys()])
     if isDefault:
         title = f"{ctx.author} Preferences Reset"
-        userPrefs.pop(ctx.author.id, None)
+        userPrefs.pop(str(ctx.author.id), None)
 
     with DATA_PATH.open("w", encoding="utf-8") as f:
         f.write(json.dumps(userPrefs, indent=4))

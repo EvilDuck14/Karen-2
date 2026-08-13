@@ -1,5 +1,5 @@
 from karen.state.state import State
-from karen.actions.actionData import ACTION_NAMES, WEB_BOMB_DURATION
+from karen.actions.actionData import *
 
 # replaces suboptimal inputs / typos and raises warnings for sequence errors
 def preEval(actionSequence: list[str], warningList: list[str], advancedMode: bool = False):
@@ -41,10 +41,15 @@ def preEval(actionSequence: list[str], warningList: list[str], advancedMode: boo
         improvedActionSequence.append(actionSequence[0])
         actionSequence = actionSequence[1:]
 
-    # automatic wait if the combo starts with a clap, doesn't specify a wait time right after, and includes an explosion
-    if (len(improvedActionSequence) > 1) and (improvedActionSequence[0] == "C") and (improvedActionSequence[1][0] != "[") and (True in ["E" in action for action in improvedActionSequence]):
+    # automatic wait if the combo starts with a clap, doesn't specify any wait times, and includes an explosion
+    if (len(improvedActionSequence) > 1) and (improvedActionSequence[0] == "C") and (not (True in [action[0] == "[" for action in improvedActionSequence])) and (True in ["E" in action for action in improvedActionSequence]):
         dummyState: State = State(improvedActionSequence)
-        explosionWaitTimeMin: int = dummyState.explosionWaitTimer
+        explosionWaitTimeMin: int = dummyState.explosionWaitTimer - TAG_GOHT_DELAY
+
+        if len(improvedActionSequence) >= 2:
+            secondActionType: str = improvedActionSequence[1][0].replace("k", "p").replace("w", "s").replace("a", "s").replace("V", "S").replace("E", "s")
+            explosionWaitTimeMin += ANIMATION_CANCEL_TIMES["C"][secondActionType]
+
         if explosionWaitTimeMin != 0:
             explosionWaitTimeWindow: int = min(max(WEB_BOMB_DURATION - 1- dummyState.lastTagProcPreExplosion, 0), WEB_BOMB_DURATION - 1)
             explosionWaitTime: str = f"[{explosionWaitTimeMin}-{explosionWaitTimeMin + explosionWaitTimeWindow}R]" if explosionWaitTimeWindow > 0 else f"[{explosionWaitTimeMin}f]"

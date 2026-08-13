@@ -109,6 +109,7 @@ class State:
             self.applyAction(action)
 
         if self.awaitingExplosion and (self.bombTimer > 0):
+            self.pushLog(f"awaiting {ACTION_NAMES["E"]}", ["waiting"])
             self.explosionWaitTimer += self.bombTimer
             self.advanceTime(self.bombTimer)
 
@@ -249,7 +250,7 @@ class State:
 
             # wait amount given as a range (cannot be entered by user)
             if action[-2] == "R":
-                waitTime: int = int(action[action.find("-")+1:-2]) 
+                waitTime: int = int(action[1:action.find("-")]) 
                 self.pushLog(f"waiting {waitTime} frames", ["waiting"])
                 self.pushActionLog(f"[{action[1:-2]}f]")
                 self.advanceTime(waitTime)
@@ -366,21 +367,6 @@ class State:
 
     def pushActionLog(self, action: str, frameOffset: int = 0):
         self.actionLog.append(LogEntry(self.timeElapsed + frameOffset, action))
-
-    # prints all info to console
-    def printConsole(self):
-
-        # print logs
-        self.log.sort()
-        for entry in self.log:
-            entry.printConsole()
-
-        # print state information
-        print(
-              f"\nDamage: {self.damageDealt}" +
-              f"\nTime: {round(self.lastDamageTime / 60, 2)}s" +
-              f"\nTime From First Hit: {round((0 if self.firstDamageTime == "unknown" else self.lastDamageTime - self.firstDamageTime) / 60, 2)}s"
-        )
 
     def getSequence(self) -> list[str]:
 

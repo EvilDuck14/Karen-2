@@ -172,8 +172,8 @@ Anything inside of parentheses will be entirely ignored. This means that `!eval 
 A combo can involve waiting mid-sequence using square brackets with the wait time inside. 
 This can be given in frames (`[30f]`, assuming 60fps) or seconds (`[0.5s]`).
 
-One can also wait after using the upgraded symbiote for a certain number of teather hits.
-For example `V[2T]w` will use the upgraded symbiote and then wait for 2 hits of teather damage before proceeding to cancel the teather with a swing whiff.
+One can also wait after using the upgraded symbiote for a certain number of tether hits.
+For example `V[2T]w` will use the upgraded symbiote and then wait for 2 hits of tether damage before proceeding to cancel the tether with a swing whiff.
 
 Finally, one can wait until the web bomb has a certain duration remaining.
 For example, `B[20B]pp` will throw the web bomb, wait until 20 frames remain until it explodes, then proceed with two punches (so that the explosion happens between them).

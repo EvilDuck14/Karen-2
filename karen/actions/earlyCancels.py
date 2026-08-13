@@ -25,7 +25,7 @@ def usePunchCancel(state: State):
     state.meleeSequenceTimer = 0
     state.meleeSequenceStep = "punch 1"
 
-    # cancel symbiote teather
+    # cancel symbiote tether
     state.endActive("S")
 
 def applyPunchCancel(state: State):
@@ -60,7 +60,7 @@ def useKickCancel(state: State):
     state.meleeSequenceTimer = 0
     state.meleeSequenceStep = "punch 1"
 
-    # cancel symbiote teather
+    # cancel symbiote tether
     state.endActive("S")
 
 def applyKickCancel(state: State):
@@ -97,7 +97,7 @@ def useOverheadCancel(state: State):
     else:
         state.hasDoubleJump = False
 
-    # cancel symbiote teather
+    # cancel symbiote tether
     state.endActive("S")
 
 def applyOverheadCancel(state: State):

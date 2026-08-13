@@ -53,7 +53,7 @@ def usePunch(state: State):
     elif state.meleeSequenceStep == "unknown":
         state.meleeSequenceStep = "not punch 1"
 
-    # cancel symbiote teather
+    # cancel symbiote tether
     state.endActive("S")
 
 def applyPunch(state: State):
@@ -105,7 +105,7 @@ def useKick(state: State):
     state.meleeSequenceTimer = 0
     state.meleeSequenceStep = "punch 1"
 
-    # cancel symbiote teather
+    # cancel symbiote tether
     state.endActive("S")
 
 def applyKick(state: State):
@@ -163,7 +163,7 @@ def useOverhead(state: State):
     else:
         state.hasDoubleJump = False
 
-    # cancel symbiote teather
+    # cancel symbiote tether
     state.endActive("S")
 
 def applyOverhead(state: State):
@@ -484,9 +484,9 @@ def useTeather(state: State):
     state.endActive("g")
     state.endActive("u")
 
-    # attach teather - don't reset timer on multiple symbiote hits
-    if state.teatherTimer == 0:
-        state.teatherTimer = SYMBIOTE_TEATHER_DURATION + ACTION_DAMAGE_TIME["S"]
+    # attach tether - don't reset timer on multiple symbiote hits
+    if state.tetherTimer == 0:
+        state.tetherTimer = SYMBIOTE_TEATHER_DURATION + ACTION_DAMAGE_TIME["S"]
 
 def applyTeather(state: State):
     state.advanceTime(state.animationCancelTimes["S"]) 

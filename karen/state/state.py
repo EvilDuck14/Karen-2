@@ -24,7 +24,7 @@ class State:
     awaitingExplosion: bool # tells actions that proc tracer to wait for the bomb to explode
     explosionWaitTimer: int # tracks how long the combo waited for the explosion, used to calculate time to wait if the combo starts with a clap
     lastTagProcPreExplosion: int # tracks the last frame that a tag was proced before the explosion was registered, used to calculate pre combo wait time range
-    teatherTimer: int # tracks remaining duration that symbiote teather can stay active
+    tetherTimer: int # tracks remaining duration that symbiote tether can stay active
     hasDoubleJump: bool # tracks whether double jump overhead can be used (doesn't force overhead)
     hasSwingOverhead: bool | Literal["unknown"] # tracks whether swing overhead can be used (does force overhead)
 
@@ -57,7 +57,7 @@ class State:
         self.awaitingExplosion = False
         self.explosionWaitTimer = 0
         self.lastTagProcPreExplosion = 0
-        self.teatherTimer = 0 
+        self.tetherTimer = 0 
         self.hasDoubleJump = True
         self.hasSwingOverhead = "unknown"
 
@@ -113,9 +113,9 @@ class State:
             self.explosionWaitTimer += self.bombTimer
             self.advanceTime(self.bombTimer)
 
-        if (self.activeTimers["S"] > 0) and (self.teatherTimer > SYMBIOTE_TEATHER_HIT_INTERVAL):
-            self.pushLog("awaiting symbiote teather damage", ["cooldown"])
-            self.advanceTime(self.teatherTimer - SYMBIOTE_TEATHER_HIT_INTERVAL)
+        if (self.activeTimers["S"] > 0) and (self.tetherTimer > SYMBIOTE_TEATHER_HIT_INTERVAL):
+            self.pushLog("awaiting symbiote tether damage", ["cooldown"])
+            self.advanceTime(self.tetherTimer - SYMBIOTE_TEATHER_HIT_INTERVAL)
 
     # increments timers as time passes during combo
     def advanceTime(self, frames: int) -> None:
@@ -152,13 +152,13 @@ class State:
             self.GOHTAvaiableTimer = self.tagTimer
             self.pushLog(f"{ACTION_NAMES["G"]} registered available target", ["cooldown"], frameOffset=(frames + self.tagTimer - (TAG_DURATION - TAG_GOHT_DELAY)))
 
-        # symbiote teather damage over time
+        # symbiote tether damage over time
         framesToRemove: int = frames
-        while (self.teatherTimer > 0) and framesToRemove > 0:
-            batchFrames: int = min(framesToRemove, (SYMBIOTE_TEATHER_HIT_INTERVAL if self.teatherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL == 0 else self.teatherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL))
-            self.teatherTimer -= batchFrames
+        while (self.tetherTimer > 0) and framesToRemove > 0:
+            batchFrames: int = min(framesToRemove, (SYMBIOTE_TEATHER_HIT_INTERVAL if self.tetherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL == 0 else self.tetherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL))
+            self.tetherTimer -= batchFrames
             framesToRemove -= batchFrames
-            if (self.teatherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL == 0) and SYMBIOTE_TEATHER_DURATION >= self.teatherTimer > 0:
+            if (self.tetherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL == 0) and SYMBIOTE_TEATHER_DURATION >= self.tetherTimer > 0:
                 self.dealDamage("T", frameOffset=(frames - framesToRemove))
 
         # active abilitiy timers
@@ -229,15 +229,15 @@ class State:
                 self.pushActionLog(f"[{waitTime}f]")
                 self.advanceTime(waitTime)
 
-            # wait for a number of teather hits
+            # wait for a number of tether hits
             if action[-2] == "T":
                 waitTime: int = 0
                 if int(action[1:-2]) > 0:
-                    waitTime = max(waitTime, self.teatherTimer - SYMBIOTE_TEATHER_DURATION)
-                    waitTime = max(waitTime, (SYMBIOTE_TEATHER_HIT_INTERVAL if (self.teatherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL == 0) else self.teatherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL))
+                    waitTime = max(waitTime, self.tetherTimer - SYMBIOTE_TEATHER_DURATION)
+                    waitTime = max(waitTime, (SYMBIOTE_TEATHER_HIT_INTERVAL if (self.tetherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL == 0) else self.tetherTimer % SYMBIOTE_TEATHER_HIT_INTERVAL))
                     waitTime += (int(action[1:-2]) - 1) * SYMBIOTE_TEATHER_HIT_INTERVAL
-                    waitTime = min(waitTime, self.teatherTimer - SYMBIOTE_TEATHER_HIT_INTERVAL)
-                self.pushLog(f"awaiting {max(0, min(10, int(action[1:-2])))} teather ticks", ["waiting"])
+                    waitTime = min(waitTime, self.tetherTimer - SYMBIOTE_TEATHER_HIT_INTERVAL)
+                self.pushLog(f"awaiting {max(0, min(10, int(action[1:-2])))} tether ticks", ["waiting"])
                 self.pushActionLog(f"[{waitTime}f]")
                 self.advanceTime(waitTime)
 
@@ -349,9 +349,9 @@ class State:
             self.hasSwingOverhead = True
             self.pushLog("awarded swing overhead", ["cooldown"])
 
-        # canceling symbiote teather
+        # canceling symbiote tether
         if charge == "S":
-            self.teatherTimer = 0
+            self.tetherTimer = 0
 
     # major warning if ability charge is used currently but isn't available
     def warnIfNotReady(self, charge: str):

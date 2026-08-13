@@ -268,7 +268,7 @@ class State:
     
         # await charge
         if self.charges[charge] == 0:
-            self.pushLog(f"has to wait {self.rechargeTimers[charge] - frameOffset} frames for {ACTION_NAMES[charge]} recharge", ["waiting", "cooldown"])
+            self.pushLog(f"has to wait {self.rechargeTimers[charge] - frameOffset} frames for {ACTION_NAMES[charge]} recharge", ["waiting", "cooldown", "major warning"])
             self.advanceTime(self.rechargeTimers[charge] - frameOffset)
     
         # await fire rate
@@ -408,7 +408,7 @@ class State:
         details["time from damage frames"] = tfd
         details["time from damage seconds"] = round(tfd / 60, 2)
 
-        dpsNumerator: int = 60 * (self.damageDealt - (ACTION_DAMAGE["B"] if ((self.bombDamageTime != "unknown") and (self.bombDamageTime < self.firstDamageTime)) else 0))
+        dpsNumerator: int = 60 * (self.damageDealt - (ACTION_DAMAGE["B"] if ((self.bombDamageTime != "unknown") and (self.bombDamageTime < (0 if self.firstDamageTime == "unknown" else self.firstDamageTime))) else 0))
         details["dps"] = "NaN" if tfd == 0 else round(dpsNumerator / tfd, 2)
 
         details["ult charge gained"] = round(100 * ((details["damage"] * ULT_CHARGE_PER_DAMAGE) + (details["time frames"] * ULT_CHARGE_PER_SECOND / 60)) / ULT_REQURED_CHARGE, 1)

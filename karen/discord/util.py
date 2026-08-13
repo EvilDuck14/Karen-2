@@ -7,7 +7,7 @@ BREAKDOWN_COLOUR = 0x4480AA
 WARNING_COLOUR = 0xB73A00
 INFO_COLOUR = 0x77C6FF
 
-DEV_MODE = int(os.getenv("DEV_SERVER_ID")) == 1
+DEV_MODE = bool(int(os.getenv("DEV_MODE")) == 1)
 DEV_SERVER_ID = int(os.getenv("DEV_SERVER_ID"))
 DEV_CHANNEL_ID = int(os.getenv("DEV_CHANNEL_ID"))
 def devModeMismatch(ctx: commands.Context):

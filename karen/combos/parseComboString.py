@@ -144,6 +144,10 @@ def parseComboString(ctx: commands.Context, comboString: str, warningList: list[
     logUnrecognised(unrecognised, warningList)
     unrecognised = ""
 
+    # warning for both teamups in the same combo
+    if (("C" in actionSequence) or ("B" in actionSequence) or ("E" in actionSequence)) and (("S" in actionSequence) or ("V" in actionSequence)):
+        warningList.append("combo uses both Venom and Peni teamups")
+
     # join movestacks / early cancels
     tempActionSequence = actionSequence
     actionSequence = []

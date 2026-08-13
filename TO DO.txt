@@ -1,3 +1,0 @@
-add tech descriptions
-
-fix auto wait

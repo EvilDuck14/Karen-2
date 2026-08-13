@@ -23,7 +23,6 @@ class State:
     bombTimer: int # tracks time until the web bomb explodes
     awaitingExplosion: bool # tells actions that proc tracer to wait for the bomb to explode
     explosionWaitTimer: int # tracks how long the combo waited for the explosion, used to calculate time to wait if the combo starts with a clap
-    lastTagProcPreExplosion: int # tracks the last frame that a tag was proced before the explosion was registered, used to calculate pre combo wait time range
     tetherTimer: int # tracks remaining duration that symbiote tether can stay active
     hasDoubleJump: bool # tracks whether double jump overhead can be used (doesn't force overhead)
     hasSwingOverhead: bool | Literal["unknown"] # tracks whether swing overhead can be used (does force overhead)
@@ -56,7 +55,6 @@ class State:
         self.bombTimer = 0 
         self.awaitingExplosion = False
         self.explosionWaitTimer = 0
-        self.lastTagProcPreExplosion = 0
         self.tetherTimer = 0 
         self.hasDoubleJump = True
         self.hasSwingOverhead = "unknown"
@@ -252,7 +250,7 @@ class State:
             if action[-2] == "R":
                 waitTime: int = int(action[1:action.find("-")]) 
                 self.pushLog(f"waiting {waitTime} frames", ["waiting"])
-                self.pushActionLog(f"[{action[1:-2]}f]")
+                self.pushActionLog(action)
                 self.advanceTime(waitTime)
 
         else:
@@ -325,10 +323,6 @@ class State:
                 self.GOHTAvaiableTimer = self.tagTimer
             self.pushLog(f"proced tag, dealing {TAG_PROC_DAMAGE} damage", ["damage"], frameOffset)
 
-        # tracking explosion window for calculating pre-wait time
-        if ((self.bombTimer == 0) or (frameOffset < self.bombTimer)) and not ("E" in [entry.details for entry in self.actionLog if entry.frame <= self.timeElapsed + frameOffset]):
-            self.lastTagProcPreExplosion = max(self.timeElapsed, self.timeElapsed + frameOffset)
-
     # reduces charge and sets relevant timers
     def endActive(self, charge: str):
         if self.activeTimers[charge] == 0:
@@ -383,6 +377,19 @@ class State:
                 explosionEntries.append(entry)
             else:
                 otherEntries.append(entry)
+
+        # fixes range for initial wait
+        if (len(otherEntries) >= 2) and ("-R]" in otherEntries[1].details):
+            explosionTime: int = explosionEntries[0].frame
+            lastProcTime: int = max([0] + [entry.frame for entry in self.log if (entry.details in [
+                f"{ACTION_NAMES[source]} dealt {ACTION_DAMAGE[source]} damage" for source in PROCS_TAG
+            ] and entry.frame < explosionTime)])
+            timeRange = min(explosionTime - lastProcTime, WEB_BOMB_DURATION - 1)
+            if timeRange == 0:
+                otherEntries[1].details = otherEntries[1].details[:otherEntries[1].details.find("-")] + "f]"
+            else:
+                maxTime: int = int(otherEntries[1].details[1:(otherEntries[1].details.find("-"))]) + timeRange
+                otherEntries[1].details = otherEntries[1].details[:otherEntries[1].details.find("-")] + f"-{maxTime}f]"
 
         # insert explosions in the correct positions
         for explosionEntry in explosionEntries:

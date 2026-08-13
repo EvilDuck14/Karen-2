@@ -44,15 +44,13 @@ def preEval(actionSequence: list[str], warningList: list[str], advancedMode: boo
     # automatic wait if the combo starts with a clap, doesn't specify any wait times, and includes an explosion
     if (len(improvedActionSequence) > 1) and (improvedActionSequence[0] == "C") and (not (True in [action[0] == "[" for action in improvedActionSequence])) and (True in ["E" in action for action in improvedActionSequence]):
         dummyState: State = State(improvedActionSequence)
-        explosionWaitTimeMin: int = dummyState.explosionWaitTimer - TAG_GOHT_DELAY
+        explosionWaitTimeMin: int = dummyState.explosionWaitTimer
 
         if len(improvedActionSequence) >= 2:
             secondActionType: str = improvedActionSequence[1][0].replace("k", "p").replace("w", "s").replace("a", "s").replace("V", "S").replace("E", "s")
             explosionWaitTimeMin += ANIMATION_CANCEL_TIMES["C"][secondActionType]
 
-        if explosionWaitTimeMin != 0:
-            explosionWaitTimeWindow: int = min(max(WEB_BOMB_DURATION - 1- dummyState.lastTagProcPreExplosion, 0), WEB_BOMB_DURATION - 1)
-            explosionWaitTime: str = f"[{explosionWaitTimeMin}-{explosionWaitTimeMin + explosionWaitTimeWindow}R]" if explosionWaitTimeWindow > 0 else f"[{explosionWaitTimeMin}f]"
-            improvedActionSequence = improvedActionSequence[:1] + [explosionWaitTime] + improvedActionSequence[1:]
+        explosionWaitTime: str = f"[{explosionWaitTimeMin}-R]"
+        improvedActionSequence = improvedActionSequence[:1] + [explosionWaitTime] + improvedActionSequence[1:]
 
     return improvedActionSequence

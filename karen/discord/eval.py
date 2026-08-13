@@ -6,6 +6,7 @@ from karen.state.state import State
 from karen.combos.parseComboString import parseComboString
 from karen.combos.preEval import preEval
 from karen.combos.nameCombo import nameCombo
+from karen.discord.stats import logEval
 
 async def sendWarnings(ctx: commands.context, warningList: list[str]):
     if len(warningList) > 0:
@@ -28,6 +29,8 @@ async def singleEval(ctx: commands.context, actionSequence: list[str], warningLi
     improvedActionSequence: list[str] = preEval(actionSequence, warningList, advancedMode=params["a"])
     if (len(actionSequence) != len(improvedActionSequence)) or (False in [actionSequence[i] == improvedActionSequence[i] for i in range(len(actionSequence))]):
         print(f"improved action sequence to {improvedActionSequence}")
+
+    await logEval(improvedActionSequence)
 
     evalState: State = State(improvedActionSequence)
     warningList += evalState.getWarnings()
@@ -87,6 +90,8 @@ async def comparisonEval(ctx: commands.context, combos: list[list[str]], warning
 
     for index in range(numCombos):
         combos[index] = preEval(combos[index], warningList, advancedMode=params["a"])
+
+        await logEval(combos[index])
 
         evalState: State = State(combos[index])
         warningList += evalState.getWarnings()

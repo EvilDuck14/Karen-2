@@ -160,18 +160,23 @@ async def eval(ctx: commands.Context, *arr: str):
     actionSequence, params = parseComboString(ctx, inputString, warningList)
     print(f"interpreted action sequence as {actionSequence}")
 
+    # multiple combos, discard empty
+    combos: list[list[str]] = [[]]
+    for action in actionSequence:
+        if action == ",":
+            combos.append([])
+        else:
+            combos[-1].append(action)
+    combos = [combo for combo in combos if len(combo) > 0]
+    if len(combos) == 0:
+        combos = [[]]
+
     # single combo
-    if not ("," in actionSequence):
-        await singleEval(ctx, actionSequence, warningList, params)
+    if len(combos) == 1:
+        await singleEval(ctx, combos[0], warningList, params)
 
     # combo comparison
     else:
-        combos: list[list[str]] = [[]]
-        for action in actionSequence:
-            if action == ",":
-                combos.append([])
-            else:
-                combos[-1].append(action)
         await comparisonEval(ctx, combos, warningList, params)
 
     # send warnings

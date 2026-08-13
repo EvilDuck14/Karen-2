@@ -5,7 +5,6 @@ add more sequence names
 add tech descriptions
 
 implement commands
-  - list
   - prefs
 
 finish readme

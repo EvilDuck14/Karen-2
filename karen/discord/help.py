@@ -5,7 +5,7 @@ from karen.discord.util import *
 
 async def help(ctx: commands.Context, *arr: str):
     if devModeMismatch(ctx):
-            return
+        return
 
     inputString: str = " ".join(arr)
     print(f"\nreceived command: !help {inputString}")

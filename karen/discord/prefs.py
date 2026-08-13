@@ -3,9 +3,19 @@ from discord.ext import commands
 
 from karen.discord.util import *
 
+PARAMS = {
+    "a" : "Advanced mode (don't automatically fix combo)",
+    "b" : "Show breakdown",
+    "n" : "No warnings",
+    "t" : "Display time",
+    "tfd" : "Display time from damage",
+    "d" : "Display damage",
+    "dps" : "Display damage per second"
+}
+
 async def prefs(ctx: commands.Context, *arr: str):
     if devModeMismatch(ctx):
-            return
+        return
 
     inputString: str = " ".join(arr)
     print(f"\nreceived command: !prefs {inputString}")

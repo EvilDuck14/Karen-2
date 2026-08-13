@@ -32,6 +32,9 @@ async def on_ready():
 
 # setting up commands
 from karen.discord.eval import eval as evalCommand
+from karen.discord.tech import tech as techCommand
+from karen.discord.list import list as listCommand
+from karen.discord.prefs import prefs as prefsCommand
 from karen.discord.help import help as helpCommand
 
 @bot.command()
@@ -42,9 +45,21 @@ async def eval(ctx: commands.Context, *arr: str):
 async def comp(ctx: commands.Context, *arr: str):
     await evalCommand(ctx, *arr)
 
-@bot.command
+@bot.command()
+async def tech(ctx: commands.Context, *arr: str):
+    await techCommand(ctx, *arr)
+
+@bot.command()
+async def list(ctx: commands.Context, *arr: str):
+    await listCommand(ctx, *arr)
+
+@bot.command()
+async def prefs(ctx: commands.Context, *arr: str):
+    await prefsCommand(ctx, *arr)
+
+@bot.command()
 async def help(ctx: commands.Context, *arr: str):
-    helpCommand(ctx, *arr)
+    await helpCommand(ctx, *arr)
 
 # run bot
 bot.run(BOT_TOKEN)

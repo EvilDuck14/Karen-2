@@ -1,7 +1,10 @@
 add stat tracking
 
+add more sequence names
+
+add tech descriptions
+
 implement commands
-  - tech
   - list
   - prefs
 

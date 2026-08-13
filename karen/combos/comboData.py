@@ -309,6 +309,8 @@ SEQUENCE_NAMES = {
     "bread&butter" : ["t", "G", "u"],
 
     "shortplink" : ["a", "o"],
+    "fastplink" : ["a", "o"],
+    "autoplink" : ["a", "o"],
     "longplink" : ["w", "t", "o"],
     "plink" : ["w", "t", "o"],
     "doubleplink" : ["w", "t", "a", "o"],

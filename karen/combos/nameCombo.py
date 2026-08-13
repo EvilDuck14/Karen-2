@@ -1,4 +1,4 @@
-from parseComboString import COMBO_NAMES
+from karen.combos.parseComboString import COMBO_NAMES
 
 def nameCombo(actionSequence: list[str]) -> str:
     comboString: str = ""

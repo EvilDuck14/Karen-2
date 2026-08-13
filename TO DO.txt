@@ -4,3 +4,5 @@ implement commands
   - tech
   - list
   - prefs
+
+finish readme

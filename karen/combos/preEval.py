@@ -1,5 +1,5 @@
-from karen.state import State
-from karen.actions.actionData import ACTION_NAMES, ANIMATION_CANCEL_TIMES, WEB_BOMB_DURATION
+from karen.state.state import State
+from karen.actions.actionData import ACTION_NAMES, WEB_BOMB_DURATION
 
 # replaces suboptimal inputs / typos and raises warnings for sequence errors
 def preEval(actionSequence: list[str], warningList: list[str], advancedMode: bool = False):

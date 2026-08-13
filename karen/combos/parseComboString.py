@@ -1,5 +1,5 @@
-from karen.ui.comboData import *
-from karen.state import State
+from karen.state.state import State
+from karen.combos.comboData import *
 from karen.actions.actionData import EARLY_CANCELS_NOT_ENABLED_BY
 
 # returns the length of the combo string up to a character that necesarrily splits actions

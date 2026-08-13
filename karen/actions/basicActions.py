@@ -1,5 +1,5 @@
+from karen.state.state import State
 from karen.actions.actionData import *
-from karen.state import State
 
 #=========================================================================================================#
 #                                                  Punch                                                  #

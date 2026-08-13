@@ -1,6 +1,7 @@
-from karen.actions.actionData import *
 from typing import Literal, Callable
-from karen.log import LogEntry
+
+from karen.actions.actionData import *
+from karen.state.log import LogEntry
 
 class State:
     log: list[LogEntry] # stores more information for debugging / advanced users

@@ -301,13 +301,6 @@ COMBO_ACTION_NAMES = {
 }
 
 SEQUENCE_NAMES = {
-    "bnb" : ["t", "G", "u"],
-    "bandb" : ["t", "G", "u"],
-    "b&b" : ["t", "G", "u"],
-    "breadnbutter" : ["t", "G", "u"],
-    "breadandbutter" : ["t", "G", "u"],
-    "bread&butter" : ["t", "G", "u"],
-
     "shortplink" : ["a", "o"],
     "fastplink" : ["a", "o"],
     "autoplink" : ["a", "o"],

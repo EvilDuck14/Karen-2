@@ -8,29 +8,13 @@ from karen.combos.preEval import preEval
 from karen.combos.nameCombo import nameCombo
 from karen.discord.stats import logEval
 
-async def sendWarnings(ctx: commands.context, warningList: list[str]):
-    if len(warningList) > 0:
-        message: str = ""
-        for warning in warningList:
-            message += f"**WARNING:** {warning}\n"
-        message = message[:-1]
-
-        try:
-            await ctx.send(embed=discord.Embed(
-                description=message,
-                color=WARNING_COLOUR
-            )
-        )
-        except Exception as e:
-            print(e)
-
-async def singleEval(ctx: commands.context, actionSequence: list[str], warningList: list[str], params: dict[str, bool]):
+async def singleEval(ctx: commands.Context, actionSequence: list[str], warningList: list[str], params: dict[str, bool]):
 
     improvedActionSequence: list[str] = preEval(actionSequence, warningList, advancedMode=params["a"])
     if (len(actionSequence) != len(improvedActionSequence)) or (False in [actionSequence[i] == improvedActionSequence[i] for i in range(len(actionSequence))]):
         print(f"improved action sequence to {improvedActionSequence}")
 
-    await logEval(improvedActionSequence)
+    logEval(improvedActionSequence)
 
     evalState: State = State(improvedActionSequence)
     warningList += evalState.getWarnings()
@@ -78,7 +62,7 @@ async def singleEval(ctx: commands.context, actionSequence: list[str], warningLi
         except Exception as e:
             print(e)
 
-async def comparisonEval(ctx: commands.context, combos: list[list[str]], warningList: list[str], params: dict[str, bool]):
+async def comparisonEval(ctx: commands.Context, combos: list[list[str]], warningList: list[str], params: dict[str, bool]):
 
     numCombos: int = len(combos)
     sequences: list[str] = [""] * numCombos
@@ -91,7 +75,7 @@ async def comparisonEval(ctx: commands.context, combos: list[list[str]], warning
     for index in range(numCombos):
         combos[index] = preEval(combos[index], warningList, advancedMode=params["a"])
 
-        await logEval(combos[index])
+        logEval(combos[index])
 
         evalState: State = State(combos[index])
         warningList += evalState.getWarnings()
@@ -173,7 +157,7 @@ async def eval(ctx: commands.Context, *arr: str):
 
     actionSequence: list[str] 
     params: dict[str, bool]
-    actionSequence, params = parseComboString(inputString, warningList)
+    actionSequence, params = parseComboString(ctx, inputString, warningList)
     print(f"interpreted action sequence as {actionSequence}")
 
     # single combo

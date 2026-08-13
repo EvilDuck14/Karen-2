@@ -1,6 +1,9 @@
+from discord.ext import commands
+
 from karen.state.state import State
 from karen.combos.comboData import *
 from karen.actions.actionData import EARLY_CANCELS_NOT_ENABLED_BY
+from karen.discord.prefs import extractParams
 
 # returns the length of the combo string up to a character that necesarrily splits actions
 INPUT_BREAKERS = [">", "+", "-", "["]
@@ -29,69 +32,12 @@ def is_float(string: str) -> bool:
     except ValueError:
         return False
 
-# separates parameters from the rest of the input
-def extractParams(inputString: str, warningList: list[str]) -> tuple[str, dict[str, bool]]:
-
-    # TO DO: load user prefs if no params given
-    if not ("--" in inputString):
-        pass
-
-    # default parameters
-    params: dict[str, bool] = {
-        "a" : False, # advanced mode
-        "b" : False, # breakdown mode
-        "n" : False, # no warnings
-        
-        "t" : True, # display time
-        "tfd" : True, # display time from damage
-        "d" : True, # display damage
-        "dps" : False, # display damage per second
-        "ult" : False # display ult charge generation
-    }
-
-    # the first time a display parameter is changed, set all others to false
-    displayChanged: bool = False
-
-    # shorten sequences of dashes to 2 in a row
-    while "---" in inputString:
-        inputString = inputString.replace("---", "--")
-
-    # symbols that automatically end parameter input field
-    inputString = inputString.replace(">", " >").replace(",", " ,").replace("--", " --")
-
-    # search for parameters
-    words: list[str] = inputString.split(" ")
-    filteredString: str = ""
-    for word in words:
-        if "--" in word:
-
-            # parameter not recognised
-            if not (word[2:] in params.keys()):
-                warningList.append(f"parameter not recognised \"{word}\"")
-                continue
-
-            if (not displayChanged) and (word[2:] in ["t", "tfd", "d", "dps", "ult"]):
-                displayChanged = True
-                params["t"] = False
-                params["tfd"] = False
-                params["d"] = False
-                params["dps"] = False
-                params["ult"] = False
-
-            params[word[2:]] = True
-            
-        else:
-            filteredString += word
-
-    return filteredString, params
-
-
-def parseComboString(comboString: str, warningList: list[str]) -> tuple[list[str], dict[str, bool]]:
+def parseComboString(ctx: commands.Context, comboString: str, warningList: list[str]) -> tuple[list[str], dict[str, bool]]:
     actionSequence: list[str] = []
     params: dict[str, bool]
 
     comboString = removeParentheses(comboString)
-    comboString, params = extractParams(comboString, warningList)
+    comboString, params = extractParams(ctx, comboString, warningList)
 
     # remove white space
     comboString = comboString.replace(" ", "")

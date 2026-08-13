@@ -1,4 +1,5 @@
 import os
+import discord
 from discord.ext import commands
 
 EVAL_COLOUR = 0x8C7FFF
@@ -11,3 +12,19 @@ DEV_SERVER_ID = int(os.getenv("DEV_SERVER_ID"))
 DEV_CHANNEL_ID = int(os.getenv("DEV_CHANNEL_ID"))
 def devModeMismatch(ctx: commands.Context):
     return bool((ctx.guild.id == DEV_SERVER_ID) and (ctx.channel.id == DEV_CHANNEL_ID)) ^ bool(DEV_MODE)
+
+async def sendWarnings(ctx: commands.Context, warningList: list[str]):
+    if len(warningList) > 0:
+        message: str = ""
+        for warning in warningList:
+            message += f"**WARNING:** {warning}\n"
+        message = message[:-1]
+
+        try:
+            await ctx.send(embed=discord.Embed(
+                description=message,
+                color=WARNING_COLOUR
+            )
+        )
+        except Exception as e:
+            print(e)

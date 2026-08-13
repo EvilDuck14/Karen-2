@@ -12,9 +12,8 @@ if not DATA_PATH.exists():
 stats: dict[str, int]
 with DATA_PATH.open("r", encoding="utf-8") as f:
     stats = json.load(f)
-    print(type(stats))
 
-async def logEval(comboSequence):
+def logEval(comboSequence):
     comboString: str = ""
 
     for action in comboSequence:

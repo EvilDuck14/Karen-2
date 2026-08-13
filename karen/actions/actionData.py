@@ -11,7 +11,7 @@ ACTION_NAMES = {
     "u" : "Uppercut",
     "S" : "Symbiote",
     "V" : "Symbiote (Upgraded)",
-    "T" : "Symbiote Teather", # only used for logging damage source
+    "T" : "Symbiote Tether", # only used for logging damage source
     "C" : "Clap",
     "B" : "Web Bomb",
     "E" : "Web Bomb Explosion",
@@ -91,6 +91,7 @@ GOH_HIT_DISPLACE_DELAY = 7
 
 SYMBIOTE_TEATHER_DURATION = 1 * 60
 SYMBIOTE_TEATHER_HIT_INTERVAL = 6
+SECOND_SYMBIOTE_HIT_DAMAGE = 10
 
 SAPOREN_PRE_HIT_TIME = 5
 RT_PRE_HIT_TIME = ACTION_DAMAGE_TIME["t"]

@@ -459,10 +459,10 @@ State.ApplyAction["S"] = applySymbiote
 
 
 #=========================================================================================================#
-#                                            Symbiote Teather                                             #
+#                                             Symbiote Tether                                             #
 #=========================================================================================================#
 
-def useTeather(state: State):
+def useTether(state: State):
     state.pushLog(f"started {ACTION_NAMES["V"]}", ["action started"])
         
     # major warning if cooldown is not ready
@@ -488,13 +488,13 @@ def useTeather(state: State):
     if state.tetherTimer == 0:
         state.tetherTimer = SYMBIOTE_TEATHER_DURATION + ACTION_DAMAGE_TIME["S"]
 
-def applyTeather(state: State):
+def applyTether(state: State):
     state.advanceTime(state.animationCancelTimes["S"]) 
     awaitSymbioteReady(state)
     state.pushActionLog("V")
-    useTeather(state)
+    useTether(state)
 
-State.ApplyAction["V"] = applyTeather
+State.ApplyAction["V"] = applyTether
 
 
 #=========================================================================================================#

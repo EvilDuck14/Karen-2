@@ -278,8 +278,11 @@ class State:
 
     # handles adding damage in a specified amount of time, properly tracking timers
     def dealDamage(self, source: str, frameOffset: int = 0) -> None:
-        self.damageDealt += ACTION_DAMAGE[source]
-        self.pushLog(f"{ACTION_NAMES[source]} dealt {ACTION_DAMAGE[source]} damage", ["damage"], frameOffset)
+        damage: int = ACTION_DAMAGE[source]
+        if (source in ["S", "V"]) and (self.activeTimers["S"] > 0) and (frameOffset < RECHARGE_TIMES["S"]):
+            damage = SECOND_SYMBIOTE_HIT_DAMAGE
+        self.damageDealt += damage
+        self.pushLog(f"{ACTION_NAMES[source]} dealt {damage} damage", ["damage"], frameOffset)
 
         # tracking first damage time
         if self.firstDamageTime == "unknown" or self.firstDamageTime > self.timeElapsed + frameOffset:

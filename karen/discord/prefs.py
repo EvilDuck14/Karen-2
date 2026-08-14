@@ -52,7 +52,7 @@ def extractParams(ctx: commands.Context, inputString: str, warningList: list[str
     params: dict[str, bool] = DEFAULT_PARAMS.copy()
 
     # load user prefs if no params given
-    if not ("--" in inputString):
+    if (type(ctx) == commands.Context) and not ("--" in inputString):
         params = getUserPrefs(ctx.author.id)
 
     # the first time a display parameter is changed, set all others to false
@@ -96,6 +96,10 @@ def extractParams(ctx: commands.Context, inputString: str, warningList: list[str
 
 async def prefs(ctx: commands.Context, *arr: str):
     if devModeMismatch(ctx):
+        return
+
+    if type(ctx) != commands.Context:
+        print("\nSaving preferences is not supported in local mode.\n\n", end="")
         return
 
     inputString: str = " ".join(arr)

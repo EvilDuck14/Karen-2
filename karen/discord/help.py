@@ -82,13 +82,17 @@ async def help(ctx: commands.Context, *arr: str):
     message += "\n\nSee the full documentation [here](https://github.com/EvilDuck14/Karen-2), or to report a bug contact [evilduck_](https://discordapp.com/users/233099051757731851)"
 
     # sending message
-    try:
-        messageEmbed: discord.Embed = discord.Embed(
-            title="Help Desk",
-            description=message,
-            color=colour
-        )
-        messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
-        await ctx.send(embed=messageEmbed)
-    except Exception as e:
-        print(e)
+    if type(ctx) == commands.Context:
+        try:
+            messageEmbed: discord.Embed = discord.Embed(
+                title="Help Desk",
+                description=message,
+                color=colour
+            )
+            messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
+            await ctx.send(embed=messageEmbed)
+        except Exception as e:
+            print(e)
+
+    else:
+        print(f"\nHelp Desk:\n\n{message.replace("**", "").replace("`", "")}\n\n", end="")

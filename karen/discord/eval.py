@@ -35,16 +35,20 @@ async def singleEval(ctx: commands.Context, actionSequence: list[str], warningLi
     if params["ult"]:
         message += f"\n**Ult Charge Gained:** {details["ult charge gained"]}%"
 
-    try:
-        messageEmbed: discord.Embed = discord.Embed(
-            title=title,
-            description=message,
-            color=EVAL_COLOUR
-        )
-        messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
-        await ctx.send(embed=messageEmbed)
-    except Exception as e:
-        print(e)
+    if type(ctx) == commands.Context:
+        try:
+            messageEmbed: discord.Embed = discord.Embed(
+                title=title,
+                description=message,
+                color=EVAL_COLOUR
+            )
+            messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
+            await ctx.send(embed=messageEmbed)
+        except Exception as e:
+            print(e)
+
+    else:
+        print(f"{"" if title == "" else f"\n{title}:"}\n{message.replace("**", "")}\n\n", end="")
 
     # breakdown mode only: send action log
     if (params["b"]) and (len(evalState.log) > 0):
@@ -53,15 +57,19 @@ async def singleEval(ctx: commands.Context, actionSequence: list[str], warningLi
             message += f"\n[{entry.frame}] {entry.details}"
         message += "\n```"
 
-        try:
-            await ctx.send(embed=discord.Embed(
-                title="Breakdown",
-                description=message,
-                color=BREAKDOWN_COLOUR
+        if type(ctx) == commands.Context:
+            try:
+                await ctx.send(embed=discord.Embed(
+                    title="Breakdown",
+                    description=message,
+                    color=BREAKDOWN_COLOUR
+                )
             )
-        )
-        except Exception as e:
-            print(e)
+            except Exception as e:
+                print(e)
+
+        else:
+            print(f"Breakdown:\n{message[4:-4]}\n\n", end="")
 
 async def comparisonEval(ctx: commands.Context, combos: list[list[str]], warningList: list[str], params: dict[str, bool]):
 
@@ -137,16 +145,20 @@ async def comparisonEval(ctx: commands.Context, combos: list[list[str]], warning
             [(("🟢" if value == winValue else "🟥") + f" {value}%" + ("" if value == winValue else f" (-{round(abs(value - winValue), 1)}%)")) for value in ultChargesGained]
         ) + "`"
 
-    try:
-        messageEmbed: discord.Embed = discord.Embed(
-            title="Combo Comparison",
-            description=message,
-            color=EVAL_COLOUR
-        )
-        messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
-        await ctx.send(embed=messageEmbed)
-    except Exception as e:
-        print(e)
+    if type(ctx) == commands.Context:
+        try:
+            messageEmbed: discord.Embed = discord.Embed(
+                title="Combo Comparison",
+                description=message,
+                color=EVAL_COLOUR
+            )
+            messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
+            await ctx.send(embed=messageEmbed)
+        except Exception as e:
+            print(e)
+
+    else:
+        print(f"\nCombo Comparison:\n{message.replace("**", "").replace("`", "")}\n\n", end="")
 
 async def eval(ctx: commands.Context, *arr: str):
     if devModeMismatch(ctx):
@@ -155,12 +167,14 @@ async def eval(ctx: commands.Context, *arr: str):
     warningList: list[str] = []
 
     inputString: str = " ".join(arr)
-    print(f"\nreceived command: !eval {inputString}")
+    if type(ctx) == commands.Context:
+        print(f"\nreceived command: !eval {inputString}")
 
     actionSequence: list[str] 
     params: dict[str, bool]
     actionSequence, params = parseComboString(ctx, inputString, warningList)
-    print(f"interpreted action sequence as {actionSequence}")
+    if type(ctx) == commands.Context:
+        print(f"interpreted action sequence as {actionSequence}")
 
     # multiple combos, discard empty
     combos: list[list[str]] = [[]]

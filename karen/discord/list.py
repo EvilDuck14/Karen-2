@@ -52,13 +52,17 @@ async def list(ctx: commands.Context, *arr: str):
         colour = WARNING_COLOUR
 
     # sending message
-    try:
-        messageEmbed: discord.Embed = discord.Embed(
-            title=title,
-            description=message,
-            color=colour
-        )
-        messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
-        await ctx.send(embed=messageEmbed)
-    except Exception as e:
-        print(e)
+    if type(ctx) == commands.Context:
+        try:
+            messageEmbed: discord.Embed = discord.Embed(
+                title=title,
+                description=message,
+                color=colour
+            )
+            messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
+            await ctx.send(embed=messageEmbed)
+        except Exception as e:
+            print(e)
+
+    else:
+        print(f"\n{title}:\n\n{message.replace("**", "").replace("`", "")}\n\n", end="")

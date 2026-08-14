@@ -428,7 +428,7 @@ async def tech(ctx: commands.Context, *arr: str):
         title = TECH_NAMES[inputString.lower().replace(" ", "")]
         message = TECHS[title]["description"]
 
-        if (TECHS[title]["discord link"] != "") and ((ctx.guild.id == SUPERIOR_SPIDEY_SERVER_ID) or (ctx.guild.id == DEV_SERVER_ID)):
+        if (TECHS[title]["discord link"] != "") and (type(ctx) == commands.Context) and ((ctx.guild.id == SUPERIOR_SPIDEY_SERVER_ID) or (ctx.guild.id == DEV_SERVER_ID)):
             message += f"\n\n**Showcase thread:**\n<#{TECHS[title]["discord link"]}>"
 
     else:
@@ -436,16 +436,20 @@ async def tech(ctx: commands.Context, *arr: str):
         colour = WARNING_COLOUR
 
     # sending message
-    try:
-        messageEmbed: discord.Embed = discord.Embed(
-            title=title,
-            description=message,
-            color=colour
-        )
-        messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
-        await ctx.send(embed=messageEmbed)
+    if type(ctx) == commands.Context:
+        try:
+            messageEmbed: discord.Embed = discord.Embed(
+                title=title,
+                description=message,
+                color=colour
+            )
+            messageEmbed.set_footer(text=f"requested by {ctx.author}", icon_url=ctx.author.avatar)
+            await ctx.send(embed=messageEmbed)
 
-        if TECHS[title]["youtube link"] != "":
-            await ctx.send(f"\n[**YouTube:**]({TECHS[title]["youtube link"]})")
-    except Exception as e:
-        print(e)
+            if TECHS[title]["youtube link"] != "":
+                await ctx.send(f"\n[**YouTube:**]({TECHS[title]["youtube link"]})")
+        except Exception as e:
+            print(e)
+
+    else:
+        print(f"\n{title}:\n\n{message.replace("**", "").replace("`", "")}\n\n", end="")

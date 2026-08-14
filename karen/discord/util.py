@@ -7,19 +7,30 @@ BREAKDOWN_COLOUR = 0x4480AA
 WARNING_COLOUR = 0xB73A00
 INFO_COLOUR = 0x77C6FF
 
-DEV_MODE = bool(int(os.getenv("DEV_MODE")) == 1)
-DEV_SERVER_ID = int(os.getenv("DEV_SERVER_ID"))
-DEV_CHANNEL_ID = int(os.getenv("DEV_CHANNEL_ID"))
+try:
+    DEV_MODE = bool(int(os.getenv("DEV_MODE")) == 1)
+    DEV_SERVER_ID = int(os.getenv("DEV_SERVER_ID"))
+    DEV_CHANNEL_ID = int(os.getenv("DEV_CHANNEL_ID"))
+except Exception as e:
+    DEV_MODE = False
+    DEV_SERVER_ID = 0
+    DEV_CHANNEL_ID = 0
+
 def devModeMismatch(ctx: commands.Context):
+    if type(ctx) != commands.context:
+        return False
     return bool((ctx.guild.id == DEV_SERVER_ID) and (ctx.channel.id == DEV_CHANNEL_ID)) ^ bool(DEV_MODE)
 
 async def sendWarnings(ctx: commands.Context, warningList: list[str]):
-    if len(warningList) > 0:
-        message: str = ""
-        for warning in warningList:
-            message += f"**WARNING:** {warning}\n"
-        message = message[:-1]
+    if len(warningList) == 0:
+        return
+    
+    message: str = ""
+    for warning in warningList:
+        message += f"**WARNING:** {warning}\n"
+    message = message[:-1]
 
+    if type(ctx) == commands.Context:
         try:
             await ctx.send(embed=discord.Embed(
                 description=message,
@@ -28,3 +39,6 @@ async def sendWarnings(ctx: commands.Context, warningList: list[str]):
         )
         except Exception as e:
             print(e)
+
+    else:
+        print(f"{message.replace("**", "").replace("`", "")}\n\n", end="")

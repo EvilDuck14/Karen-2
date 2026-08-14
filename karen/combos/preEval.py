@@ -5,41 +5,60 @@ from karen.actions.actionData import *
 def preEval(actionSequence: list[str], warningList: list[str], advancedMode: bool = False):
     improvedActionSequence: list[str] = []
 
-    while len(actionSequence) > 0:
+    # automatic movestack detection
+    sequenceString = "".join(actionSequence)
+    while len(sequenceString) > 0:
+
+        if sequenceString[0] == "[":
+            improvedActionSequence.append(sequenceString[:(sequenceString.find("]") + 1)])
+            sequenceString = sequenceString[(sequenceString.find("]") + 1):]
+            continue
 
         # automatic swing whiff insertion
-        if (not advancedMode) and (len(improvedActionSequence) > 0) and (improvedActionSequence[-1][-1] == "u") and (actionSequence[0][0] in ["t", "g", "C", "B"]):
+        if (not advancedMode) and (len(improvedActionSequence) > 0) and (improvedActionSequence[-1][-1] == "u") and (sequenceString[0] in ["t", "g", "C", "B"]):
             warningList.append(f"automatically weaved swing whiff between {ACTION_NAMES["u"]} and {ACTION_NAMES[actionSequence[0]]}")
             improvedActionSequence.append("w")
 
+        nostacks: str = sequenceString.replace("+", "")
+
         # automatic goh/bomb stack
-        if (len(actionSequence) >= 2) and (actionSequence[0] in ["g", "G"]) and (actionSequence[1] == "B"):
-            improvedActionSequence.append(f"{actionSequence[0]}+B")
-            actionSequence = actionSequence[2:]
+        if nostacks[:2] in ["gB", "GB"]:
+            improvedActionSequence.append(f"{nostacks[0]}+B")
+            sequenceString = sequenceString[(sequenceString.find("B") + 1):]
             continue
 
-        # automatic saporen/spacejam detection
-        if (len(actionSequence) >= 2) and (actionSequence[0] in ["p", "k", "o", "u"]) and (actionSequence[1] == "G"):
-            improvedActionSequence.append(f"{actionSequence[0]}+G")
-            actionSequence = actionSequence[2:]
-            continue
-        if (len(actionSequence) >= 3) and (actionSequence[0] == "u") and (actionSequence[1] in ["w", "a"]) and (actionSequence[2] == "G"):
-            improvedActionSequence.append(f"u+{actionSequence[1]}+G")
-            actionSequence = actionSequence[3:]
+        # automatic saporen detection
+        if nostacks[:2] in ["pG", "kG", "oG"]:
+            improvedActionSequence.append(f"{sequenceString[0]}+G")
+            sequenceString = sequenceString[(sequenceString.find("G") + 1):]
             continue
 
-        # automatic symbiotic spacejam detection
-        if (len(actionSequence) >= 3) and (actionSequence[0] == "u") and (actionSequence[1] in ["S", "V"]) and (actionSequence[2] == "G"):
-            improvedActionSequence.append(f"u+{actionSequence[1]}+G")
-            actionSequence = actionSequence[3:]
+        # automatic saporen detection
+        if nostacks[:3] in ["uwG", "uaG"]:
+            improvedActionSequence.append(f"u+{nostacks[1]}+G")
+            sequenceString = sequenceString[(sequenceString.find("G") + 1):]
             continue
-        if (len(actionSequence) >= 4) and (actionSequence[0] == "u") and (actionSequence[1] in ["S", "V"]) and (actionSequence[2] in ["w", "a"]) and (actionSequence[3] == "G"):
-            improvedActionSequence.append(f"u+{actionSequence[1]}+{actionSequence[2]}+G")
-            actionSequence = actionSequence[4:]
+        if nostacks[:2] == ["uG"]:
+            improvedActionSequence.append(f"u+G")
+            sequenceString = sequenceString[(sequenceString.find("G") + 1):]
             continue
-        
-        improvedActionSequence.append(actionSequence[0])
-        actionSequence = actionSequence[1:]
+
+        # automatic symbiotic saporen detection
+        if nostacks[:4] in ["uSwG", "uSaG", "uVwG", "uVaG"]:
+            improvedActionSequence.append(f"u+{nostacks[1]}+{nostacks[2]}+G")
+            sequenceString = sequenceString[(sequenceString.find("G") + 1):]
+            continue
+        if nostacks[:3] in ["uSG", "uVG"]:
+            improvedActionSequence.append(f"u+S+G")
+            sequenceString = sequenceString[(sequenceString.find("G") + 1):]
+            continue
+
+        if sequenceString[0] == "+":
+            improvedActionSequence[-1] += sequenceString[:2]
+            sequenceString = sequenceString[2:]
+        else: 
+            improvedActionSequence.append(sequenceString[0])
+            sequenceString = sequenceString[1:]
 
     # automatic wait if the combo starts with a clap, doesn't specify any wait times, and includes an explosion
     if (len(improvedActionSequence) > 1) and (improvedActionSequence[0] == "C") and (not (True in [action[0] == "[" for action in improvedActionSequence])) and (True in ["E" in action for action in improvedActionSequence]):

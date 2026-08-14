@@ -14,7 +14,8 @@ async def singleEval(ctx: commands.Context, actionSequence: list[str], warningLi
     if (len(actionSequence) != len(improvedActionSequence)) or (False in [actionSequence[i] == improvedActionSequence[i] for i in range(len(actionSequence))]):
         print(f"improved action sequence to {improvedActionSequence}")
 
-    logEval(improvedActionSequence)
+    if not DEV_MODE:
+        logEval(improvedActionSequence)
 
     evalState: State = State(improvedActionSequence)
     warningList += evalState.getWarnings()
@@ -75,7 +76,8 @@ async def comparisonEval(ctx: commands.Context, combos: list[list[str]], warning
     for index in range(numCombos):
         combos[index] = preEval(combos[index], warningList, advancedMode=params["a"])
 
-        logEval(combos[index])
+        if not DEV_MODE:
+            logEval(combos[index])
 
         evalState: State = State(combos[index])
         warningList += evalState.getWarnings()

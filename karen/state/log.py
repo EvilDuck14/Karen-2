@@ -51,10 +51,10 @@ class LogEntry:
 
     # comparison operators for sorting list by time
     def __lt__(self, other: LogEntry) -> bool:
-            return self.frame < other.frame
+        return self.frame < other.frame
     def __le__(self, other: LogEntry) -> bool:
-            return self.frame <= other.frame
+        return self.frame <= other.frame
     def __gt__(self, other: LogEntry) -> bool:
-            return self.frame > other.frame
+        return self.frame > other.frame
     def __ge__(self, other: LogEntry) -> bool:
         return self.frame >= other.frame
